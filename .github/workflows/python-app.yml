@@ -25,4 +25,10 @@ jobs:
        docker-compose up -d
     - name: Test with pytest
       run: |
-        docker-compose exec -T -w /home/usr/mounted pytop pytest
+        set -o pipefail
+        docker-compose exec -T -w /home/usr/mounted pytop pytest --junitxml=pytest.xml --cov-report=term-missing --cov=src tests/ | tee pytest-coverage.txt
+    - name: Pytest coverage comment
+      uses: MishaKav/pytest-coverage-comment@main
+      with:
+        pytest-coverage-path: ./pytest-coverage.txt
+        junitxml-path: ./pytest.xml
