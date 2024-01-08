@@ -26,7 +26,3 @@ jobs:
     - name: Test with pytest
       run: |
         docker-compose exec -T pytest
-    - name: display results
-      uses: EnricoMi/publish-unit-test-result-action@v2
-      with:
-        files: artifacts/**/*.xml
