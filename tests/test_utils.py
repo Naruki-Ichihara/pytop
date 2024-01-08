@@ -2,7 +2,7 @@ import numpy as np
 import pytest
 from fenics import *
 from fenics_adjoint import *
-from main.utils import fenics2np, np2fenics
+from pytop.utils import fenics2np, np2fenics
 
 class field2D(UserExpression):
     def eval(self, value, x):
