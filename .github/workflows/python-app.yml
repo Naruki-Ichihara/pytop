@@ -25,4 +25,4 @@ jobs:
        docker-compose up -d
     - name: Test with pytest
       run: |
-        docker-compose exec -T pytop pytest
+        docker-compose exec -w /home/usr/mounted pytop pytest
