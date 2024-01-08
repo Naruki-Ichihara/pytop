@@ -27,6 +27,7 @@ jobs:
       run: |
         set -o pipefail
         docker-compose exec -T -w /home/usr/mounted pytop pytest --cov --cov-branch --junitxml=pytest.xml tests | tee pytest-coverage.txt
+    - name: Pytest coverage comment
       uses: MishaKav/pytest-coverage-comment@main
       with:
         pytest-coverage-path: ./pytest-coverage.txt
