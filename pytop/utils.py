@@ -33,7 +33,7 @@ def fenics2np(fenicsVar: Constant | Function | GenericVector) -> np.ndarray:
             gatheredFenicsVector = fenicsVar.gather(np.arange(fenicsVar.size(), dtyoe='I'))
         else:
             gatheredFenicsVector = fenicsVar.get_local()
-        return np.asarray(gatheredFenicsVector)
+        return gatheredFenicsVector
 
     else:
         raise TypeError('Input is not a supported type. Supported types are: Constant, Function, GenericVector on fenics.')
