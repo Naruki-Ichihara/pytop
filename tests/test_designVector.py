@@ -5,7 +5,7 @@ from pytop.utils import fenics2np, np2fenics
 from pytop.statement import ProblemStatement
 from pytop.designvector import DesignVectorVariables
 
-mesh10 = pt.UnitSquareMesh(1, 1)
+mesh10 = pt.UnitSquareMesh(100, 100)
 mesh20 = pt.UnitSquareMesh(2, 2)
 U = pt.FunctionSpace(mesh10, "CG", 1)
 V = pt.FunctionSpace(mesh20, "CG", 1)
@@ -49,6 +49,4 @@ print(dv.npFullsizeVector)
 x = np.linspace(0, 1, dv.totalDesignVariableCount)
 y = np.sin(x)*0.9
 dv.npFullsizeVector = y
-print(dv.npFullsizeVector)
-print(dv.fenicsValues["testVariable1"].vector()[:])
-dv.fieldCount
+print(dv['testVariable1'])

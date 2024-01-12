@@ -11,25 +11,34 @@ class DesignVectorVariables(dict):
             variables (dict): dictionary of variables.
         """
         super().__init__(**kwargs)
-        self.fenicsLowerLimits = dict()
-        self.__fnicsValues = dict()
-        self.fenicsHigherLimits = dict()
-        self.npLowerLimits = dict()
+        for key, value in variables.items():
+            self[key] = fenics2np(value[1])
+
+        self.__fenicsLowerLimits = dict()
+        self.__fenicsValues = dict()
+        self.__fenicsHigherLimits = dict()
+
+        self.__npLowerLimits = dict()
         self.__npValues = dict()
-        self.npHigherLimits = dict()
+        self.__npHigherLimits = dict()
+
         for key, functions in variables.items():
-            self.fenicsLowerLimits[key] = functions[0]
-            self.__fnicsValues[key] = functions[1]
-            self.fenicsHigherLimits[key] = functions[2]
-            self.npLowerLimits[key] = fenics2np(functions[0])
+
+            self.__fenicsLowerLimits[key] = functions[0]
+            self.__fenicsValues[key] = functions[1]
+            self.__fenicsHigherLimits[key] = functions[2]
+
+            self.__npLowerLimits[key] = fenics2np(functions[0])
             self.__npValues[key] = fenics2np(functions[1])
-            self.npHigherLimits[key] = fenics2np(functions[2])
-            if not self.npLowerLimits[key].size == self.__npValues[key].size == self.npHigherLimits[key].size:
+            self.__npHigherLimits[key] = fenics2np(functions[2])
+
+            if not self.__npLowerLimits[key].size == self.__npValues[key].size == self.__npHigherLimits[key].size:
                 raise ValueError(f'Size of domains of key "{key}" must be equal to the size of the initial values.')
-            if np.all(self.npLowerLimits[key] > self.__npValues[key]):
+            if np.all(self.__npLowerLimits[key] > self.__npValues[key]):
                 raise ValueError(f'Lower limits of key "{key}" must be smaller than the initial values.')
-            if np.all(self.npHigherLimits[key] < self.__npValues[key]):
+            if np.all(self.__npHigherLimits[key] < self.__npValues[key]):
                 raise ValueError(f'Higher limits of key "{key}" must be greater than the initial values.')
+            
         self.__fieldCount = len(variables)
         self.__totalDesignVariableCount = sum([npValue.size for npValue in self.__npValues.values()])
         self.__npFullsizeVector = np.concatenate([npValue for npValue in self.__npValues.values()])
@@ -44,7 +53,12 @@ class DesignVectorVariables(dict):
         return self.__fieldCount
     
     def __str__(self) -> str:
-        string = f"Conut of fields: {self.__fieldCount}\nTotal count of design variables: {self.__totalDesignVariableCount}\nobjective ID: {id(self)}"
+        string =  "=================================================================\n" \
+                 f"Conut of fields: {self.__fieldCount}\n" \
+                 f"Total count of design variables: {self.__totalDesignVariableCount}\n" \
+                 f"objective ID: {id(self)}\n" \
+                 f"Keys of all design variables:\n{self.keys()}\n" \
+                  "================================================================="
         return string
     
     @property
@@ -65,10 +79,10 @@ class DesignVectorVariables(dict):
         """
         if not npFullsizeVector.size == self.totalDesignVariableCount:
             raise ValueError('Size of npFullsizeVector must be equal to the number of design variables.')
-        npFullsizeLowerLimits = np.concatenate([npLowerLimit for npLowerLimit in self.npLowerLimits.values()])
+        npFullsizeLowerLimits = np.concatenate([npLowerLimit for npLowerLimit in self.__npLowerLimits.values()])
         if not np.all(npFullsizeVector >= npFullsizeLowerLimits):
             raise ValueError('npFullsizeVector must be greater than the lower limits.')
-        npFullsizeHigherLimits = np.concatenate([npHigherLimit for npHigherLimit in self.npHigherLimits.values()])
+        npFullsizeHigherLimits = np.concatenate([npHigherLimit for npHigherLimit in self.__npHigherLimits.values()])
         if not np.all(npFullsizeVector <= npFullsizeHigherLimits):
             raise ValueError('npFullsizeVector must be smaller than the higher limits.')
         splitIndices = []
@@ -78,7 +92,7 @@ class DesignVectorVariables(dict):
             splitIndices.append(index)
         for key, npValue in zip(self.npValues.keys(), np.split(npFullsizeVector, splitIndices)):
             self.__npValues[key] = npValue
-            self.__fnicsValues[key] = np2fenics(npValue, self.__fnicsValues[key])
+            self.__fenicsValues[key] = np2fenics(npValue, self.__fenicsValues[key])
         self.__npFullsizeVector = npFullsizeVector
         pass
 
@@ -89,7 +103,7 @@ class DesignVectorVariables(dict):
         Returns: (dict)
             dictionary of fenics values.
         """
-        return self.__fnicsValues
+        return self.__fenicsValues
     
     @property
     def npValues(self) -> dict:
