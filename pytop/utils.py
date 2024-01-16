@@ -75,5 +75,96 @@ def np2fenics(npArray: np.ndarray, fenicsFunction: Function) -> Function:
     else:
         raise TypeError('Input fenics vriable is not a supported type. Supported types is Function on fenics.')
 
+def setValuesToFunction(values: list, function: Function) -> None:
+    '''Set values for a fenics function.
+    Elements of ```Values``` are assumed to be the followig anonnymous function:
+    ```python
+    value1 = lambda x: f(x[0], x[1], ..., x[n]) # n is the dimension of the Function space.
+    value2 = lambda x: g(x[0], x[1], ..., x[n]) 
+    createInitializedFunction([value1, value2], functionspace) # The rank of the functionspace and length of the values must be the same.
+    ```
+    Or, of cource, direct lambda function can be used as:
+    ```python
+    createInitializedFunction([lambda x: sin(x[0])*cos(x[1]), lambda x: -1], functionspace)
+    ```
+    ```x``` is a coordinate lists.
 
+    However, if the element is not a function but a constant value, it is assumed to be a constant value.
     
+    ```python
+    createInitializedFunction([1.0, 1.0], functionspace)
+    ```
+
+    Args: (list, Function)
+        values: list of values to be assigned.
+        function: fenics function to be assigned.
+
+    Raises:
+        TypeError: if the input is not a list.
+
+    '''
+    if not isinstance(values, list):
+        raise TypeError('Input values must be a list.')
+    class Field(UserExpression):
+        def eval(self, value, x):
+            for i in range(len(values)):
+                if not callable(values[i]):
+                    value[i] = values[i]
+                else:
+                    value[i] = values[i](x)
+        def value_shape(self):
+            if len(values) == 1:
+                return ()
+            else:
+                return (len(values),)
+    function.interpolate(Field())
+    return
+
+def createInitializedFunction(values: list, functionspace: FunctionSpace) -> None:
+    '''Return a fenics function defined on the ```functionspace``` with values assigned.
+    Elements of ```Values``` are assumed to be the followig anonnymous function:
+    ```python
+    value1 = lambda x: f(x[0], x[1], ..., x[n]) # n is the dimension of the Function space.
+    value2 = lambda x: g(x[0], x[1], ..., x[n]) 
+    createInitializedFunction([value1, value2], functionspace) # The rank of the functionspace and length of the values must be the same.
+    ```
+    Or, of cource, direct lambda function can be used as:
+    ```python
+    createInitializedFunction([lambda x: sin(x[0])*cos(x[1]), lambda x: -1], functionspace)
+    ```
+    ```x``` is a coordinate lists.
+    However, if the element is not a function but a constant value, it is assumed to be a constant value.
+    ```python
+    createInitializedFunction([1.0, 1.0], functionspace)
+    ```
+
+    Args: (list, Function)
+        values: list of values to be assigned.
+        functionspace: fenics function space.
+
+    Raises:
+        TypeError: if the input is not a list.
+
+    Returns: (Function)
+        fenics function.
+
+    '''
+    if not isinstance(values, list):
+        raise TypeError('Input values must be a list.')
+    function = Function(functionspace)
+
+    class Field(UserExpression):
+        def eval(self, value, x):
+            for i in range(len(values)):
+                if not callable(values[i]):
+                    value[i] = values[i]
+                else:
+                    value[i] = values[i](x)
+        def value_shape(self):
+            if len(values) == 1:
+                return ()
+            else:
+                return (len(values),)
+
+    function.interpolate(Field())
+    return function
