@@ -2,6 +2,7 @@ import numpy as np
 import pytest
 from fenics import *
 from fenics_adjoint import *
+from pytop import DesignVariables
 from pytop.utils import fenics2np, np2fenics, setValuesToFunction, createInitializedFunction
 
 class field2D(UserExpression):
@@ -74,3 +75,13 @@ def test_createInitializedFunction():
     test_func = Function(V2D)
     test_func.interpolate(field2D())
     assert np.array_equal(sin_func.vector().get_local(), test_func.vector().get_local())
+
+    vriables = {'test1': [createInitializedFunction([-2], V),
+                          createInitializedFunction([lambda x: sin(x[0])], V),
+                          createInitializedFunction([+2], V)]}
+    
+    dv = DesignVariables(variables=vriables)
+    print(dv)
+    print(type(dv["test1"]))
+
+test_createInitializedFunction()

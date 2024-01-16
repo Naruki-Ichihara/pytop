@@ -1,9 +1,10 @@
 from fenics import *
 from fenics_adjoint import *
+from collections import OrderedDict
 import numpy as np
 from pytop.utils import fenics2np, np2fenics
 
-class DesignVariables(dict):
+class DesignVariables(OrderedDict):
     def __init__(self, variables: dict, **kwargs) -> None:
         """ Constructor of DesignVariables class."""
         super().__init__(**kwargs)
@@ -11,7 +12,6 @@ class DesignVariables(dict):
             self[key] = fenics2np(value[1])
 
         self.__fenicsLowerLimits = dict()
-        self.__fenicsValues = dict()
         self.__fenicsHigherLimits = dict()
 
         self.__npLowerLimits = dict()
@@ -21,7 +21,7 @@ class DesignVariables(dict):
         for key, functions in variables.items():
 
             self.__fenicsLowerLimits[key] = functions[0]
-            self.__fenicsValues[key] = functions[1]
+            self[key] = functions[1]
             self.__fenicsHigherLimits[key] = functions[2]
 
             self.__npLowerLimits[key] = fenics2np(functions[0])
@@ -52,7 +52,7 @@ class DesignVariables(dict):
         string =  "=================================================================\n" \
                  f"Conut of fields: {self.__fieldCount}\n" \
                  f"Total count of design variables: {self.__totalDesignVariableCount}\n" \
-                 f"objective ID: {id(self)}\n" \
+                 f"object ID: {id(self)}\n" \
                  f"Keys of all design variables:\n{self.keys()}\n" \
                   "================================================================="
         return string
@@ -88,18 +88,9 @@ class DesignVariables(dict):
             splitIndices.append(index)
         for key, npValue in zip(self.npValues.keys(), np.split(npFullsizeVector, splitIndices)):
             self.__npValues[key] = npValue
-            self.__fenicsValues[key] = np2fenics(npValue, self.__fenicsValues[key])
+            self.__fenicsValues[key] = np2fenics(npValue, self[key])
         self.__npFullsizeVector = npFullsizeVector
         pass
-
-    @property
-    def fenicsValues(self) -> dict:
-        """ Return the dictionary of fenics values.
-
-        Returns: (dict)
-            dictionary of fenics values.
-        """
-        return self.__fenicsValues
     
     @property
     def npValues(self) -> dict:

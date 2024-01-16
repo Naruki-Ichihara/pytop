@@ -87,7 +87,6 @@ def setValuesToFunction(values: list, function: Function) -> None:
     ```python
     createInitializedFunction([lambda x: sin(x[0])*cos(x[1]), lambda x: -1], functionspace)
     ```
-    ```x``` is a coordinate lists.
 
     However, if the element is not a function but a constant value, it is assumed to be a constant value.
     
@@ -132,8 +131,9 @@ def createInitializedFunction(values: list, functionspace: FunctionSpace) -> Non
     ```python
     createInitializedFunction([lambda x: sin(x[0])*cos(x[1]), lambda x: -1], functionspace)
     ```
-    ```x``` is a coordinate lists.
+
     However, if the element is not a function but a constant value, it is assumed to be a constant value.
+    
     ```python
     createInitializedFunction([1.0, 1.0], functionspace)
     ```
