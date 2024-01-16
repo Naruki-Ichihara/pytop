@@ -3,13 +3,9 @@ from fenics_adjoint import *
 import numpy as np
 from pytop.utils import fenics2np, np2fenics
 
-class DesignVectorVariables(dict):
+class DesignVariables(dict):
     def __init__(self, variables: dict, **kwargs) -> None:
-        """ Initialize design vector variables.
-
-        Args:
-            variables (dict): dictionary of variables.
-        """
+        """ Constructor of DesignVariables class."""
         super().__init__(**kwargs)
         for key, value in variables.items():
             self[key] = fenics2np(value[1])
