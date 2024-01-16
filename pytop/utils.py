@@ -106,11 +106,11 @@ def setValuesToFunction(values: list, function: Function) -> None:
         raise TypeError('Input values must be a list.')
     class Field(UserExpression):
         def eval(self, value, x):
-            for i in range(len(values)):
-                if not callable(values[i]):
-                    value[i] = values[i]
+            for value in values:
+                if not callable(value):
+                    value[i] = value
                 else:
-                    value[i] = values[i](x)
+                    value[i] = value(x)
         def value_shape(self):
             if len(values) == 1:
                 return ()
@@ -155,11 +155,11 @@ def createInitializedFunction(values: list, functionspace: FunctionSpace) -> Non
 
     class Field(UserExpression):
         def eval(self, value, x):
-            for i in range(len(values)):
-                if not callable(values[i]):
-                    value[i] = values[i]
+            for value in values:
+                if not callable(value):
+                    value[i] = value
                 else:
-                    value[i] = values[i](x)
+                    value[i] = value(x)
         def value_shape(self):
             if len(values) == 1:
                 return ()
