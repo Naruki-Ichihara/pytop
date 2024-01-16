@@ -88,7 +88,7 @@ class DesignVariables(OrderedDict):
             splitIndices.append(index)
         for key, npValue in zip(self.npValues.keys(), np.split(npFullsizeVector, splitIndices)):
             self.__npValues[key] = npValue
-            self.__fenicsValues[key] = np2fenics(npValue, self[key])
+            self.[key] = np2fenics(npValue, self[key])
         self.__npFullsizeVector = npFullsizeVector
         pass
     
