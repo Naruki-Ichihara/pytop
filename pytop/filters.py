@@ -6,6 +6,7 @@ from fenics import *
 from fenics_adjoint import *
 import numpy as np
 
+
 def helmholtzFilter(u: Function, U: FunctionSpace, R=0.025) -> Function:
     ''' Apply the helmholtz filter.
 
@@ -26,6 +27,6 @@ def helmholtzFilter(u: Function, U: FunctionSpace, R=0.025) -> Function:
     L = inner(projectedFunctionOnU, dv)*dx
     solve(a == L, filterdFunctionOnU,
           solver_parameters={"linear_solver": "lu"},
-          form_compiler_parameters={"optimize": True}) 
+          form_compiler_parameters={"optimize": True})
     filterdFunctionOnOrigin = project(filterdFunctionOnU, u.function_space())
     return filterdFunctionOnOrigin
