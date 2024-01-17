@@ -75,20 +75,16 @@ def np2fenics(npArray: np.ndarray, fenicsFunction: Function) -> Function:
     else:
         raise TypeError('Input fenics vriable is not a supported type. Supported types is Function on fenics.')
 
-def setValuesToFunction(values: list, function: Function) -> None:
+def setValuesToFunction(fields: list, function: Function) -> None:
     '''Set values for a fenics function.
-    Elements of ```Values``` are assumed to be the followig anonnymous function:
+    Elements of ```fields``` are assumed to be the followig anonnymous pyfunction:
     ```python
     value1 = lambda x: f(x[0], x[1], ..., x[n]) # n is the dimension of the Function space.
     value2 = lambda x: g(x[0], x[1], ..., x[n]) 
     createInitializedFunction([value1, value2], functionspace) # The rank of the functionspace and length of the values must be the same.
     ```
-    Or, of cource, direct lambda function can be used as:
-    ```python
-    createInitializedFunction([lambda x: sin(x[0])*cos(x[1]), lambda x: -1], functionspace)
-    ```
 
-    However, if the element is not a function but a constant value, it is assumed to be a constant value.
+    if the element is not a function but a constant value, it is assumed to be a constant value.
     
     ```python
     createInitializedFunction([1.0, 1.0], functionspace)
@@ -102,37 +98,35 @@ def setValuesToFunction(values: list, function: Function) -> None:
         TypeError: if the input is not a list.
 
     '''
-    if not isinstance(values, list):
+    if not isinstance(fields, list):
         raise TypeError('Input values must be a list.')
+    
     class Field(UserExpression):
         def eval(self, value, x):
-            for value in values:
-                if not callable(value):
-                    value[i] = value
+            for i, field in enumerate(fields):
+                if not callable(field):
+                    value[i] = field
                 else:
-                    value[i] = value(x)
+                    value[i] = field(x)
         def value_shape(self):
-            if len(values) == 1:
+            if len(fields) == 1:
                 return ()
             else:
-                return (len(values),)
+                return (len(fields),)
+            
     function.interpolate(Field())
     return
 
-def createInitializedFunction(values: list, functionspace: FunctionSpace) -> None:
+def createInitializedFunction(fields: list, functionspace: FunctionSpace) -> None:
     '''Return a fenics function defined on the ```functionspace``` with values assigned.
-    Elements of ```Values``` are assumed to be the followig anonnymous function:
+    Elements of ```fields``` are assumed to be the followig anonnymous pyfunction:
     ```python
     value1 = lambda x: f(x[0], x[1], ..., x[n]) # n is the dimension of the Function space.
     value2 = lambda x: g(x[0], x[1], ..., x[n]) 
     createInitializedFunction([value1, value2], functionspace) # The rank of the functionspace and length of the values must be the same.
     ```
-    Or, of cource, direct lambda function can be used as:
-    ```python
-    createInitializedFunction([lambda x: sin(x[0])*cos(x[1]), lambda x: -1], functionspace)
-    ```
 
-    However, if the element is not a function but a constant value, it is assumed to be a constant value.
+    if the element is not a function but a constant value, it is assumed to be a constant value.
     
     ```python
     createInitializedFunction([1.0, 1.0], functionspace)
@@ -149,22 +143,22 @@ def createInitializedFunction(values: list, functionspace: FunctionSpace) -> Non
         fenics function.
 
     '''
-    if not isinstance(values, list):
+    if not isinstance(fields, list):
         raise TypeError('Input values must be a list.')
     function = Function(functionspace)
 
     class Field(UserExpression):
         def eval(self, value, x):
-            for value in values:
-                if not callable(value):
-                    value[i] = value
+            for i, field in enumerate(fields):
+                if not callable(field):
+                    value[i] = field
                 else:
-                    value[i] = value(x)
+                    value[i] = field(x)
         def value_shape(self):
-            if len(values) == 1:
+            if len(fields) == 1:
                 return ()
             else:
-                return (len(values),)
+                return (len(fields),)
 
     function.interpolate(Field())
     return function
