@@ -4,13 +4,17 @@
 from fenics import *
 from fenics_adjoint import *
 import numpy as np
+from typing import Callable, Iterable
 
 
-def fenics_function_to_np_array(fenicsVar: Constant | Function | GenericVector) -> np.ndarray:
+
+def fenics_function_to_np_array(fenics_variable: Constant
+                                               | Function
+                                               | GenericVector ) -> np.ndarray:
     '''Convert fenics variable to numpy array.
 
     Args: (Constant | Function | GenericVector)
-        fenicsVar: fenics values to be converted.
+        fenics_variable: fenics values to be converted.
 
     Raises:
         TypeError: if the input is not a fenics vector.
@@ -18,11 +22,11 @@ def fenics_function_to_np_array(fenicsVar: Constant | Function | GenericVector) 
     Returns: (np.ndarray)
         numpy array.
     '''
-    if isinstance(fenicsVar, Constant):
-        return np.array(fenicsVar.values())
+    if isinstance(fenics_variable, Constant):
+        return np.array(fenics_variable.values())
 
-    elif isinstance(fenicsVar, Function):
-        fenicsVector = fenicsVar.vector()
+    elif isinstance(fenics_variable, Function):
+        fenicsVector = fenics_variable.vector()
         if fenicsVector.mpi_comm().size > 1:
             gatheredFenicsVector = fenicsVector.gather(
                 np.arange(fenicsVector.size(), dtyoe='I'))
@@ -30,12 +34,12 @@ def fenics_function_to_np_array(fenicsVar: Constant | Function | GenericVector) 
             gatheredFenicsVector = fenicsVector.get_local()
         return np.asarray(gatheredFenicsVector)
 
-    elif isinstance(fenicsVar, GenericVector):
-        if fenicsVar.mpi_comm().size > 1:
-            gatheredFenicsVector = fenicsVar.gather(
-                np.arange(fenicsVar.size(), dtyoe='I'))
+    elif isinstance(fenics_variable, GenericVector):
+        if fenics_variable.mpi_comm().size > 1:
+            gatheredFenicsVector = fenics_variable.gather(
+                np.arange(fenics_variable.size(), dtyoe='I'))
         else:
-            gatheredFenicsVector = fenicsVar.get_local()
+            gatheredFenicsVector = fenics_variable.get_local()
         return np.asarray(gatheredFenicsVector)
 
     else:
@@ -43,13 +47,14 @@ def fenics_function_to_np_array(fenicsVar: Constant | Function | GenericVector) 
             'Input is not a supported type. Supported types are: Constant, Function, GenericVector on fenics.')
 
 
-def np_array_to_fenics_function(npArray: np.ndarray, fenicsFunction: Function) -> Function:
+def np_array_to_fenics_function(np_array: np.ndarray,
+                                fenics_function: Function) -> Function:
     '''Convert numpy array to fenics variable.
 
     Args: (np.ndarray, Function)
 
-        npArray: numpy array to be converted.
-        fenicsFunction: fenics function to be assigned.
+        np_array: numpy array to be converted.
+        fenics_function: fenics function to be assigned.
 
     Raises:
         TypeError: if the input is not a numpy array.
@@ -59,23 +64,23 @@ def np_array_to_fenics_function(npArray: np.ndarray, fenicsFunction: Function) -
         fenics variable.
 
     '''
-    if isinstance(fenicsFunction, Function):
-        functionSpace = fenicsFunction.function_space()
-        u = type(fenicsFunction)(functionSpace)
+    if isinstance(fenics_function, Function):
+        functionSpace = fenics_function.function_space()
+        u = type(fenics_function)(functionSpace)
         functionVectorSize = u.vector().size()
-        npArraySize = npArray.size
+        npArraySize = np_array.size
         if npArraySize != functionVectorSize:
             err_msg = (
                 f"Cannot convert numpy array to Function: Wrong size {npArraySize} vs {functionVectorSize}")
             raise ValueError(err_msg)
 
-        if npArray.dtype != np.float_:
+        if np_array.dtype != np.float_:
             err_msg = (
-                f"The numpy array must be of type {np.float_}, but got {npArray.dtype}")
+                f"The numpy array must be of type {np.float_}, but got {np_array.dtype}")
             raise ValueError(err_msg)
 
         rangeBegin, rangeEnd = u.vector().local_range()
-        localArray = np.asarray(npArray).reshape(
+        localArray = np.asarray(np_array).reshape(
             functionVectorSize)[rangeBegin:rangeEnd]
         u.vector().set_local(localArray)
         u.vector().apply("insert")
@@ -85,19 +90,21 @@ def np_array_to_fenics_function(npArray: np.ndarray, fenicsFunction: Function) -
             'Input fenics vriable is not a supported type. Supported types is Function on fenics.')
 
 
-def set_fields_to_fenics_function(fields: list, function: Function) -> None:
+def set_fields_to_fenics_function(fields: list[Callable[[Iterable], float]
+                                             | float],
+                                  function: Function) -> None:
     '''Set values for a fenics function.
-    Elements of ```fields``` are assumed to be the followig anonnymous pyfunction:
+    Elements of ```fields``` are assumed to be the followig pyfunction:
     ```python
     value1 = lambda x: f(x[0], x[1], ..., x[n]) # n is the dimension of the Function space.
     value2 = lambda x: g(x[0], x[1], ..., x[n]) 
-    createInitializedFunction([value1, value2], functionspace) # The rank of the functionspace and length of the values must be the same.
+    set_fields_to_fenics_function([value1, value2], functionspace) # The rank of the functionspace and length of the values must be the same.
     ```
 
     if the element is not a function but a constant value, it is assumed to be a constant value.
 
     ```python
-    createInitializedFunction([1.0, 1.0], functionspace)
+    set_fields_to_fenics_function([1.0, 1.0], functionspace)
     ```
 
     Args: (list, Function)
@@ -129,19 +136,21 @@ def set_fields_to_fenics_function(fields: list, function: Function) -> None:
     return
 
 
-def create_initialized_fenics_function(fields: list, functionspace: FunctionSpace) -> None:
+def create_initialized_fenics_function(fields: list[Callable[[Iterable], float]
+                                             | float],
+                                       function_space: FunctionSpace) -> None:
     '''Return a fenics function defined on the ```functionspace``` with values assigned.
-    Elements of ```fields``` are assumed to be the followig anonnymous pyfunction:
+    Elements of ```fields``` are assumed to be the following pyfunction:
     ```python
     value1 = lambda x: f(x[0], x[1], ..., x[n]) # n is the dimension of the Function space.
     value2 = lambda x: g(x[0], x[1], ..., x[n]) 
-    createInitializedFunction([value1, value2], functionspace) # The rank of the functionspace and length of the values must be the same.
+    create_initialized_fenics_function([value1, value2], functionspace) # The rank of the functionspace and length of the values must be the same.
     ```
 
     if the element is not a function but a constant value, it is assumed to be a constant value.
 
     ```python
-    createInitializedFunction([1.0, 1.0], functionspace)
+    create_initialized_fenics_function([1.0, 1.0], functionspace)
     ```
 
     Args: (list, Function)
@@ -157,7 +166,7 @@ def create_initialized_fenics_function(fields: list, functionspace: FunctionSpac
     '''
     if not isinstance(fields, list):
         raise TypeError('Input values must be a list.')
-    function = Function(functionspace)
+    function = Function(function_space)
 
     class Field(UserExpression):
         def eval(self, value, x):

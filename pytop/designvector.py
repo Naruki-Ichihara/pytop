@@ -5,7 +5,30 @@ import numpy as np
 from pytop.utils import fenics_function_to_np_array, np_array_to_fenics_function
 
 
-class DesignVariables(OrderedDict):
+class DesignVariables():
+    def __init__(self, **kwargs) -> None:
+        super().__init__(**kwargs)
+        self.vector = np.array()
+        self.__lower_limit = []
+        self.__upper_limit = []
+        return
+    
+    
+    def __len__(self) -> int:
+        return len(self.vector)
+    
+    def __str__(self) -> str:
+        pass
+
+    def register(self,
+                 function: Function,
+                 name: str,
+                 range: tuple[float, float]
+                      | tuple[Function, Function]) -> None:
+        pass
+
+
+class DesignVariables_dup(OrderedDict):
     def __init__(self, variables: dict, **kwargs) -> None:
         """ Constructor of DesignVariables class."""
         super().__init__(**kwargs)

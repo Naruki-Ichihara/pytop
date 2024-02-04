@@ -2,7 +2,6 @@ import numpy as np
 import pytest
 from fenics import *
 from fenics_adjoint import *
-from pytop import DesignVariables
 from pytop.utils import fenics_function_to_np_array, np_array_to_fenics_function, create_initialized_fenics_function, set_fields_to_fenics_function
 
 
