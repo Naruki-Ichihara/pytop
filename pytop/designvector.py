@@ -74,7 +74,11 @@ class DesignVariables():
         # Record the function
         for key, function in self.__recording_dict.items():
             function.write(self.__functions_dict[key], self.__counter)
-        #self.__counter += 1
+        self.__counter += 1
+
+        # update the control
+        for key in self.__controls_dict.keys():
+            self.__controls_dict[key] = Control(self.__functions_dict[key])
         return
     
     @property

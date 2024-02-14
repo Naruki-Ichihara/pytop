@@ -1,5 +1,4 @@
 import pytop as pt
-import numpy as np
 
 pt.parameters["form_compiler"]["optimize"] = True
 pt.parameters["form_compiler"]["cpp_optimize"] = True
@@ -7,11 +6,11 @@ pt.parameters['form_compiler']['quadrature_degree'] = 5
 
 # parameters
 TARGET_DENSITY = 0.3
-FILTER_RADIUS = 0.2
-NUMBER_OF_NODES = 50
+FILTER_RADIUS = 0.1
+NUMBER_OF_NODES = 256
 
 # SIMP
-def simp(rho, p=3, eps=1e-3):
+def simp(rho, p=5, eps=1e-3):
     return eps + (1 - eps) * rho ** p
 
 mesh = pt.UnitSquareMesh(NUMBER_OF_NODES, NUMBER_OF_NODES)
@@ -23,7 +22,7 @@ f = pt.interpolate(pt.Constant(1e-2), U)
 
 class Left(pt.SubDomain):
     def inside(self, x, on_boundary):
-        gamma = 1/10 + 1e-5
+        gamma = 1/250 + 1e-5
         return x[0] == 0.0 and 0.5 - gamma < x[1] < 0.5 + gamma and on_boundary
 bc = pt.DirichletBC(U, pt.Constant(0.0), Left())
 
@@ -49,7 +48,9 @@ class Problem(pt.ProblemStatement):
         return pt.assemble(rho*pt.dx)/pt.assemble(unitary*pt.dx) - TARGET_DENSITY
     
 problem = Problem()
-problem.objective(design_variables)
 
-opt = pt.NloptOptimizer(design_variables, problem)
-opt.run()
+opt = pt.NloptOptimizer(design_variables, problem, "LD_MMA")
+opt.set_maxeval(200)
+opt.set_ftol_rel(1e-4)
+opt.set_param("verbosity", 1)
+opt.run("output/logging.csv")

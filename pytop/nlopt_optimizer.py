@@ -1,13 +1,12 @@
 from fenics import *
 from fenics_adjoint import *
 import numpy as np
+import pandas as pd
 from typing import Optional
 try:
     import nlopt as nlp
 except ImportError:
     raise ImportError('nlopt is not installed.')
-
-from pytop.utils import fenics_function_to_np_array, np_array_to_fenics_function
 from pytop.designvector import DesignVariables
 from pytop.statement import ProblemStatement
 
@@ -15,30 +14,38 @@ class NloptOptimizer(nlp.opt):
     def __init__(self,
                  design_variable: DesignVariables,
                  problem_statement: ProblemStatement,
-                 algorithm: str = 'LD_MMA',
+                 algorithm: str = 'LD_CCSAQ',
                  *args):
         super().__init__(getattr(nlp, algorithm), len(design_variable), *args)
         self.problem = problem_statement
         self.design_vector = design_variable
+        self.__logging_dict = dict()
 
     def run(self, logging_path: Optional[str] = None):
-
-
+        """Run the optimization.
+        
+        Args:
+            logging_path (Optional[str], optional): Path to save the log. Defaults to None.
+            
+        """
+        self.__logging_dict["objective"] = list()
         def eval(x, grad):
+            self.design_vector.vector = x
             cost = self.problem.objective(self.design_vector)
+            self.__logging_dict["objective"].append(cost)
             grads = [self.problem.compute_sensitivities(self.design_vector, "objective", key)
                      for key in self.design_vector.keys()]
             grad[:] = np.concatenate(grads)
-            self.design_vector.vector = x
             return cost
         
         def generate_cost_function(attribute, problem):
             def cost_function(x, grad):
+                self.design_vector.vector = x
                 cost = getattr(problem, attribute)(self.design_vector)
+                self.__logging_dict[attribute] = cost
                 grads = [problem.compute_sensitivities(self.design_vector, attribute, key)
                          for key in self.design_vector.keys()]
                 grad[:] = np.concatenate(grads)
-                self.design_vector.vector = x
                 return cost
             return cost_function
         
@@ -50,7 +57,9 @@ class NloptOptimizer(nlp.opt):
         self.set_min_objective(eval)
         self.set_lower_bounds(self.design_vector.min_vector)
         self.set_upper_bounds(self.design_vector.max_vector)
-        self.set_param('verbosity', 1)
-        self.set_maxeval(30)
         self.optimize(self.design_vector.vector)
-        pass
+
+        if logging_path is not None:
+            df = pd.DataFrame(self.__logging_dict)
+            df.to_csv(logging_path)
+        return
