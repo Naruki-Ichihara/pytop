@@ -7,8 +7,8 @@ pt.parameters['form_compiler']['quadrature_degree'] = 5
 
 # parameters
 TARGET_DENSITY = 0.3
-FILTER_RADIUS = 0.1
-NUMBER_OF_NODES = 200
+FILTER_RADIUS = 0.2
+NUMBER_OF_NODES = 50
 
 # SIMP
 def simp(rho, p=3, eps=1e-3):

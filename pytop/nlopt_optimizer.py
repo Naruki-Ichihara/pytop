@@ -1,6 +1,7 @@
 from fenics import *
 from fenics_adjoint import *
 import numpy as np
+from typing import Optional
 try:
     import nlopt as nlp
 except ImportError:
@@ -20,13 +21,15 @@ class NloptOptimizer(nlp.opt):
         self.problem = problem_statement
         self.design_vector = design_variable
 
-    def run(self):
+    def run(self, logging_path: Optional[str] = None):
+
+
         def eval(x, grad):
-            self.design_vector.vector = x
             cost = self.problem.objective(self.design_vector)
             grads = [self.problem.compute_sensitivities(self.design_vector, "objective", key)
                      for key in self.design_vector.keys()]
             grad[:] = np.concatenate(grads)
+            self.design_vector.vector = x
             return cost
         
         def generate_cost_function(attribute, problem):
@@ -35,6 +38,7 @@ class NloptOptimizer(nlp.opt):
                 grads = [problem.compute_sensitivities(self.design_vector, attribute, key)
                          for key in self.design_vector.keys()]
                 grad[:] = np.concatenate(grads)
+                self.design_vector.vector = x
                 return cost
             return cost_function
         
@@ -47,6 +51,6 @@ class NloptOptimizer(nlp.opt):
         self.set_lower_bounds(self.design_vector.min_vector)
         self.set_upper_bounds(self.design_vector.max_vector)
         self.set_param('verbosity', 1)
-        self.set_maxeval(10)
+        self.set_maxeval(30)
         self.optimize(self.design_vector.vector)
         pass

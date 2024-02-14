@@ -25,6 +25,7 @@ class DesignVariables():
         self.__vector = np.array([])
         self.__min_vector = np.array([])
         self.__max_vector = np.array([])
+        self.__counter = 0
         return
     
     def __len__(self) -> int:
@@ -72,7 +73,8 @@ class DesignVariables():
 
         # Record the function
         for key, function in self.__recording_dict.items():
-            function.write(self.__functions_dict[key])
+            function.write(self.__functions_dict[key], self.__counter)
+        #self.__counter += 1
         return
     
     @property
@@ -116,6 +118,7 @@ class DesignVariables():
             
         """
         fenics_function = create_initialized_fenics_function(initial_value, function_space)
+        fenics_function.rename(function_name, function_name)
         numpy_function = fenics_function_to_np_array(fenics_function)
 
         # register the function to dict
