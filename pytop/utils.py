@@ -90,8 +90,7 @@ def np_array_to_fenics_function(np_array: np.ndarray,
             'Input fenics vriable is not a supported type. Supported types is Function on fenics.')
 
 
-def set_fields_to_fenics_function(fields: list[Callable[[Iterable], float]
-                                             | float],
+def set_fields_to_fenics_function(fields: list[Callable[[Iterable], float]],
                                   function: Function) -> None:
     '''Set values for a fenics function.
     Elements of ```fields``` are assumed to be the followig pyfunction:
@@ -136,9 +135,8 @@ def set_fields_to_fenics_function(fields: list[Callable[[Iterable], float]
     return
 
 
-def create_initialized_fenics_function(fields: list[Callable[[Iterable], float]
-                                             | float],
-                                       function_space: FunctionSpace) -> None:
+def create_initialized_fenics_function(fields: list[Callable[[Iterable], float]],
+                                       function_space: FunctionSpace) -> Function:
     '''Return a fenics function defined on the ```functionspace``` with values assigned.
     Elements of ```fields``` are assumed to be the following pyfunction:
     ```python

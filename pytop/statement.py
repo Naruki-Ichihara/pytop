@@ -4,11 +4,11 @@
 '''
 
 from abc import ABCMeta, abstractmethod
-from collections.abc import Iterable
 from fenics import *
 from fenics_adjoint import *
 import numpy as np
-from .utils import fenics_function_to_np_array, np_array_to_fenics_function
+from pytop.utils import fenics_function_to_np_array
+from pytop.designvector import DesignVariables
 
 
 class ProblemStatement(metaclass=ABCMeta):
@@ -19,14 +19,23 @@ class ProblemStatement(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def objective(self, cotrols: list, **kwargs) -> AdjFloat:
+    def objective(self, design_variables: DesignVariables, **kwargs) -> AdjFloat:
         raise NotImplementedError()
 
-    def computeSensitivities(self, targetResponce: str, targetControls: list) -> np.ndarray:
-        ''' Compute sensitivities of a responce with respect to a target control.
-        '''
-        targetControls = [Control(targetControl)
-                          for targetControl in targetControls]
-        sensitivities = fenics_function_to_np_array(compute_gradient(
-            getattr(self, targetResponce)(targetControls), targetControls))
-        return sensitivities
+    def compute_sensitivities(self, 
+                              design_variables: DesignVariables, 
+                              target: str, 
+                              variable_key: str) -> np.ndarray:
+
+        control = design_variables.dict_of_controls[variable_key]
+
+        if not hasattr(self, target):
+            raise AttributeError(f'The "{target}" is not defined.')
+        try :
+            compute_gradient(getattr(self, target)(design_variables), control)
+        except AttributeError:
+            # warnings.warn(f'The "{target}" is independent of the variable "{variable_key}".')
+            return np.zeros(design_variables[variable_key].vector().size())
+        sensitivity = fenics_function_to_np_array(compute_gradient(getattr(self, target)(design_variables),
+                                       control))
+        return sensitivity

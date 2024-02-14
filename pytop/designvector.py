@@ -1,156 +1,141 @@
 from fenics import *
 from fenics_adjoint import *
 from collections import OrderedDict
+from typing import Callable, Iterable, Optional
 import numpy as np
-from pytop.utils import fenics_function_to_np_array, np_array_to_fenics_function
+from pytop.utils import fenics_function_to_np_array, create_initialized_fenics_function
 
 
 class DesignVariables():
-    def __init__(self, **kwargs) -> None:
-        super().__init__(**kwargs)
-        self.vector = np.array()
-        self.__lower_limit = []
-        self.__upper_limit = []
+    """Class for design variables.
+
+    Attributes:
+        __functions_dict (OrderedDict): Dictionary for the design variables.
+        __controls_dict (OrderedDict): Dictionary for the control variables.
+        __vector (np.ndarray): Design vector.
+        __min_vector (np.ndarray): Minimum value of the design vector.
+        __max_vector (np.ndarray): Maximum value of the design vector.
+    
+    """
+
+    def __init__(self) -> None:
+        self.__functions_dict = OrderedDict()
+        self.__controls_dict = OrderedDict()
+        self.__recording_dict = OrderedDict()
+        self.__vector = np.array([])
+        self.__min_vector = np.array([])
+        self.__max_vector = np.array([])
         return
     
-    
     def __len__(self) -> int:
-        return len(self.vector)
+        return len(self.__vector)
     
     def __str__(self) -> str:
-        pass
+        return "=================================================================\n" \
+            f"Conut of fields: {len(self.__functions_dict)}\n" \
+                 f"Total number of design variables: {len(self.__vector)}\n" \
+                 f"object ID: {id(self)}\n" \
+                 f"Keys of all design variables:\n{self.__functions_dict.keys()}\n" \
+            "================================================================="
+
+    def __getitem__(self, key: str) -> Function:
+        return self.__functions_dict[key]
+    
+    def keys(self):
+        return self.__functions_dict.keys()
+    
+    @property
+    def dict_of_controls(self) -> OrderedDict:
+        """Return the dictionary of control variables."""
+        return self.__controls_dict
+    
+    @property
+    def vector(self) -> np.ndarray:
+        """Return the design vector."""
+        return self.__vector
+    
+    @vector.setter
+    def vector(self, value: np.ndarray) -> None:
+        if not value.size == self.__vector.size:
+            raise ValueError(f'Size mismatch. Expected size: {self.__vector.size}, but got: {value.size}')
+        self.__vector = value
+        split_index = []
+        index = 0
+        for function in self.__functions_dict.values():
+            index += function.vector().size()
+            split_index.append(index)
+        
+        # split the vector and assign to each function
+        splited_vector = np.split(value, split_index)
+        for function, vector in zip(self.__functions_dict.values(), splited_vector):
+            function.vector()[:] = vector
+
+        # Record the function
+        for key, function in self.__recording_dict.items():
+            function.write(self.__functions_dict[key])
+        return
+    
+    @property
+    def min_vector(self) -> np.ndarray:
+        """Return the minimum value of the design vector."""
+        return self.__min_vector
+    
+    @min_vector.setter
+    def min_vector(self, value: np.ndarray) -> None:
+        raise NotImplementedError('This property is read-only.')
+    
+    @property
+    def max_vector(self) -> np.ndarray:
+        """Return the maximum value of the design vector."""
+        return self.__max_vector
+    
+    @max_vector.setter
+    def max_vector(self, value: np.ndarray) -> None:
+        raise NotImplementedError('This property is read-only.')
 
     def register(self,
-                 function: Function,
-                 name: str,
+                 function_space: FunctionSpace,
+                 function_name: str,
+                 initial_value: list[Callable[[Iterable], float]],
                  range: tuple[float, float]
-                      | tuple[Function, Function]) -> None:
-        pass
-
-
-class DesignVariables_dup(OrderedDict):
-    def __init__(self, variables: dict, **kwargs) -> None:
-        """ Constructor of DesignVariables class."""
-        super().__init__(**kwargs)
-        for key, value in variables.items():
-            self[key] = fenics_function_to_np_array(value[1])
-
-        self.__fenicsLowerLimits = dict()
-        self.__fenicsHigherLimits = dict()
-
-        self.__npLowerLimits = dict()
-        self.__npValues = dict()
-        self.__npHigherLimits = dict()
-
-        for key, functions in variables.items():
-
-            self.__fenicsLowerLimits[key] = functions[0]
-            self[key] = functions[1]
-            self.__fenicsHigherLimits[key] = functions[2]
-
-            self.__npLowerLimits[key] = fenics_function_to_np_array(
-                functions[0])
-            self.__npValues[key] = fenics_function_to_np_array(functions[1])
-            self.__npHigherLimits[key] = fenics_function_to_np_array(
-                functions[2])
-
-            if not self.__npLowerLimits[key].size == self.__npValues[key].size == self.__npHigherLimits[key].size:
-                raise ValueError(
-                    f'Size of domains of key "{key}" must be equal to the size of the initial values.')
-            if np.all(self.__npLowerLimits[key] > self.__npValues[key]):
-                raise ValueError(
-                    f'Lower limits of key "{key}" must be smaller than the initial values.')
-            if np.all(self.__npHigherLimits[key] < self.__npValues[key]):
-                raise ValueError(
-                    f'Higher limits of key "{key}" must be greater than the initial values.')
-
-        self.__fieldCount = len(variables)
-        self.__totalDesignVariableCount = sum(
-            [npValue.size for npValue in self.__npValues.values()])
-        self.__npFullsizeVector = np.concatenate(
-            [npValue for npValue in self.__npValues.values()])
-        pass
-
-    def __len__(self) -> int:
-        """ Return the number of fields.
-
-        Returns: (int)
-            number of fields.
-        """
-        return self.__fieldCount
-
-    def __str__(self) -> str:
-        string = "=================================================================\n" \
-            f"Conut of fields: {self.__fieldCount}\n" \
-                 f"Total count of design variables: {self.__totalDesignVariableCount}\n" \
-                 f"object ID: {id(self)}\n" \
-                 f"Keys of all design variables:\n{self.keys()}\n" \
-            "================================================================="
-        return string
-
-    @property
-    def npFullsizeVector(self) -> np.ndarray:
-        """ Return the full size design vector.
-
-        Returns: (np.ndarray)
-            full size design vector.
-        """
-        return self.__npFullsizeVector
-
-    @npFullsizeVector.setter
-    def npFullsizeVector(self, npFullsizeVector: np.ndarray) -> None:
-        """ Set the full size design vector.
-
+                      | tuple[Function, Function],
+                 recording_path: Optional[str] = None) -> None:
+        """Register a function to the design variables.
+        
         Args:
-            npFullsizeVector (np.ndarray): full size design vector.
+        
+            function_space (FunctionSpace): Function space for the design variavle.
+            function_name (str): Name of the design variable.
+            initial_value (list[Callable[[Iterable], float]]): Initial value of the function.
+            range (tuple[float, float] | tuple[Function, Function]): Range of the function.
+            recording (str): If you want to record the function, specify the file path.
+            The function will be recorded in the ```{{path you provide}}/{{function name}}.xdmf```.
+            
+        Raises:
+            ValueError: If the function name is already registered.
+            
         """
-        if not npFullsizeVector.size == self.totalDesignVariableCount:
+        fenics_function = create_initialized_fenics_function(initial_value, function_space)
+        numpy_function = fenics_function_to_np_array(fenics_function)
+
+        # register the function to dict
+        if function_name in self.__functions_dict:
             raise ValueError(
-                'Size of npFullsizeVector must be equal to the number of design variables.')
-        npFullsizeLowerLimits = np.concatenate(
-            [npLowerLimit for npLowerLimit in self.__npLowerLimits.values()])
-        if not np.all(npFullsizeVector >= npFullsizeLowerLimits):
-            raise ValueError(
-                'npFullsizeVector must be greater than the lower limits.')
-        npFullsizeHigherLimits = np.concatenate(
-            [npHigherLimit for npHigherLimit in self.__npHigherLimits.values()])
-        if not np.all(npFullsizeVector <= npFullsizeHigherLimits):
-            raise ValueError(
-                'npFullsizeVector must be smaller than the higher limits.')
-        splitIndices = []
-        index = 0
-        for npValue in self.npValues.values():
-            index += npValue.size
-            splitIndices.append(index)
-        for key, npValue in zip(self.npValues.keys(), np.split(npFullsizeVector, splitIndices)):
-            self.__npValues[key] = npValue
-            self[key] = np_array_to_fenics_function(npValue, self[key])
-        self.__npFullsizeVector = npFullsizeVector
-        pass
+                f'Function name "{function_name}" is already registered.')
+        self.__functions_dict[function_name] = fenics_function
+        self.__controls_dict[function_name] = Control(fenics_function)
 
-    @property
-    def npValues(self) -> dict:
-        """ Return the dictionary of numpy values.
+        # register the function to vector
+        self.__vector = np.append(self.__vector, numpy_function, axis=0)
 
-        Returns: (dict)
-            dictionary of numpy values.
-        """
-        return self.__npValues
-
-    @property
-    def fieldCount(self) -> int:
-        """ Return the number of fields.
-
-        Returns: (int)
-            number of fields.
-        """
-        return self.__fieldCount
-
-    @property
-    def totalDesignVariableCount(self) -> int:
-        """ Return the number of design variables.
-
-        Returns: (int)
-            number of design variables.
-        """
-        return self.__totalDesignVariableCount
+        # register the range to min_vector and max_vector
+        self.__min_vector = np.append(self.__min_vector,
+                                      fenics_function_to_np_array(
+                                      create_initialized_fenics_function([range[0]], function_space)))
+        self.__max_vector = np.append(self.__max_vector,
+                                      fenics_function_to_np_array(
+                                      create_initialized_fenics_function([range[1]], function_space)))
+        
+        if recording_path is not None:
+            self.__recording_dict[function_name] = XDMFFile(recording_path +"/"+ f'{function_name}.xdmf')
+        return
