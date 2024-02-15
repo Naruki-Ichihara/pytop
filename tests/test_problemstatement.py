@@ -7,7 +7,7 @@ pt.parameters['form_compiler']['quadrature_degree'] = 5
 # parameters
 TARGET_DENSITY = 0.3
 FILTER_RADIUS = 0.1
-NUMBER_OF_NODES = 256
+NUMBER_OF_NODES = 200
 
 # SIMP
 def simp(rho, p=5, eps=1e-3):
@@ -22,7 +22,7 @@ f = pt.interpolate(pt.Constant(1e-2), U)
 
 class Left(pt.SubDomain):
     def inside(self, x, on_boundary):
-        gamma = 1/250 + 1e-5
+        gamma = 1/200 + 1e-5
         return x[0] == 0.0 and 0.5 - gamma < x[1] < 0.5 + gamma and on_boundary
 bc = pt.DirichletBC(U, pt.Constant(0.0), Left())
 
@@ -50,7 +50,7 @@ class Problem(pt.ProblemStatement):
 problem = Problem()
 
 opt = pt.NloptOptimizer(design_variables, problem, "LD_MMA")
-opt.set_maxeval(200)
+opt.set_maxeval(300)
 opt.set_ftol_rel(1e-4)
 opt.set_param("verbosity", 1)
 opt.run("output/logging.csv")

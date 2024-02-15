@@ -27,7 +27,7 @@ class ProblemStatement(metaclass=ABCMeta):
                               target: str, 
                               variable_key: str) -> np.ndarray:
 
-        control = design_variables.dict_of_controls[variable_key]
+        control = Control(design_variables[variable_key])
 
         if not hasattr(self, target):
             raise AttributeError(f'The "{target}" is not defined.')

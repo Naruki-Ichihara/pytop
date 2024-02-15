@@ -20,7 +20,6 @@ class DesignVariables():
 
     def __init__(self) -> None:
         self.__functions_dict = OrderedDict()
-        self.__controls_dict = OrderedDict()
         self.__recording_dict = OrderedDict()
         self.__vector = np.array([])
         self.__min_vector = np.array([])
@@ -76,9 +75,6 @@ class DesignVariables():
             function.write(self.__functions_dict[key], self.__counter)
         self.__counter += 1
 
-        # update the control
-        for key in self.__controls_dict.keys():
-            self.__controls_dict[key] = Control(self.__functions_dict[key])
         return
     
     @property
@@ -130,7 +126,6 @@ class DesignVariables():
             raise ValueError(
                 f'Function name "{function_name}" is already registered.')
         self.__functions_dict[function_name] = fenics_function
-        self.__controls_dict[function_name] = Control(fenics_function)
 
         # register the function to vector
         self.__vector = np.append(self.__vector, numpy_function, axis=0)

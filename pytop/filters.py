@@ -20,8 +20,10 @@ def helmholtz_filter(u: Function, R=0.025) -> Function:
     U = u.function_space()
     v = TrialFunction(U)
     dv = TestFunction(U)
+    uh = Function(U)
     r = R/(2*np.sqrt(3))
     a = r**2*inner(grad(v), grad(dv))*dx + dot(v, dv)*dx
     L = inner(u, dv)*dx
-    solve(a == L, u)
-    return u
+    solve(a == L, uh)
+    u_projected = project(uh, U)
+    return u_projected
