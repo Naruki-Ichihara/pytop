@@ -7,14 +7,14 @@ try:
     import nlopt as nlp
 except ImportError:
     raise ImportError('nlopt is not installed.')
-from pytop.designvector import DesignVariables
+from pytop.designvariable import DesignVariables
 from pytop.statement import ProblemStatement
 
 class NloptOptimizer(nlp.opt):
     def __init__(self,
                  design_variable: DesignVariables,
                  problem_statement: ProblemStatement,
-                 algorithm: str = 'LD_CCSAQ',
+                 algorithm: str = 'LD_MMA',
                  *args):
         super().__init__(getattr(nlp, algorithm), len(design_variable), *args)
         self.problem = problem_statement
@@ -57,9 +57,9 @@ class NloptOptimizer(nlp.opt):
         self.set_min_objective(eval)
         self.set_lower_bounds(self.design_vector.min_vector)
         self.set_upper_bounds(self.design_vector.max_vector)
-        self.optimize(self.design_vector.vector)
+        result = self.optimize(self.design_vector.vector)
 
         if logging_path is not None:
             df = pd.DataFrame(self.__logging_dict)
             df.to_csv(logging_path)
-        return
+        return result

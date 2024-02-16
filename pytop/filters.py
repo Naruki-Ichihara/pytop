@@ -5,9 +5,11 @@
 from fenics import *
 from fenics_adjoint import *
 import numpy as np
+from typing import Optional
 
 
-def helmholtz_filter(u: Function, R=0.025) -> Function:
+
+def helmholtz_filter(u: Function, R=0.025, solver_parameters = None) -> Function:
     ''' Apply the helmholtz filter.
 
     Args:
@@ -24,6 +26,9 @@ def helmholtz_filter(u: Function, R=0.025) -> Function:
     r = R/(2*np.sqrt(3))
     a = r**2*inner(grad(v), grad(dv))*dx + dot(v, dv)*dx
     L = inner(u, dv)*dx
-    solve(a == L, uh)
+    if solver_parameters is None:
+        solve(a == L, uh)
+    else:
+        solve(a == L, uh, solver_parameters=solver_parameters) #TODO
     u_projected = project(uh, U)
     return u_projected

@@ -7,17 +7,38 @@ from pytop.utils import fenics_function_to_np_array, create_initialized_fenics_f
 
 
 class DesignVariables():
-    """Class for design variables.
+    """The ```DesignVariables``` is a core class that manages the design variables.
+    In the optimization problem in finite element analysis, followings are essential components:
+
+    - The function space for the design variables.
+    - The initial value of the design variables.
+    - The range of the design variables.
+
+    The ```register``` method can be used to define above components.
+    The assigned functions can be accessed by standard dictionary-like syntax.
+
+    ```python
+    design_variables = DesignVariables()
+    design_variables.register(function_space, "your_function_name", [initial], range)
+    density = design_variables["your_function_name"]
+    ```
+
+    But we can not add some functions by the above syntax. Do not:
+
+    ```python
+    design_variables["new_function"] = new_function
+    ```
+
+    This code will be raise the read-only error. The ```register``` method should be used to add new functions.
 
     Attributes:
-        __functions_dict (OrderedDict): Dictionary for the design variables.
-        __controls_dict (OrderedDict): Dictionary for the control variables.
-        __vector (np.ndarray): Design vector.
-        __min_vector (np.ndarray): Minimum value of the design vector.
-        __max_vector (np.ndarray): Maximum value of the design vector.
-    
-    """
+        keys (Iterable[str]): The names of the function.
+        vector (np.ndarray): The flatten design vector.
+        min_vector (np.ndarray): minimum range of the design vector.
+        max_vector (np.ndarray): maximum range of the design vector.
+        dict_of_original_functions (OrderedDict): The original functions.
 
+    """
     def __init__(self) -> None:
         self.__functions_dict = OrderedDict()
         self.__recording_dict = OrderedDict()
@@ -25,6 +46,8 @@ class DesignVariables():
         self.__min_vector = np.array([])
         self.__max_vector = np.array([])
         self.__counter = 0
+        self.__pre_process = OrderedDict()
+        self.__recording_interval_dict = OrderedDict()
         return
     
     def __len__(self) -> int:
@@ -39,19 +62,24 @@ class DesignVariables():
             "================================================================="
 
     def __getitem__(self, key: str) -> Function:
-        return self.__functions_dict[key]
+        return self.__pre_process[key](self.__functions_dict[key])
     
-    def keys(self):
+    def keys(self) -> Iterable[str]:
+        """Return the names of the functions."""
         return self.__functions_dict.keys()
     
     @property
-    def dict_of_controls(self) -> OrderedDict:
-        """Return the dictionary of control variables."""
-        return self.__controls_dict
+    def dict_of_original_functions(self) -> OrderedDict:
+        """Return the original functions that not applied any pre-process functions."""
+        return self.__functions_dict
+    
+    @dict_of_original_functions.setter
+    def dict_of_original_functions(self, key: str) -> None:
+        raise ValueError('This property is read-only.')
     
     @property
     def vector(self) -> np.ndarray:
-        """Return the design vector."""
+        """Return the flatten design vector."""
         return self.__vector
     
     @vector.setter
@@ -72,7 +100,10 @@ class DesignVariables():
 
         # Record the function
         for key, function in self.__recording_dict.items():
-            function.write(self.__functions_dict[key], self.__counter)
+            if self.__counter%self.__recording_interval_dict[key] == 0:
+                pre_processed_function = self[key]
+                pre_processed_function.rename(key, key)
+                function.write(pre_processed_function, self.__counter)
         self.__counter += 1
 
         return
@@ -101,8 +132,37 @@ class DesignVariables():
                  initial_value: list[Callable[[Iterable], float]],
                  range: tuple[float, float]
                       | tuple[Function, Function],
-                 recording_path: Optional[str] = None) -> None:
+                 pre_process: Optional[Callable[[Function], Function]] = None,
+                 recording_path: Optional[str] = None,
+                 recording_interval: int = 0) -> None:
         """Register a function to the design variables.
+        You should provide the followings:
+
+        - The function space for the design variavle.
+        - The name of the design variable. The name should be unique. 
+          If the name is already registered, it will raise an error.
+        - The initial value of the function.
+        - The range of the function.
+        - Some pre-process function. This function will be applied to the function in the optimization.
+        - If you want to record the function, specify the file path.
+          The function will be recorded in the ```{{path you provide}}/{{function name}}.xdmf```.
+
+        The initial and range values can be a pyfunc as a following example:
+            
+        ```python
+        initial_field = lambda x: pt.sin(x[0])+pt.cos(x[1])
+        ```
+
+        Note that the ```x``` is a list of spatial coordinates that contain the degree of freedom of the function space.
+        All methods in the pyfunc should be implemented by the UFL functions.
+        If the float value is provided, the function will be initialized by the constant value.
+
+        The pre-process function can be used to apply some operations to the function.
+        for example, the function can be filtered by the Helmholtz filter as follows:
+        
+        ```python
+        filter = lambda x: pt.helmholtz_filter(x, R=0.05)
+        ```
         
         Args:
         
@@ -112,11 +172,18 @@ class DesignVariables():
             range (tuple[float, float] | tuple[Function, Function]): Range of the function.
             recording (str): If you want to record the function, specify the file path.
             The function will be recorded in the ```{{path you provide}}/{{function name}}.xdmf```.
+            pre_process (Optional[Callable[[Function], Function]]): Pre-process function.
             
         Raises:
             ValueError: If the function name is already registered.
             
         """
+
+        if pre_process is not None:
+            self.__pre_process[function_name] = pre_process
+        else:
+            self.__pre_process[function_name] = lambda x: x
+
         fenics_function = create_initialized_fenics_function(initial_value, function_space)
         fenics_function.rename(function_name, function_name)
         numpy_function = fenics_function_to_np_array(fenics_function)
@@ -138,6 +205,12 @@ class DesignVariables():
                                       fenics_function_to_np_array(
                                       create_initialized_fenics_function([range[1]], function_space)))
         
+        if np.all(self.__min_vector > self.__vector):
+            raise ValueError('Initial value is out of range.')
+        if np.all(self.__max_vector < self.__vector):
+            raise ValueError('Initial value is out of range.')
+        
         if recording_path is not None:
             self.__recording_dict[function_name] = XDMFFile(recording_path +"/"+ f'{function_name}.xdmf')
+            self.__recording_interval_dict[function_name] = recording_interval
         return

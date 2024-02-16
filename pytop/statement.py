@@ -8,7 +8,7 @@ from fenics import *
 from fenics_adjoint import *
 import numpy as np
 from pytop.utils import fenics_function_to_np_array
-from pytop.designvector import DesignVariables
+from pytop.designvariable import DesignVariables
 
 
 class ProblemStatement(metaclass=ABCMeta):
@@ -27,7 +27,7 @@ class ProblemStatement(metaclass=ABCMeta):
                               target: str, 
                               variable_key: str) -> np.ndarray:
 
-        control = Control(design_variables[variable_key])
+        control = Control(design_variables.dict_of_original_functions[variable_key])
 
         if not hasattr(self, target):
             raise AttributeError(f'The "{target}" is not defined.')
