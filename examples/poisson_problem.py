@@ -10,7 +10,7 @@ FILTER_RADIUS = 0.025
 NUMBER_OF_NODES = 100
 
 # SIMP
-def simp(rho, p=5, eps=1e-3):
+def simp(rho, p=3, eps=1e-3):
     return eps + (1 - eps) * rho ** p
 
 mesh = pt.UnitSquareMesh(pt.MPI_Communicator.comm_world, NUMBER_OF_NODES, NUMBER_OF_NODES)
@@ -34,23 +34,24 @@ design_variables.register(U,
                           (0, 1),
                           lambda x: pt.helmholtz_filter(x, R=FILTER_RADIUS),
                           recording_path="output",
-                          recording_interval=5)
+                          recording_interval=1)
 
 class Problem(pt.ProblemStatement):
+    def __init__(self):
+        super().__init__()
     def objective(self, design_variables):
-        rho = design_variables["density"]
-        a = pt.inner(pt.grad(u), simp(rho)*pt.grad(du)) * pt.dx
+        self.rho = design_variables["density"]
+        a = pt.inner(pt.grad(u), simp(self.rho)*pt.grad(du)) * pt.dx
         L = pt.inner(f, du) * pt.dx
         pt.solve(a == L, uh, bc)
         return pt.assemble(pt.inner(f, uh) * pt.dx)
     
     def constraint_volume(self, design_variables):
-        rho = design_variables["density"]
         unitary = pt.project(pt.Constant(1), U)
-        return pt.assemble(rho*pt.dx)/pt.assemble(unitary*pt.dx) - TARGET_DENSITY
+        return pt.assemble(self.rho*pt.dx)/pt.assemble(unitary*pt.dx) - TARGET_DENSITY
 
 opt = pt.NloptOptimizer(design_variables, Problem(), "LD_MMA")
-opt.set_maxeval(10)
-opt.set_ftol_rel(1e-4)
+opt.set_maxeval(30)
+opt.set_ftol_rel(1e-5)
 opt.set_param("verbosity", 1)
 opt.run("output/logging.csv")

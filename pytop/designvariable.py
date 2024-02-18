@@ -75,12 +75,35 @@ class DesignVariables():
         return self.__functions_dict.keys()
     
     @property
+    def current_iteration_number(self) -> int:
+        """Return the current iteration number."""
+        return self.__counter
+    
+    @current_iteration_number.setter
+    def current_iteration_number(self, value: int) -> None:
+        raise ValueError('This property is read-only.')
+    
+    def update_counter(self) -> None:
+        """Update the counter."""
+        self.__counter += 1
+        return
+    
+    @property
     def dict_of_original_functions(self) -> OrderedDict:
         """Return the original functions that not applied any pre-process functions."""
         return self.__functions_dict
     
     @dict_of_original_functions.setter
     def dict_of_original_functions(self, key: str) -> None:
+        raise ValueError('This property is read-only.')
+    
+    @property
+    def current_iteration_number(self) -> int:
+        """Return the current iteration number."""
+        return self.__counter
+    
+    @current_iteration_number.setter
+    def current_iteration_number(self, value: int) -> None:
         raise ValueError('This property is read-only.')
     
     @property
@@ -113,7 +136,6 @@ class DesignVariables():
                 pre_processed_function = self[key]
                 pre_processed_function.rename(key, key)
                 function.write(pre_processed_function, self.__counter)
-        self.__counter += 1
 
         return
     

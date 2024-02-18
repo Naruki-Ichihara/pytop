@@ -36,6 +36,7 @@ class NloptOptimizer(nlp.opt):
             grads = [self.problem.compute_sensitivities(self.design_vector, "objective", key)
                      for key in self.design_vector.keys()]
             grad[:] = np.concatenate(grads)
+            self.design_vector.update_counter()
             return cost
         
         def generate_cost_function(attribute, problem):
@@ -57,6 +58,7 @@ class NloptOptimizer(nlp.opt):
         self.set_min_objective(eval)
         self.set_lower_bounds(self.design_vector.min_vector)
         self.set_upper_bounds(self.design_vector.max_vector)
+        self.set_param("verbosity", 1)
         result = self.optimize(self.design_vector.vector)
 
         if logging_path is not None:

@@ -15,11 +15,10 @@ class ProblemStatement(metaclass=ABCMeta):
     ''' Base class for problem statements.'''
 
     def __init__(self):
-        self.index = 0
         pass
 
     @abstractmethod
-    def objective(self, design_variables: DesignVariables, **kwargs) -> AdjFloat:
+    def objective(self, design_variables: DesignVariables, iter_num: int, **kwargs) -> AdjFloat:
         raise NotImplementedError()
 
     def compute_sensitivities(self, 
