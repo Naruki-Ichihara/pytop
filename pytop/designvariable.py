@@ -64,6 +64,12 @@ class DesignVariables():
     def __getitem__(self, key: str) -> Function:
         return self.__pre_process[key](self.__functions_dict[key])
     
+    def __contains__(self, key: str) -> bool:
+        return key in self.__functions_dict
+    
+    def __iter__(self) -> Iterable[str]:
+        return iter(self.__functions_dict)
+    
     def keys(self) -> Iterable[str]:
         """Return the names of the functions."""
         return self.__functions_dict.keys()
