@@ -13,9 +13,10 @@ NUMBER_OF_NODES = 100
 def simp(rho, p=5, eps=1e-3):
     return eps + (1 - eps) * rho ** p
 
-mesh = pt.UnitSquareMesh(NUMBER_OF_NODES, NUMBER_OF_NODES)
+mesh = pt.UnitSquareMesh(pt.MPI_Communicator.comm_world, NUMBER_OF_NODES, NUMBER_OF_NODES)
 U = pt.FunctionSpace(mesh, "CG", 1)
 uh = pt.Function(U)
+
 u = pt.TrialFunction(U)
 du = pt.TestFunction(U)
 f = pt.interpolate(pt.Constant(1e-2), U)
@@ -49,7 +50,7 @@ class Problem(pt.ProblemStatement):
         return pt.assemble(rho*pt.dx)/pt.assemble(unitary*pt.dx) - TARGET_DENSITY
 
 opt = pt.NloptOptimizer(design_variables, Problem(), "LD_MMA")
-opt.set_maxeval(200)
+opt.set_maxeval(10)
 opt.set_ftol_rel(1e-4)
 opt.set_param("verbosity", 1)
 opt.run("output/logging.csv")

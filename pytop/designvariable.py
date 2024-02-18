@@ -3,7 +3,7 @@ from fenics_adjoint import *
 from collections import OrderedDict
 from typing import Callable, Iterable, Optional
 import numpy as np
-from pytop.utils import fenics_function_to_np_array, create_initialized_fenics_function
+from pytop.utils import fenics_function_to_np_array, create_initialized_fenics_function, MPI_Communicator
 
 
 class DesignVariables():
@@ -41,22 +41,22 @@ class DesignVariables():
     """
     def __init__(self) -> None:
         self.__functions_dict = OrderedDict()
-        self.__recording_dict = OrderedDict()
-        self.__vector = np.array([])
-        self.__min_vector = np.array([])
-        self.__max_vector = np.array([])
-        self.__counter = 0
+        self.__vectors_dict = OrderedDict()
+        self.__min_vector_dict = OrderedDict()
+        self.__max_vector_dict = OrderedDict()
         self.__pre_process = OrderedDict()
         self.__recording_interval_dict = OrderedDict()
+        self.__recording_dict = OrderedDict()
+        self.__counter = 0
         return
     
     def __len__(self) -> int:
-        return len(self.__vector)
+        return len(self.vector)
     
     def __str__(self) -> str:
         return "=================================================================\n" \
             f"Conut of fields: {len(self.__functions_dict)}\n" \
-                 f"Total number of design variables: {len(self.__vector)}\n" \
+                 f"Total number of design variables: {len(self.vector)}\n" \
                  f"object ID: {id(self)}\n" \
                  f"Keys of all design variables:\n{self.__functions_dict.keys()}\n" \
             "================================================================="
@@ -80,13 +80,13 @@ class DesignVariables():
     @property
     def vector(self) -> np.ndarray:
         """Return the flatten design vector."""
-        return self.__vector
+        flatten_vector = np.concatenate([vector for vector in self.__vectors_dict.values()], axis=0)
+        return flatten_vector
     
     @vector.setter
     def vector(self, value: np.ndarray) -> None:
-        if not value.size == self.__vector.size:
-            raise ValueError(f'Size mismatch. Expected size: {self.__vector.size}, but got: {value.size}')
-        self.__vector = value
+        if not value.size == self.vector.size:
+            raise ValueError(f'Size mismatch. Expected size: {self.vector.size}, but got: {value.size}')
         split_index = []
         index = 0
         for function in self.__functions_dict.values():
@@ -96,7 +96,10 @@ class DesignVariables():
         # split the vector and assign to each function
         splited_vector = np.split(value, split_index)
         for function, vector in zip(self.__functions_dict.values(), splited_vector):
-            function.vector()[:] = vector
+            range_begin, range_end = function.vector().local_range()
+            insert_vector = vector[range_begin:range_end]
+            function.vector().set_local(insert_vector)
+            function.vector().apply("insert")
 
         # Record the function
         for key, function in self.__recording_dict.items():
@@ -111,7 +114,8 @@ class DesignVariables():
     @property
     def min_vector(self) -> np.ndarray:
         """Return the minimum value of the design vector."""
-        return self.__min_vector
+        flatten_min_vector = np.concatenate([vector for vector in self.__min_vector_dict.values()], axis=0)
+        return flatten_min_vector
     
     @min_vector.setter
     def min_vector(self, value: np.ndarray) -> None:
@@ -120,7 +124,8 @@ class DesignVariables():
     @property
     def max_vector(self) -> np.ndarray:
         """Return the maximum value of the design vector."""
-        return self.__max_vector
+        flatten_max_vector = np.concatenate([vector for vector in self.__max_vector_dict.values()], axis=0)
+        return flatten_max_vector
     
     @max_vector.setter
     def max_vector(self, value: np.ndarray) -> None:
@@ -134,7 +139,8 @@ class DesignVariables():
                       | tuple[Function, Function],
                  pre_process: Optional[Callable[[Function], Function]] = None,
                  recording_path: Optional[str] = None,
-                 recording_interval: int = 0) -> None:
+                 recording_interval: int = 0,
+                 mpi_comm: Optional[any] = None) -> None:
         """Register a function to the design variables.
         You should provide the followings:
 
@@ -194,23 +200,22 @@ class DesignVariables():
                 f'Function name "{function_name}" is already registered.')
         self.__functions_dict[function_name] = fenics_function
 
-        # register the function to vector
-        self.__vector = np.append(self.__vector, numpy_function, axis=0)
-
-        # register the range to min_vector and max_vector
-        self.__min_vector = np.append(self.__min_vector,
-                                      fenics_function_to_np_array(
-                                      create_initialized_fenics_function([range[0]], function_space)))
-        self.__max_vector = np.append(self.__max_vector,
-                                      fenics_function_to_np_array(
-                                      create_initialized_fenics_function([range[1]], function_space)))
+        self.__vectors_dict[function_name] = numpy_function
+        self.__min_vector_dict[function_name] = fenics_function_to_np_array(
+            create_initialized_fenics_function([range[0]], function_space))
+        self.__max_vector_dict[function_name] = fenics_function_to_np_array(
+            create_initialized_fenics_function([range[1]], function_space))
         
-        if np.all(self.__min_vector > self.__vector):
+        if np.all(self.min_vector > self.vector):
             raise ValueError('Initial value is out of range.')
-        if np.all(self.__max_vector < self.__vector):
+        if np.all(self.max_vector < self.vector):
             raise ValueError('Initial value is out of range.')
         
         if recording_path is not None:
+            if mpi_comm is not None:
+                self.__recording_dict[function_name] = XDMFFile(mpi_comm, recording_path +"/"+ f'{function_name}.xdmf')
+            else:
+                self.__recording_dict[function_name] = XDMFFile(recording_path +"/"+ f'{function_name}.xdmf')
             self.__recording_dict[function_name] = XDMFFile(recording_path +"/"+ f'{function_name}.xdmf')
             self.__recording_interval_dict[function_name] = recording_interval
         return

@@ -5,6 +5,7 @@ from fenics import *
 from fenics_adjoint import *
 import numpy as np
 from typing import Callable, Iterable
+from dataclasses import dataclass
 
 
 
@@ -26,21 +27,21 @@ def fenics_function_to_np_array(fenics_variable: Constant
         return np.array(fenics_variable.values())
 
     elif isinstance(fenics_variable, Function):
-        fenicsVector = fenics_variable.vector()
-        if fenicsVector.mpi_comm().size > 1:
-            gatheredFenicsVector = fenicsVector.gather(
-                np.arange(fenicsVector.size(), dtyoe='I'))
+        fenics_vector = fenics_variable.vector()
+        if fenics_vector.mpi_comm().size > 1:
+            gathered_fenics_vector = fenics_vector.gather(
+                np.arange(fenics_vector.size(), dtype='I'))
         else:
-            gatheredFenicsVector = fenicsVector.get_local()
-        return np.asarray(gatheredFenicsVector)
+            gathered_fenics_vector = fenics_vector.get_local()
+        return np.asarray(gathered_fenics_vector)
 
     elif isinstance(fenics_variable, GenericVector):
         if fenics_variable.mpi_comm().size > 1:
-            gatheredFenicsVector = fenics_variable.gather(
-                np.arange(fenics_variable.size(), dtyoe='I'))
+            gathered_fenics_vector = fenics_variable.gather(
+                np.arange(fenics_variable.size(), dtype='I'))
         else:
-            gatheredFenicsVector = fenics_variable.get_local()
-        return np.asarray(gatheredFenicsVector)
+            gathered_fenics_vector = fenics_variable.get_local()
+        return np.asarray(gathered_fenics_vector)
 
     else:
         raise TypeError(
@@ -65,13 +66,13 @@ def np_array_to_fenics_function(np_array: np.ndarray,
 
     '''
     if isinstance(fenics_function, Function):
-        functionSpace = fenics_function.function_space()
-        u = type(fenics_function)(functionSpace)
-        functionVectorSize = u.vector().size()
-        npArraySize = np_array.size
-        if npArraySize != functionVectorSize:
+        function_space = fenics_function.function_space()
+        function = type(fenics_function)(function_space)
+        fenics_vector_size = function.vector().size()
+        np_array_size = np_array.size
+        if np_array_size != fenics_vector_size:
             err_msg = (
-                f"Cannot convert numpy array to Function: Wrong size {npArraySize} vs {functionVectorSize}")
+                f"Cannot convert numpy array to Function: Wrong size {np_array_size} vs {fenics_vector_size}")
             raise ValueError(err_msg)
 
         if np_array.dtype != np.float_:
@@ -79,12 +80,12 @@ def np_array_to_fenics_function(np_array: np.ndarray,
                 f"The numpy array must be of type {np.float_}, but got {np_array.dtype}")
             raise ValueError(err_msg)
 
-        rangeBegin, rangeEnd = u.vector().local_range()
+        range_begin, range_end = function.vector().local_range()
         localArray = np.asarray(np_array).reshape(
-            functionVectorSize)[rangeBegin:rangeEnd]
-        u.vector().set_local(localArray)
-        u.vector().apply("insert")
-        return u
+            fenics_vector_size)[range_begin:range_end]
+        function.vector().set_local(localArray)
+        function.vector().apply("insert")
+        return function
     else:
         raise TypeError(
             'Input fenics vriable is not a supported type. Supported types is Function on fenics.')
@@ -97,13 +98,13 @@ def set_fields_to_fenics_function(fields: list[Callable[[Iterable], float]],
     ```python
     value1 = lambda x: f(x[0], x[1], ..., x[n]) # n is the dimension of the Function space.
     value2 = lambda x: g(x[0], x[1], ..., x[n]) 
-    set_fields_to_fenics_function([value1, value2], functionspace) # The rank of the functionspace and length of the values must be the same.
+    set_fields_to_fenics_function([value1, value2], function_space) # The rank of the function_space and length of the values must be the same.
     ```
 
     if the element is not a function but a constant value, it is assumed to be a constant value.
 
     ```python
-    set_fields_to_fenics_function([1.0, 1.0], functionspace)
+    set_fields_to_fenics_function([1.0, 1.0], function_space)
     ```
 
     Args: (list, Function)
@@ -182,3 +183,16 @@ def create_initialized_fenics_function(fields: list[Callable[[Iterable], float]]
 
     function.interpolate(Field())
     return function
+
+@dataclass
+class MPI_Communicator:
+    '''MPI communicator for parallel computing.
+    
+    Attributes:
+        comm_world (MPI_Comm): MPI communicator.
+        rank (int): Rank of the process.
+        size (int): Number of processes.
+    '''
+    comm_world = MPI.comm_world
+    rank = MPI.comm_world.rank
+    size = MPI.comm_world.size
