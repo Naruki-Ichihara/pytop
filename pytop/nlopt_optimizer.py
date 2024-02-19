@@ -11,6 +11,18 @@ from pytop.designvariable import DesignVariables
 from pytop.statement import ProblemStatement
 
 class NloptOptimizer(nlp.opt):
+    """This class is a wrapper for the nlopt optimization library.
+    First, you need to construct this class with the design variables and the problem statement.
+    In the first construct, the optimization algorithm must be defined. 
+    The available algorithms are:
+
+    - LD_MMA
+    - LD_CCSAQ
+
+    The optimization will lunch with calling ```run``` method.
+    The options for the optimization algorithm can be set using the methods from the nlopt library.
+    See, https://nlopt.readthedocs.io/en/latest/
+    """
     def __init__(self,
                  design_variable: DesignVariables,
                  problem_statement: ProblemStatement,
@@ -22,7 +34,7 @@ class NloptOptimizer(nlp.opt):
         self.__logging_dict = dict()
 
     def run(self, logging_path: Optional[str] = None):
-        """Run the optimization.
+        """Run the optimization. If ```logging_path``` is not None, the optimization history will be saved in a csv file.
         
         Args:
             logging_path (Optional[str], optional): Path to save the log. Defaults to None.

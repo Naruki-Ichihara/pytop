@@ -25,7 +25,7 @@ f = pt.interpolate(pt.Constant(1e-2), U)
 
 class D_bc(pt.SubDomain):
     def inside(self, x, on_boundary):
-        return (x[0] < 0.01 and 0.4 < x[1] > 0.6 and 0.4 < x[2] < 0.6) and on_boundary
+        return (x[0] < 0.01 and 0.4 < x[1] < 0.6 and 0.4 < x[2] < 0.6) and on_boundary
 bc = pt.DirichletBC(U, pt.Constant(0.0), D_bc())
 
 design_variables = pt.DesignVariables()
@@ -51,7 +51,6 @@ class Problem(pt.ProblemStatement):
         return pt.assemble(rho*pt.dx)/pt.assemble(unitary*pt.dx) - TARGET_DENSITY
 
 opt = pt.NloptOptimizer(design_variables, Problem(), "LD_MMA")
-opt.set_maxeval(3)
-opt.set_ftol_rel(1e-7)
-opt.set_param("verbosity", 1)
+opt.set_maxeval(100)
+opt.set_ftol_rel(1e-5)
 opt.run("output/logging.csv")

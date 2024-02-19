@@ -98,15 +98,6 @@ class DesignVariables():
         raise ValueError('This property is read-only.')
     
     @property
-    def current_iteration_number(self) -> int:
-        """Return the current iteration number."""
-        return self.__counter
-    
-    @current_iteration_number.setter
-    def current_iteration_number(self, value: int) -> None:
-        raise ValueError('This property is read-only.')
-    
-    @property
     def vector(self) -> np.ndarray:
         """Return the flatten design vector."""
         flatten_vector = np.concatenate([vector for vector in self.__vectors_dict.values()], axis=0)

@@ -12,13 +12,37 @@ from pytop.designvariable import DesignVariables
 
 
 class ProblemStatement(metaclass=ABCMeta):
-    ''' Base class for problem statements.'''
-
-    def __init__(self):
-        pass
+    '''The ```ProblemStatement``` class is an abstract class for defining the optimization physics.
+    The ```objective``` method must be implemented in the derived class. ```objective``` gives
+    the ```DesignVariables``` as controls. You can access each design variable by its key like as:
+    ```python
+    x = design_variables["key"]
+    ```
+    The ```x``` is a ```Function``` object. The ```objective``` method must return a ```AdjFloat``` of
+    the objective function value.
+    ```python
+    class Problem(ProblemStatement):
+        def objective(self, design_variables):
+            x = design_variables["key"]
+            # do something with x
+            solve(a == L, uh, bc)
+            # Compute the objective function with the solution uh for example:
+            return assemble(inner(f, uh) * dx)
+    ```
+    '''
 
     @abstractmethod
     def objective(self, design_variables: DesignVariables, iter_num: int, **kwargs) -> AdjFloat:
+        '''The objective function. You must implement this method.
+
+        Args:
+            design_variables (DesignVariables): The design variables.
+            iter_num (int): The iteration number.
+            **kwargs: Optional arguments.
+
+        Returns:
+            AdjFloat: The objective function value.
+        '''
         raise NotImplementedError()
 
     def compute_sensitivities(self, 

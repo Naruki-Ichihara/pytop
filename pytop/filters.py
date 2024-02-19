@@ -8,13 +8,16 @@ import numpy as np
 from typing import Optional
 
 
-
-def helmholtz_filter(u: Function, R=0.025, solver_parameters = None) -> Function:
-    ''' Apply the helmholtz filter.
-
+def helmholtz_filter(u: Function,
+                     R=0.025,
+                     solver_parameters = Optional[any]) -> Function:
+    ''' Apply the helmholtz filter to the fenics function.
+    This filter directly solves the Helmholtz equation using linear solvers.
+    
     Args:
         u (dolfin_adjoint.Function): Target function.
         R (float, optional): Filter radius. Defaults to 0.025.
+        solver_parameters (Optional[any], optional): Solver parameters. Defaults to None.
 
     Returns:
         (dolfin_adjoint.Function): Filtered function
