@@ -9,6 +9,8 @@
 
 > This software is based on Lagacy FEniCS (FEniCS2019.1.0). The new version, FEniCSx, is not supported.
 
+> Only cpu based computation is supported. Now I consider developing the gpu based framework, please refer [gpytop](https://github.com/Naruki-Ichihara/gpytop).
+
 ## Introduction
 
 The topology optimization is a common method to design physic-objective-oriented structures. *pytop* enables straightforward pythonic coding for high performanece
