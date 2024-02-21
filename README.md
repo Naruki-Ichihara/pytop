@@ -1,4 +1,5 @@
 <h1 align="center"><b>pytop</b></h1>
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=740309680&skip_quickstart=true)
 <br />
 <a href="https://naruki-ichihara.github.io/pytop_docs/"><strong>Documentation</strong></a>
 <br />
