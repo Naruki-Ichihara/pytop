@@ -154,8 +154,8 @@ class DesignVariables():
                  function_space: FunctionSpace,
                  function_name: str,
                  initial_value: list[Callable[[Iterable], float]],
-                 range: tuple[float, float]
-                      | tuple[Function, Function],
+                 ranges: list[tuple[float, float]]
+                      | list[tuple[Function, Function]],
                  pre_process: Optional[Callable[[Function], Function]] = None,
                  recording_path: Optional[str] = None,
                  recording_interval: int = 0,
@@ -194,7 +194,8 @@ class DesignVariables():
             function_space (FunctionSpace): Function space for the design variavle.
             function_name (str): Name of the design variable.
             initial_value (list[Callable[[Iterable], float]]): Initial value of the function.
-            range (tuple[float, float] | tuple[Function, Function]): Range of the function.
+            ranges (list[tuple[float, float]] | list[tuple[Function, Function]]): Range of the function. 
+                Size is the same as the dimension of the function space.
             recording (str): If you want to record the function, specify the file path.
             The function will be recorded in the ```{{path you provide}}/{{function name}}.xdmf```.
             pre_process (Optional[Callable[[Function], Function]]): Pre-process function.
@@ -220,14 +221,17 @@ class DesignVariables():
         self.__functions_dict[function_name] = fenics_function
 
         self.__vectors_dict[function_name] = numpy_function
+        range_mins = [range[0] for range in ranges]
+        range_maxs = [range[1] for range in ranges]
         self.__min_vector_dict[function_name] = fenics_function_to_np_array(
-            create_initialized_fenics_function([range[0]], function_space))
+            create_initialized_fenics_function(range_mins, function_space))
         self.__max_vector_dict[function_name] = fenics_function_to_np_array(
-            create_initialized_fenics_function([range[1]], function_space))
+            create_initialized_fenics_function(range_maxs, function_space))
+
         
-        if np.all(self.min_vector > self.vector):
+        if not np.all(self.min_vector <= self.vector):
             raise ValueError('Initial value is out of range.')
-        if np.all(self.max_vector < self.vector):
+        if not np.all(self.max_vector >= self.vector):
             raise ValueError('Initial value is out of range.')
         
         if recording_path is not None:

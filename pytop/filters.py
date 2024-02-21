@@ -10,7 +10,7 @@ from typing import Optional
 
 def helmholtz_filter(u: Function,
                      R=0.025,
-                     solver_parameters = Optional[any]) -> Function:
+                     solver_parameters : Optional[any] = None) -> Function:
     ''' Apply the helmholtz filter to the fenics function.
     This filter directly solves the Helmholtz equation using linear solvers.
     

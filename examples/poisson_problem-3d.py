@@ -9,7 +9,7 @@ solver_parameters = {'linear_solver': 'cg'}
 
 # parameters
 TARGET_DENSITY = 0.3
-FILTER_RADIUS = 0.1
+FILTER_RADIUS = 0.05
 NUMBER_OF_NODES = (50, )*3
 
 # SIMP

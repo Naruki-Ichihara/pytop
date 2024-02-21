@@ -5,13 +5,12 @@ from fenics_adjoint import *
 from pytop.utils import fenics_function_to_np_array, np_array_to_fenics_function, create_initialized_fenics_function, set_fields_to_fenics_function
 
 
-class field2D(UserExpression):
+class Field2D(UserExpression):
     def eval(self, value, x):
         value[0] = sin(x[0])
 
     def value_shape(self):
         return ()
-
 
 def test_conversion():
     mesh = UnitSquareMesh(10, 10)
@@ -26,25 +25,25 @@ def test_conversion():
 
     # fenics2np - Function
     func = Function(V)
-    func.interpolate(field2D())
+    func.interpolate(Field2D())
     result = fenics_function_to_np_array(func)
     assert isinstance(result, np.ndarray)
     assert result.shape == (121,)
 
     # fenics2np - GenericVector and np2fenics
     vec = func.vector()
-    npVector = fenics_function_to_np_array(vec)
-    fenicsResult = np_array_to_fenics_function(npVector, func)
-    assert np.array_equal(fenicsResult.vector().get_local(), npVector)
+    np_vector = fenics_function_to_np_array(vec)
+    fenics_function = np_array_to_fenics_function(np_vector, func)
+    assert np.array_equal(fenics_function.vector().get_local(), np_vector)
+    assert np.array_equal(fenics_function.vector().get_local(), vec.get_local())
 
     # Errors
     with pytest.raises(TypeError):
         fenics_function_to_np_array("invalid_input")
         np_array_to_fenics_function("invalid_input", "invalid_input")
     with pytest.raises(ValueError):
-        npArray = fenics_function_to_np_array(func)
-        np_array_to_fenics_function(npArray, Function(Vdouble))
-
+        np_array = fenics_function_to_np_array(func)
+        np_array_to_fenics_function(np_array, Function(Vdouble))
 
 def test_set_fields_to_fenics_function():
     mesh = UnitSquareMesh(10, 10)
