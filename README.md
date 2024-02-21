@@ -1,8 +1,8 @@
 <h1 align="center"><b>pytop</b></h1>
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=740309680&skip_quickstart=true)
-<br />
-<a href="https://naruki-ichihara.github.io/pytop_docs/"><strong>Documentation</strong></a>
-<br />
+
+Try out in codespace:
+
+<a href='https://codespaces.new/Naruki-Ichihara/pytop'><img src='https://github.com/codespaces/badge.svg' alt='Open in GitHub Codespaces' style='max-width: 100%;'></a>
 
 ## Significance
 
@@ -15,6 +15,11 @@
 
 > Only cpu based computation is supported. Now I consider developing the gpu based framework, please refer [gpytop](https://github.com/Naruki-Ichihara/gpytop).
 
+## Documentation
+Documentation with many physics is available here:
+<a href="https://naruki-ichihara.github.io/pytop_docs/"><strong>Documentation</strong></a>
+
+> 🚧🚧Under construction🚧🚧
 ## Introduction
 
 Topology optimization is a common method for designing physic-objective-oriented structures. *pytop* enables straightforward pythonic coding for high performance
