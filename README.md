@@ -1,4 +1,7 @@
 <h1 align="center"><b>pytop</b></h1>
+<br />
+<a href="https://naruki-ichihara.github.io/pytop_docs/"><strong>Documentation</strong></a>
+<br />
 
 ## Significance
 
