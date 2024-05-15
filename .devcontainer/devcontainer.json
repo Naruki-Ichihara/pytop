@@ -1,5 +1,5 @@
 {
   "image": "ichiharanaruki/pytop:latest",
-  "features": {
-  }
+  "features": {},
+  "postCreateCommand": "pip install git+https://github.com/Naruki-Ichihara/pytop.git@main"
 }
