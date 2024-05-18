@@ -1,10 +1,5 @@
 import pytop as pt
 mpi_communicator = pt.MPI.comm_world
-
-pt.parameters["form_compiler"]["optimize"] = True
-pt.parameters["form_compiler"]["cpp_optimize"] = True
-pt.parameters['form_compiler']['quadrature_degree'] = 5
-
 solver_parameters = {'linear_solver': 'cg'}
 
 # parameters
@@ -32,7 +27,7 @@ design_variables = pt.DesignVariables()
 design_variables.register(U,
                           "density",
                           [TARGET_DENSITY],
-                          (0, 1),
+                          [(0, 1)],
                           lambda x: pt.helmholtz_filter(x, FILTER_RADIUS, solver_parameters),
                           recording_path="output",
                           recording_interval=1)

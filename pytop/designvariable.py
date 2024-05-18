@@ -47,6 +47,7 @@ class DesignVariables():
         self.__pre_process = OrderedDict()
         self.__recording_interval_dict = OrderedDict()
         self.__recording_dict = OrderedDict()
+        self.__recording_dict_result = OrderedDict()
         self.__counter = 0
         return
     
@@ -122,11 +123,12 @@ class DesignVariables():
             function.vector().apply("insert")
 
         # Record the function
-        for key, function in self.__recording_dict.items():
+        for key, function, result in zip(self.__recording_dict.keys(), self.__recording_dict.values(), self.__recording_dict_result.values()):
             if self.__counter%self.__recording_interval_dict[key] == 0:
                 pre_processed_function = self[key]
                 pre_processed_function.rename(key, key)
                 function.write(pre_processed_function, self.__counter)
+                result.write(pre_processed_function)
 
         return
     
@@ -236,9 +238,10 @@ class DesignVariables():
         
         if recording_path is not None:
             if mpi_comm is not None:
-                self.__recording_dict[function_name] = XDMFFile(mpi_comm, recording_path +"/"+ f'{function_name}.xdmf')
+                self.__recording_dict[function_name] = XDMFFile(mpi_comm, recording_path +"/"+ f'{function_name}_history.xdmf')
+                self.__recording_dict_result[function_name] = XDMFFile(mpi_comm, recording_path +"/"+ f'{function_name}_result.xdmf')
             else:
-                self.__recording_dict[function_name] = XDMFFile(recording_path +"/"+ f'{function_name}.xdmf')
-            self.__recording_dict[function_name] = XDMFFile(recording_path +"/"+ f'{function_name}.xdmf')
+                self.__recording_dict[function_name] = XDMFFile(recording_path +"/"+ f'{function_name}_history.xdmf')
+                self.__recording_dict_result[function_name] = XDMFFile(recording_path +"/"+ f'{function_name}_result.xdmf')
             self.__recording_interval_dict[function_name] = recording_interval
         return

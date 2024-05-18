@@ -7,7 +7,24 @@ import numpy as np
 from typing import Callable, Iterable
 from dataclasses import dataclass
 
+def make_noiman_boundary_domains(mesh: Mesh, subdomains: Iterable[SubDomain], initialize=False) -> Measure:
+    '''Create a Measure object for the boundary domains.
 
+    Args: (Mesh, Iterable[SubDomain], bool)
+        mesh: fenics mesh.
+        subdomains: list of subdomains.
+        initialize: whether to initialize the boundary markers.
+
+    Returns: (Measure)
+        Measure object for the boundary domains.
+    '''
+    boundary_markers = MeshFunction("size_t", mesh, mesh.topology().dim() - 1)
+    if initialize:
+        boundary_markers.set_all(0)
+    for i, subdomain in enumerate(subdomains):
+        subdomain.mark(boundary_markers, i)
+    ds = Measure("ds", domain=mesh, subdomain_data=boundary_markers)
+    return ds
 
 def fenics_function_to_np_array(fenics_variable: Constant
                                                | Function
