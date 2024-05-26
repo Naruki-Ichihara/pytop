@@ -45,6 +45,7 @@ class DesignVariables():
         self.__min_vector_dict = OrderedDict()
         self.__max_vector_dict = OrderedDict()
         self.__pre_process = OrderedDict()
+        self.__post_process = OrderedDict()
         self.__recording_interval_dict = OrderedDict()
         self.__recording_dict = OrderedDict()
         self.__recording_dict_result = OrderedDict()
@@ -125,7 +126,7 @@ class DesignVariables():
         # Record the function
         for key, function, result in zip(self.__recording_dict.keys(), self.__recording_dict.values(), self.__recording_dict_result.values()):
             if self.__counter%self.__recording_interval_dict[key] == 0:
-                pre_processed_function = self[key]
+                pre_processed_function = self.__post_process[key](self[key])
                 pre_processed_function.rename(key, key)
                 function.write(pre_processed_function, self.__counter)
                 result.write(pre_processed_function)
@@ -159,6 +160,7 @@ class DesignVariables():
                  ranges: list[tuple[float, float]]
                       | list[tuple[Function, Function]],
                  pre_process: Optional[Callable[[Function], Function]] = None,
+                 post_process: Optional[Callable[[Function], Function]] = None,
                  recording_path: Optional[str] = None,
                  recording_interval: int = 0,
                  mpi_comm: Optional[any] = None) -> None:
@@ -192,15 +194,15 @@ class DesignVariables():
         ```
         
         Args:
-        
-            function_space (FunctionSpace): Function space for the design variavle.
-            function_name (str): Name of the design variable.
-            initial_value (list[Callable[[Iterable], float]]): Initial value of the function.
-            ranges (list[tuple[float, float]] | list[tuple[Function, Function]]): Range of the function. 
-                Size is the same as the dimension of the function space.
-            recording (str): If you want to record the function, specify the file path.
-            The function will be recorded in the ```{{path you provide}}/{{function name}}.xdmf```.
-            pre_process (Optional[Callable[[Function], Function]]): Pre-process function.
+            function_space (FunctionSpace): The function space for the design variable.
+            function_name (str): The name of the function.
+            initial_value (list[Callable[[Iterable], float]]): The initial value of the function.
+            ranges (list[tuple[float, float]] | list[tuple[Function, Function]]): The range of the function.
+            pre_process (Optional[Callable[[Function], Function]]): The pre-process function.
+            post_process (Optional[Callable[[Function], Function]]): The post-process function. This function will be applied to the function in the recording. This does not affect the optimization.
+            recording_path (Optional[str]): The path for the recording.
+            recording_interval (int): The interval for the recording.
+            mpi_comm (Optional[any]): The MPI communicator.
             
         Raises:
             ValueError: If the function name is already registered.
@@ -211,6 +213,11 @@ class DesignVariables():
             self.__pre_process[function_name] = pre_process
         else:
             self.__pre_process[function_name] = lambda x: x
+        
+        if post_process is not None:
+            self.__post_process[function_name] = post_process
+        else:
+            self.__post_process[function_name] = lambda x: x
 
         fenics_function = create_initialized_fenics_function(initial_value, function_space)
         fenics_function.rename(function_name, function_name)

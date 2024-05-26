@@ -22,7 +22,7 @@ def make_noiman_boundary_domains(mesh: Mesh, subdomains: Iterable[SubDomain], in
     if initialize:
         boundary_markers.set_all(0)
     for i, subdomain in enumerate(subdomains):
-        subdomain.mark(boundary_markers, i)
+        subdomain.mark(boundary_markers, int(i+1))
     ds = Measure("ds", domain=mesh, subdomain_data=boundary_markers)
     return ds
 

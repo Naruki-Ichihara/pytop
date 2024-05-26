@@ -10,7 +10,6 @@ import numpy as np
 from pytop.utils import fenics_function_to_np_array
 from pytop.designvariable import DesignVariables
 
-
 class ProblemStatement(metaclass=ABCMeta):
     '''The ```ProblemStatement``` class is an abstract class for defining the optimization physics.
     The ```objective``` method must be implemented in the derived class. ```objective``` gives
