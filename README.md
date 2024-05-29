@@ -24,7 +24,7 @@ Documentation with many physics is available here:
 Topology optimization is a common method for designing physic-objective-oriented structures. *pytop* enables straightforward pythonic coding for high performance
 topology optimization. This software works with any general objective, physics, and (inequality) constraints, with automatic derivative.
 
-## Install
+## Hnads-on
 
 We provide a container for this repository. The container includes python 3.11, FEniCS bundles, and NLOpt with python interface.
 The container is avaiable in [dockerhub](https://hub.docker.com/repository/docker/ichiharanaruki/pytop/general).
@@ -35,7 +35,7 @@ To try out this repository, constract the codespace with following budge:
 And install myself
 
 ```bash
-pip instal .
+pip instal -e .
 ```
 
 ## Core modules
