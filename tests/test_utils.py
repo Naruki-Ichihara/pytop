@@ -2,7 +2,7 @@ import numpy as np
 import pytest
 from fenics import *
 from fenics_adjoint import *
-from pytop.utils import fenics_function_to_np_array, np_array_to_fenics_function, create_initialized_fenics_function, set_fields_to_fenics_function
+from pytop.utils import import_external_mesh, fenics_function_to_np_array, np_array_to_fenics_function, create_initialized_fenics_function, set_fields_to_fenics_function
 
 
 class Field2D(UserExpression):
@@ -11,6 +11,20 @@ class Field2D(UserExpression):
 
     def value_shape(self):
         return ()
+    
+def test_external_mesh():
+
+    # bdf file
+    mesh = import_external_mesh("tests/test_meshs/unstructured_tiangle_xy2D_rectangle_test_mesh.bdf")
+    assert isinstance(mesh, Mesh)
+
+    # inp file
+    mesh = import_external_mesh("tests/test_meshs/unstructured_tiangle_xy2D_rectangle_test_mesh.inp")
+    assert isinstance(mesh, Mesh)
+
+    # xdmf file
+    mesh = import_external_mesh("tests/test_meshs/unstructured_tiangle_xy2D_rectangle_test_mesh.xdmf")
+    assert isinstance(mesh, Mesh)
 
 def test_conversion():
     mesh = UnitSquareMesh(10, 10)
