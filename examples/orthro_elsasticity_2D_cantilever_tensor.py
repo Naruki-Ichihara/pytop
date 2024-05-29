@@ -6,7 +6,7 @@ pt.parameters['form_compiler']['quadrature_degree'] = 5
 
 # parameters
 TARGET_DENSITY = 0.40
-FILTER_RADIUS = 1.0
+FILTER_RADIUS = 5.0
 NUMBER_OF_NODES = (200, 100)
 POSITION = (200, 100)
 E1 = 1.e6
@@ -97,7 +97,7 @@ class Problem(pt.ProblemStatement):
     
 # Optimization
 opt = pt.NloptOptimizer(design_variables, Problem(), "LD_MMA")
-opt.set_maxeval(10)
-opt.set_ftol_rel(1e-4)
+opt.set_maxeval(200)
+opt.set_ftol_rel(1e-5)
 opt.set_param("verbosity", 1)
 opt.run(output_path + "/logging.csv")
