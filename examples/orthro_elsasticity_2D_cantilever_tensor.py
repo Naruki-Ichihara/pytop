@@ -5,9 +5,10 @@ from pytop.physics.utils import penalized_weight, isoparametric_2D_box_to_triang
 pt.parameters['form_compiler']['quadrature_degree'] = 5
 
 # parameters
-TARGET_DENSITY = 0.25
+TARGET_DENSITY = 0.40
 FILTER_RADIUS = 1.0
-NUMBER_OF_NODES = (100, 50)
+NUMBER_OF_NODES = (200, 100)
+POSITION = (200, 100)
 E1 = 1.e6
 E2 = 1.e6/10
 G12 = 1.e6/20
@@ -15,14 +16,14 @@ nu = 0.3
 output_path = "output/orthro_elast_2D_cantilever_tensor"
 
 # Mesh and function spaces
-mesh = pt.RectangleMesh(pt.MPI_Communicator.comm_world, pt.Point(0, 0), pt.Point(20, 10), NUMBER_OF_NODES[0], NUMBER_OF_NODES[1])
+mesh = pt.RectangleMesh(pt.MPI_Communicator.comm_world, pt.Point(0, 0), pt.Point(*POSITION), *NUMBER_OF_NODES)
 U = pt.VectorFunctionSpace(mesh, "CG", 1)
 V = pt.VectorFunctionSpace(mesh, "CG", 1, dim=3)
 X = pt.FunctionSpace(mesh, "CG", 1)
 uh = pt.Function(U, name="displacement")
 u = pt.TrialFunction(U)
 du = pt.TestFunction(U)
-f = pt.Constant((0, -1e2))
+f = pt.Constant((0, -1.0))
 
 # Boundary conditions
 class Left(pt.SubDomain):
@@ -31,7 +32,7 @@ class Left(pt.SubDomain):
 bc = pt.DirichletBC(U, pt.Constant((0, 0)), Left())
 class Loading(pt.SubDomain):
     def inside(self, x, on_boundary):
-        return x[0] > 20-1e-6 and 4.5 < x[1] < 5.5 and on_boundary
+        return x[0] > 200-1e-6 and 45.0 < x[1] < 55.0 and on_boundary
     
 ds = pt.make_noiman_boundary_domains(mesh, [Loading()], True)
 
@@ -42,6 +43,10 @@ def preprocess_for_density(x):
 
 def preprocess_for_orientation(x):
     x = pt.helmholtz_filter(x, R=FILTER_RADIUS)
+    return x
+
+def postprocess_for_density(x):
+    x = pt.smooth_heviside_filter(x, beta=10.0, eta=0.5)
     return x
 
 def postprocess_for_orientation(x):
@@ -58,12 +63,13 @@ design_variables.register(X,
                           [TARGET_DENSITY],
                           [(0, 1)],
                           preprocess_for_density,
+                          postprocess_for_density,
                           recording_path=output_path,
                           recording_interval=1)
 
 design_variables.register(V,
                           "orientation",
-                          [-0.999, -0.999, 0],
+                          [-0.99, -0.99, 0],
                           ([-1, 1], [-1, 1], [-1, 1]),
                           preprocess_for_orientation,
                           postprocess_for_orientation,
@@ -91,7 +97,7 @@ class Problem(pt.ProblemStatement):
     
 # Optimization
 opt = pt.NloptOptimizer(design_variables, Problem(), "LD_MMA")
-opt.set_maxeval(200)
+opt.set_maxeval(10)
 opt.set_ftol_rel(1e-4)
 opt.set_param("verbosity", 1)
 opt.run(output_path + "/logging.csv")

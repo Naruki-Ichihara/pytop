@@ -1,5 +1,3 @@
-*.h5
-*.xdmf
 output/
 
 # Byte-compiled / optimized / DLL files

@@ -6,7 +6,7 @@ from fenics import *
 from fenics_adjoint import *
 import numpy as np
 from typing import Optional
-
+from ufl import tanh
 
 def helmholtz_filter(u: Function,
                      R=0.025,
@@ -35,3 +35,17 @@ def helmholtz_filter(u: Function,
         solve(a == L, uh, solver_parameters=solver_parameters) #TODO
     u_projected = project(uh, U)
     return u_projected
+
+def smooth_heviside_filter(u: Function, beta: float=10.0, eta: float=0.5) -> Function:
+    ''' Apply the smoothed Heaviside filter to the fenics function.
+    
+    Args:
+        u (dolfin_adjoint.Function): Target function.
+        beta (float, optional): Smoothing parameter. Defaults to 10.0.
+        eta (float, optional): Threshold value. Defaults to 0.5.
+
+    Returns:
+        (dolfin_adjoint.Function): Filtered function
+    '''
+    function_space = u.function_space()
+    return project((tanh(beta*eta)+tanh(beta*(u-eta)))/(tanh(beta*eta)+tanh(beta*(1.0-eta))), function_space)
