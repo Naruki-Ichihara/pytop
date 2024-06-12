@@ -49,6 +49,7 @@ class DesignVariables():
         self.__recording_interval_dict = OrderedDict()
         self.__recording_dict = OrderedDict()
         self.__recording_dict_result = OrderedDict()
+        self.__recording_dict_xml = OrderedDict()
         self.__counter = 0
         return
     
@@ -124,12 +125,13 @@ class DesignVariables():
             function.vector().apply("insert")
 
         # Record the function
-        for key, function, result in zip(self.__recording_dict.keys(), self.__recording_dict.values(), self.__recording_dict_result.values()):
+        for key, function, result, result_xml in zip(self.__recording_dict.keys(), self.__recording_dict.values(), self.__recording_dict_result.values(), self.__recording_dict_xml.values()):
             if self.__counter%self.__recording_interval_dict[key] == 0:
                 pre_processed_function = self.__post_process[key](self[key])
                 pre_processed_function.rename(key, key)
                 function.write(pre_processed_function, self.__counter)
                 result.write(pre_processed_function)
+                result_xml << pre_processed_function
 
         return
     
@@ -250,5 +252,6 @@ class DesignVariables():
             else:
                 self.__recording_dict[function_name] = XDMFFile(recording_path +"/"+ f'{function_name}_history.xdmf')
                 self.__recording_dict_result[function_name] = XDMFFile(recording_path +"/"+ f'{function_name}_result.xdmf')
+                self.__recording_dict_xml[function_name] = File(recording_path +"/"+ f'{function_name}.xml')
             self.__recording_interval_dict[function_name] = recording_interval
         return

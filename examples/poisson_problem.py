@@ -37,6 +37,8 @@ design_variables.register(U,
 class Problem(pt.ProblemStatement):
     def __init__(self):
         super().__init__()
+
+    @pt.ProblemStatement.recording(self)
     def objective(self, design_variables):
         self.rho = design_variables["density"]
         a = pt.inner(pt.grad(u), simp(self.rho)*pt.grad(du)) * pt.dx
@@ -47,6 +49,7 @@ class Problem(pt.ProblemStatement):
     def constraint_volume(self, design_variables):
         unitary = pt.project(pt.Constant(1), U)
         return pt.assemble(self.rho*pt.dx)/pt.assemble(unitary*pt.dx) - TARGET_DENSITY
+    
 
 opt = pt.NloptOptimizer(design_variables, Problem(), "LD_MMA")
 opt.set_maxeval(5)

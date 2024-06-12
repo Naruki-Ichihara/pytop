@@ -25,6 +25,34 @@ class MPI_Communicator:
     rank = MPI.comm_world.rank
     size = MPI.comm_world.size
 
+def read_fenics_function_from_file(file_name: str, fenics_function_space: FunctionSpace, fenics_function_name: Optional[str]=None) -> Function:
+    fenics_variable = Function(fenics_function_space, file_name + ".xml")
+    if fenics_function_name is not None:
+        fenics_variable.rename(fenics_function_name, fenics_function_name)
+    return fenics_variable
+
+def save_fenics_function_to_file(mpi, fenics_variable: Function, file_name: str, fenics_function_name: Optional[str]=None,
+                                 with_xml: Optional[bool]=False) -> None:
+    '''Save a fenics variable to a xdmf file.
+
+    Args: (Function, str)
+        fenics_variable: fenics variable to be saved.
+        file_name: path to the file.
+        fenics_function_name (Optional): name of the fenics function.
+        with_xml (Optional): whether to save the xml file.
+
+    '''
+    if fenics_function_name is not None:
+        fenics_variable.rename(fenics_function_name, fenics_function_name)
+
+    with XDMFFile(mpi, file_name + ".xdmf") as file:
+        file.write(fenics_variable)
+
+    if with_xml:
+        file = File(mpi, file_name + ".xml")
+        file << fenics_variable
+    pass
+
 def import_external_mesh(mesh_file: str, mpi_comm: Optional[MPI_Communicator]=None) -> Mesh:
     '''Import a mesh from a file. Time series XDMF files are not supported yet.
 
