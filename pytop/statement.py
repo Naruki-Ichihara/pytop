@@ -9,6 +9,7 @@ from fenics_adjoint import *
 import numpy as np
 from pytop.utils import fenics_function_to_np_array
 from pytop.designvariable import DesignVariables
+from typing import Optional
 
 class ProblemStatement(metaclass=ABCMeta):
     '''The ```ProblemStatement``` class is an abstract class for defining the optimization physics.
@@ -61,3 +62,9 @@ class ProblemStatement(metaclass=ABCMeta):
         sensitivity = fenics_function_to_np_array(compute_gradient(getattr(self, target)(design_variables),
                                        control))
         return sensitivity
+    
+    @classmethod
+    def recording(cls, func):
+        def wrapper(self, *args, **kwargs):
+            return func(self, *args)
+        return wrapper
