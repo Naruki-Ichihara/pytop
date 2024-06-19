@@ -6,8 +6,8 @@ Try out in codespace:
 
 ## Significance
 
-*pytop* is a library for the general-purpose optimization in finite element space, including topology optimization. We provides straightforward coding for complex optimization problems.
-This software uses the [FEniCS](https://fenicsproject.org/) as finite element solver and [NLopt](https://github.com/stevengj/nlopt) as optimization solver.
+*pytop* is a library for general-purpose optimization in finite element space, including topology optimization. We provide straightforward coding for complex optimization problems.
+This software uses the [FEniCS](https://fenicsproject.org/) as a finite element solver and [NLopt](https://github.com/stevengj/nlopt) as an optimization solver.
 
 > This software is the indipendent module of fenics and nlopt project.
 
@@ -28,38 +28,38 @@ topology optimization. This software works with any general objective, physics, 
 
 We provide a container for this repository. The container includes python 3.11, FEniCS bundles, and NLOpt with python interface.
 The container is avaiable in [dockerhub](https://hub.docker.com/repository/docker/ichiharanaruki/pytop/general).
-To try out this repository, constract the codespace with following budge:
+To try out this repository, connect to the codespace with the following:
 
 <a href='https://codespaces.new/Naruki-Ichihara/pytop'><img src='https://github.com/codespaces/badge.svg' alt='Open in GitHub Codespaces' style='max-width: 100%;'></a>
 
 ## Usage
 ### Import pytop
-First you need to import *pytop* by standard style:
+First, you need to import *pytop* by standard Python style:
 ```python
 import pytop as pt
 ```
-In the header of pytop, all methods and class will be imprted if FEniCS was collectly installed. So, all method in FEniCS can be called directly like as:
+In the header of pytop, all methods and classes of FEniCS will be imported if FEniCS was collectively installed. So, all methods in FEniCS can be called directly like:
 ```python
 ...
 U = pt.FunctionSoace(mesh, "CG", 1)
 u = pt.Function(U)
 ...
 ```
-Please refer the [FEniCS document](https://fenicsproject.org/) to use fundamental functions in FEniCS.
+Please referto the [FEniCS document](https://fenicsproject.org/) to use fundamental functions in FEniCS.
 ### Mesh
-Second, you need to construct (or import) mesh. This software provides easy method to import external mesh, ```import_external_mesh```. This method use ```meshio``` in backgroud, so any mesh type that supported by [meshio](https://github.com/nschloe/meshio) is supported.
+Second, you need to generate (or import) mesh. This software provides easy method to import external mesh, `import_external_mesh`. This method use `meshio` in the backgroud, so any mesh type that supported by [meshio](https://github.com/nschloe/meshio) is supported.
 ```python
 mesh = pt.impoprt_external_mesh(path_to_the_meshfile)
 ```
-Of course you can construct mesh by built in mesh generator in FEniCS like as:
+Of course, you can generate mesh by built-in mesh generator in FEniCS like as:
 ```python
 NUMBER_OF_NODES = (100, 100)
 POSITION = (100, 100)
-mesh = pt.RectangleMesh(pt.Point(0, 0), pt.Point(*POSITION), *NUMBER_OF_NODES)
+mesh = pt.RectangleMesh(pt Point(0, 0), pt.Point(*POSITION), *NUMBER_OF_NODES)
 ```
 
 ### Function space and Function
-This is standard way in the FEniCS. You first need to define `FunctionSpace` and then `Function` (If need, `TrialFunction` and `TestFunction`).
+This is standard procedure in the FEniCS. You first need to define `FunctionSpace` and then `Function` (If need, `TrialFunction` and `TestFunction`).
 ```python
 U = pt.VectorFunctionSpace(mesh, 'CG', 1) #1st order continuous Galerkin vector space
 uh = pf.Function(U, name='displacement)
@@ -88,7 +88,7 @@ ds = pt.make_noiman_boundary_domains(mesh, [Loading()], True)
 This function returns `Measure` class, `ds`.
 
 ### Design variable
-You need to define design variable before optimization. `DesignVariables` class can store multiple design variables with their function space, name, initial value, range, pre/post process, recording path, and recording parameter.
+You need to define design variable before optimization. The `DesignVariables` class can store multiple design variables with their function space, name, initial value, range, pre/post process, recording path, and recording parameter.
 ```python
 X = pt.FunctionSpace(mesh, 'CG', 1)
 design_variables = pt.DesignVariables()
@@ -102,7 +102,7 @@ design_variables.register(X,
                           recording_interval)
 ```
 ### Problem definition
-The problem statement can be construct with `ProblemStatement`.
+The problem statement can be constructed with `ProblemStatement`.
 ```python
 # pytop.physics module includes useful utilities to define physics.
 from pytop.physics import elasticity as el
