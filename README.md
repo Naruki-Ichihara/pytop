@@ -137,7 +137,7 @@ opt.set_ftol_rel(1e-4)
 ```
 Then optimization will start by calling `run` method.
 ```python
-opt run(path_for_data_logging)
+opt.run(path_for_data_logging)
 ```
 ## Tips
 ### Mpi parallelization
