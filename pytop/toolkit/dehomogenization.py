@@ -22,7 +22,8 @@ class Problem(NonlinearProblem):
     def J(self, A, x):
         assemble(self.a, tensor=A)
 
-def sh_stripe(mesh: Mesh, source_vector: Function, source_density: Function, band_width: float, alpha=0.9, eps_0=1.0, g_0=0.0, times_of_mesh_refinement=1) -> Function:
+def sh_stripe(mesh: Mesh, source_vector: Function, source_density: Function, band_width: float, alpha=0.9, eps_0=1.0, g_0=0.0, times_of_mesh_refinement=1,
+              absolute_tol=1e-2, max_iter=1000) -> Function:
     """Solve the steady state Swift-Hohenberg equation with stripe pattern.
     see: 
         https://doi.org/10.1038/s41598-023-41316-w
@@ -37,6 +38,8 @@ def sh_stripe(mesh: Mesh, source_vector: Function, source_density: Function, ban
         eps_0: the coefficient of the linear term
         g_0: the coefficient of the cubic term
         times_of_mesh_refinement: the times of mesh refinement
+        absolute_tol: the absolute tolerance
+        max_iter: the maximum iterations
 
     Returns:
         stripe: the stripe pattern
@@ -84,8 +87,8 @@ def sh_stripe(mesh: Mesh, source_vector: Function, source_density: Function, ban
     L = L0 + L1
 
     solve(L == 0, Uh, solver_parameters={"newton_solver":
-                                        {"absolute_tolerance": 1e-1,
-                                         "maximum_iterations": 1000}})
+                                        {"absolute_tolerance": absolute_tol,
+                                         "maximum_iterations": max_iter}})
     
     stripe = project(Uh.split()[0], X)
     return stripe

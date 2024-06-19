@@ -32,7 +32,7 @@ def read_fenics_function_from_file(file_name: str, fenics_function_space: Functi
     return fenics_variable
 
 def save_fenics_function_to_file(mpi, fenics_variable: Function, file_name: str, fenics_function_name: Optional[str]=None,
-                                 with_xml: Optional[bool]=False) -> None:
+                                 with_xml: Optional[bool]=False, with_vtu: Optional[bool]=False) -> None:
     '''Save a fenics variable to a xdmf file.
 
     Args: (Function, str)
@@ -50,6 +50,10 @@ def save_fenics_function_to_file(mpi, fenics_variable: Function, file_name: str,
 
     if with_xml:
         file = File(mpi, file_name + ".xml")
+        file << fenics_variable
+
+    if with_vtu:
+        file = File(mpi, file_name + ".pvds")
         file << fenics_variable
     pass
 
