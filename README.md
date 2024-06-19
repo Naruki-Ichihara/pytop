@@ -32,8 +32,6 @@ To try out this repository, constract the codespace with following budge:
 
 <a href='https://codespaces.new/Naruki-Ichihara/pytop'><img src='https://github.com/codespaces/badge.svg' alt='Open in GitHub Codespaces' style='max-width: 100%;'></a>
 
-And install myself
-
 ## Usage
 ### Import pytop
 First you need to import *pytop* by standard style:
