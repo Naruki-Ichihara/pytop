@@ -129,7 +129,7 @@ opt = pt.NloptOptimizer(design_variables, Problem(), "LD_MMA")
 # LD_MMA means Method of moving asymptotes.
 ```
 Then you set parameter of optimizer by nlopt optimizer class methods.
-Please refer avaiable method in [NLopt](https://nlopt.readthedocs.io/en/latest/NLopt_Python_Reference/)
+Please refer avaiable method in [NLopt](https://nlopt.readthedocs.io/en/latest/NLopt_Python_Reference/).
 For example, here we set to maximum iteration number is 300, and relative tolerance is 1e-4:
 ```python
 opt.set_maxeval(300)
