@@ -9,7 +9,7 @@ Try out in codespace:
 *pytop* is a library for general-purpose optimization in finite element space, including topology optimization. We provide straightforward coding for complex optimization problems.
 This software uses the [FEniCS](https://fenicsproject.org/) as a finite element solver and [NLopt](https://github.com/stevengj/nlopt) as an optimization solver.
 
-> This software is the indipendent module of fenics and nlopt project.
+> This software is the independent module of fenics and nlopt project.
 
 > This software is based on Lagacy FEniCS (FEniCS2019.1.0). The new version, FEniCSx, is not supported.
 
@@ -21,10 +21,10 @@ Documentation with many physics is available here:
 
 ## Introduction
 
-Topology optimization is a common method for designing physic-objective-oriented structures. *pytop* enables straightforward pythonic coding for high performance
+Topology optimization is a common method for designing physic-objective-oriented structures. *pytop* enables straightforward Pythonic coding for high-performance
 topology optimization. This software works with any general objective, physics, and (inequality) constraints, with automatic derivative.
 
-## Hnads-on
+## Hands-on
 
 We provide a container for this repository. The container includes python 3.11, FEniCS bundles, and NLOpt with python interface.
 The container is avaiable in [dockerhub](https://hub.docker.com/repository/docker/ichiharanaruki/pytop/general).
@@ -137,9 +137,10 @@ opt.set_ftol_rel(1e-4)
 ```
 Then optimization will start by calling `run` method.
 ```python
-opt.run(path_for_data_logging)
+opt run(path_for_data_logging)
 ```
 ## Tips
+### Mpi parallelization
 ### Recording functions
 ### Filters for topology optimization
 ### Built-in physics
