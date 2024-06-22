@@ -141,7 +141,13 @@ opt.run(path_for_data_logging)
 ```
 ## Tips
 ### MPI parallelization
-This software is designed as parallelization-ready. Problem is automatically divided into partial problems and computed in each cpus. We provide useful detaclass for MPI, `MPI_Communicator`.
+This software is designed as parallelization-ready. Problem is automatically divided into partial problems and computed in each cpus. We provide useful detaclass for MPI, `MPI_Communicator`. You can construct a mpi group use this class,
+```python
+import pytop as pt
+comm_group = pt.MPI_Communicator.comm_world
+```
+Single problem must be in the same group.
+
 ### Recording functions
 ### Filters for topology optimization
 ### Built-in physics
