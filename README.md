@@ -146,7 +146,15 @@ This software is designed as parallelization-ready. Problem is automatically div
 import pytop as pt
 comm_group = pt.MPI_Communicator.comm_world
 ```
-Single problem must be in the same group.
+Single problem must be in the same group. Then,`mpirun` executes the solving with cpus you mentioned:
+```bash
+mpirun -n 36 python your_problem.py
+```
+In the container, you need to give option to allow run as a root user:
+```bash
+mpirun -n 36 --allow-run-as-root python your_problem.py
+```
+Above example use 36 cpus. 
 
 ### Recording functions
 ### Filters for topology optimization
