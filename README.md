@@ -49,7 +49,7 @@ Please referto the [FEniCS document](https://fenicsproject.org/) to use fundamen
 ### Mesh
 Second, you need to generate (or import) mesh. This software provides easy method to import external mesh, `import_external_mesh`. This method use `meshio` in the backgroud, so any mesh type that supported by [meshio](https://github.com/nschloe/meshio) is supported.
 ```python
-mesh = pt.impoprt_external_mesh(path_to_the_meshfile)
+mesh = pt.import_external_mesh(path_to_the_meshfile)
 ```
 Of course, you can generate mesh by built-in mesh generator in FEniCS like as:
 ```python
@@ -140,7 +140,8 @@ Then optimization will start by calling `run` method.
 opt.run(path_for_data_logging)
 ```
 ## Tips
-### Mpi parallelization
+### MPI parallelization
+This software is designed as parallelization-ready. Problem is automatically divided into partial problems and computed in each cpus. We provide useful detaclass for MPI, `MPI_Communicator`.
 ### Recording functions
 ### Filters for topology optimization
 ### Built-in physics
