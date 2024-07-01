@@ -3,20 +3,21 @@ from pytop.physics import elasticity as el
 from pytop.physics.utils import penalized_weight, isoparametric_2D_box_to_triangle, sign
 
 pt.parameters['form_compiler']['quadrature_degree'] = 5
+mpi_group = pt.MPI_Communicator.comm_world
 
 # parameters
 TARGET_DENSITY = 0.40
 FILTER_RADIUS = 5.0
-NUMBER_OF_NODES = (400, 200)
-POSITION = (200, 100)
+NUMBER_OF_NODES = (400, 100)
+POSITION = (200, 50)
 E1 = 1.e6
 E2 = 1.e6/10
 G12 = 1.e6/20
 nu = 0.3
-output_path = "output/orthro_elast_2D_cantilever_tensor"
+output_path = "output/orthro_elast_2D_mbb_tensor"
 
 # Mesh and function spaces
-mesh = pt.RectangleMesh(pt.MPI_Communicator.comm_world, pt.Point(0, 0), pt.Point(*POSITION), *NUMBER_OF_NODES)
+mesh = pt.RectangleMesh(mpi_group, pt.Point(0, 0), pt.Point(*POSITION), *NUMBER_OF_NODES)
 U = pt.VectorFunctionSpace(mesh, "CG", 1)
 V = pt.VectorFunctionSpace(mesh, "CG", 1, dim=3)
 X = pt.FunctionSpace(mesh, "CG", 1)
@@ -26,13 +27,20 @@ du = pt.TestFunction(U)
 f = pt.Constant((0, -1.0))
 
 # Boundary conditions
-class Left(pt.SubDomain):
+class Left_bottom(pt.SubDomain):
     def inside(self, x, on_boundary):
-        return x[0] < 1e-6 and on_boundary
-bc = pt.DirichletBC(U, pt.Constant((0, 0)), Left())
+        return x[0] < 1e-6 and x[1] < 1e-6
+    
+class right_bottom(pt.SubDomain):
+    def inside(self, x, on_boundary):
+        return x[0] > POSITION[0]-1e-6 and x[1] < 1e-6
+
+bcs = [pt.DirichletBC(U.sub(1), pt.Constant(0), Left_bottom(), method="pointwise"),
+       pt.DirichletBC(U, pt.Constant((0, 0)), right_bottom(), method="pointwise")]
+
 class Loading(pt.SubDomain):
     def inside(self, x, on_boundary):
-        return x[0] > 200-1e-6 and 45.0 < x[1] < 55.0 and on_boundary
+        return POSITION[0]/2-5 < x[0] < POSITION[0]/2+5  and POSITION[1]-1e-6 < x[1] and on_boundary
     
 ds = pt.make_noiman_boundary_domains(mesh, [Loading()], True)
 
@@ -88,7 +96,7 @@ class Problem(pt.ProblemStatement):
         orientation_tensor_4 = pt.outer(orientation_tensor_2, orientation_tensor_2)
         a = el.linear_2D_orthotropic_elasticity_bilinear_form_tensor(u, du, E1, E2, G12, nu, orientation_tensor_2, orientation_tensor_4, penalized_weight(self.rho, eps=1e-4))
         L = pt.inner(f, du) * ds(1)
-        pt.solve(a == L, uh, bc)
+        pt.solve(a == L, uh, bcs)
         return pt.assemble(pt.inner(f, uh) * ds(1))
     def constraint_volume(self, design_variables):
         unitary = pt.project(pt.Constant(1), X)
