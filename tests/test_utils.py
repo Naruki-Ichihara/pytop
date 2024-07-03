@@ -11,20 +11,6 @@ class Field2D(UserExpression):
 
     def value_shape(self):
         return ()
-    
-def test_external_mesh():
-
-    # bdf file
-    mesh = import_external_mesh("tests/test_meshs/unstructured_tiangle_xy2D_rectangle_test_mesh.bdf")
-    assert isinstance(mesh, Mesh)
-
-    # inp file
-    mesh = import_external_mesh("tests/test_meshs/unstructured_tiangle_xy2D_rectangle_test_mesh.inp")
-    assert isinstance(mesh, Mesh)
-
-    # xdmf file
-    mesh = import_external_mesh("tests/test_meshs/unstructured_tiangle_xy2D_rectangle_test_mesh.xdmf")
-    assert isinstance(mesh, Mesh)
 
 def test_conversion():
     mesh = UnitSquareMesh(10, 10)

@@ -59,16 +59,18 @@ def isoparametric_2D_box_to_circle(z: Function, e: Function) -> Function:
     v = as_vector([-1/np.sqrt(2), -1, -1/np.sqrt(2), 0, 1/np.sqrt(2), 1, 1/np.sqrt(2), 0])
     return isoparametric_2D(z, e, u, v)
 
-def isoparametric_2D_box_to_triangle(z: Function, e: Function) -> Function:
+def isoparametric_2D_box_to_triangle(z: Function, e: Function, tolerance: 1e-6) -> Function:
     ''' Apply 2D isoparametric projection onto orientation vector.
 
     Args:
         z (dolfin_adjoint.Function): 0-component of the orientation vector (on natural setting).
-        e (dolfin_adjoint.Function): 1-component of the orientation vector (on natural setting)
+        e (dolfin_adjoint.Function): 1-component of the orientation vector (on natural setting).
+        tolerance (float): tolerance value. This is used to avoid square root of negative values.
 
     Returns:
         dolfin_adjoint.Vector: Orientation vector with unit circle boundary condition on real setting.
     '''    
-    u = as_vector([0, 0.5, 1, 0.75, 0.5, 0.25, 0, 0])
-    v = as_vector([0, 0, 0, 0.25, 0.5, 0.75, 1, 0.5])
+    zero_like = tolerance
+    u = as_vector([zero_like, 0.5, 1, 0.75, 0.5, 0.25, zero_like, zero_like])
+    v = as_vector([zero_like, zero_like, zero_like, 0.25, 0.5, 0.75, 1, 0.5])
     return isoparametric_2D(z, e, u, v) 
