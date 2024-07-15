@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+<meta name="generator" content="pdoc3 0.11.1">
+<title>pytop API documentation</title>
+<meta name="description" content="&lt;h1 align=&#34;center&#34;&gt;&lt;b&gt;pytop&lt;/b&gt;&lt;/h1&gt; …">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:1.5em;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:2em 0 .50em 0}h3{font-size:1.4em;margin:1.6em 0 .7em 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .2s ease-in-out}a:visited{color:#503}a:hover{color:#b62}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900;font-weight:bold}pre code{font-size:.8em;line-height:1.4em;padding:1em;display:block}code{background:#f3f3f3;font-family:"DejaVu Sans Mono",monospace;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em 1em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul ul{padding-left:1em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ==" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => {
+hljs.configure({languages: ['bash', 'css', 'diff', 'graphql', 'ini', 'javascript', 'json', 'plaintext', 'python', 'python-repl', 'rust', 'shell', 'sql', 'typescript', 'xml', 'yaml']});
+hljs.highlightAll();
+})</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Package <code>pytop</code></h1>
+</header>
+<section id="section-intro">
+<h1 align="center"><b>pytop</b></h1>
+<p>Try out in codespace:</p>
+<p><a href='https://codespaces.new/Naruki-Ichihara/pytop'><img src='https://github.com/codespaces/badge.svg' alt='Open in GitHub Codespaces' style='max-width: 100%;'></a></p>
+<h2 id="significance">Significance</h2>
+<p><em>pytop</em> is a library for general-purpose optimization in finite element space, including topology optimization. We provide straightforward coding for complex optimization problems.
+This software uses the <a href="https://fenicsproject.org/">FEniCS</a> as a finite element solver and <a href="https://github.com/stevengj/nlopt">NLopt</a> as an optimization solver.</p>
+<blockquote>
+<p>This software is the independent module of fenics and nlopt project.</p>
+<p>This software is based on Lagacy FEniCS (FEniCS2019.1.0). The new version, FEniCSx, is not supported.</p>
+<p>Only cpu based computation is supported. Now I consider developing the gpu based framework, please refer <a href="https://github.com/Naruki-Ichihara/gpytop">gpytop</a>.</p>
+</blockquote>
+<h2 id="documentation-under-construction">Documentation 🚧🚧Under construction🚧🚧</h2>
+<p>Documentation with many physics is available here:
+<a href="https://naruki-ichihara.github.io/pytop_docs/"><strong>Documentation</strong></a></p>
+<h2 id="introduction">Introduction</h2>
+<p>Topology optimization is a common method for designing physic-objective-oriented structures. <em>pytop</em> enables straightforward Pythonic coding for high-performance
+topology optimization. This software works with any general objective, physics, and (inequality) constraints, with automatic derivative.</p>
+<h2 id="hands-on">Hands-on</h2>
+<p>We provide a container for this repository. The container includes python 3.11, FEniCS bundles, and NLOpt with python interface.
+The container is avaiable in <a href="https://hub.docker.com/repository/docker/ichiharanaruki/pytop/general">dockerhub</a>.
+To try out this repository, connect to the codespace with the following:</p>
+<p><a href='https://codespaces.new/Naruki-Ichihara/pytop'><img src='https://github.com/codespaces/badge.svg' alt='Open in GitHub Codespaces' style='max-width: 100%;'></a></p>
+<h2 id="usage">Usage</h2>
+<h3 id="import-pytop">Import pytop</h3>
+<p>First, you need to import <em>pytop</em> by standard Python style:</p>
+<pre><code class="language-python">import pytop as pt
+</code></pre>
+<p>In the header of pytop, all methods and classes of FEniCS will be imported if FEniCS was collectively installed. So, all methods in FEniCS can be called directly like:</p>
+<pre><code class="language-python">...
+U = pt.FunctionSoace(mesh, &quot;CG&quot;, 1)
+u = pt.Function(U)
+...
+</code></pre>
+<p>Please referto the <a href="https://fenicsproject.org/">FEniCS document</a> to use fundamental functions in FEniCS.</p>
+<h3 id="mesh">Mesh</h3>
+<p>Second, you need to generate (or import) mesh. This software provides easy method to import external mesh, <code>import_external_mesh</code>. This method use <code>meshio</code> in the backgroud, so any mesh type that supported by <a href="https://github.com/nschloe/meshio">meshio</a> is supported.</p>
+<pre><code class="language-python">mesh = pt.import_external_mesh(path_to_the_meshfile)
+</code></pre>
+<p>Of course, you can generate mesh by built-in mesh generator in FEniCS like as:</p>
+<pre><code class="language-python">NUMBER_OF_NODES = (100, 100)
+POSITION = (100, 100)
+mesh = pt.RectangleMesh(pt Point(0, 0), pt.Point(*POSITION), *NUMBER_OF_NODES)
+</code></pre>
+<h3 id="function-space-and-function">Function space and Function</h3>
+<p>This is standard procedure in the FEniCS. You first need to define <code>FunctionSpace</code> and then <code>Function</code> (If need, <code>TrialFunction</code> and <code>TestFunction</code>).</p>
+<pre><code class="language-python">U = pt.VectorFunctionSpace(mesh, 'CG', 1) #1st order continuous Galerkin vector space
+uh = pf.Function(U, name='displacement)
+u = pt.TrialFunction(U)
+du = pt.TestFunction(U)
+</code></pre>
+<h3 id="boundary-condition">Boundary Condition</h3>
+<p>This is also standard procedure in the FEniCS. To define sub-domain of mesh, <code>pt.SubDomain</code> class is useful.</p>
+<pre><code class="language-python">class Left(pt.SubDomain):
+    def inside(self, x, on_boundary):
+        return x[0] &lt; 1e-6 and on_boundary
+
+bc = pt.DirichletBC(U, pt.Constant((0, 0)), Left())
+</code></pre>
+<p>This restricts the left side boundary (x[0] &lt; 1e-6) zero displacement.
+To apply Noiman boundary condition, you can use useful method <code>make_noiman_boundary_domains</code>.</p>
+<pre><code class="language-python">class Loading(pt.SubDomain):
+    def inside(self, x, on_boundary):
+        reurn x[0] &gt; 200-1e-6 and 45.0 &lt; x[1] &lt; 55.0 and on_boundary
+
+ds = pt.make_noiman_boundary_domains(mesh, [Loading()], True)
+</code></pre>
+<p>This function returns <code>Measure</code> class, <code>ds</code>.</p>
+<h3 id="design-variable">Design variable</h3>
+<p>You need to define design variable before optimization. The <code>DesignVariables</code> class can store multiple design variables with their function space, name, initial value, range, pre/post process, recording path, and recording parameter.</p>
+<pre><code class="language-python">X = pt.FunctionSpace(mesh, 'CG', 1)
+design_variables = pt.DesignVariables()
+design_variables.register(X,
+                          &quot;parameter_name&quot;,
+                          [initial value],
+                          [range],
+                          lambda x: some pre process,
+                          lambda x: some post process,
+                          &quot;recording_path&quot;,
+                          recording_interval)
+</code></pre>
+<h3 id="problem-definition">Problem definition</h3>
+<p>The problem statement can be constructed with <code>ProblemStatement</code>.</p>
+<pre><code class="language-python"># pytop.physics module includes useful utilities to define physics.
+from pytop.physics import elasticity as el
+
+class Elasticity_Problem(pt.ProblemStatement):
+  # objective is abstruct method that must be defined.
+　# In this, you need to define physics problem and return evaluation value.
+    def objective(self, design_variables): 
+        self.rho = design_variables[&quot;density&quot;] # You need to access design variables through design_variables.
+        a = el.linear_2D_elasticity_bilinear_form(u, du, E, nu, penalized_weight(self.rho, eps=1e-4)) # Bilinear form for 2D elastic problem
+        L = pt.inner(f, du) * ds(1)  # ds(1) means first subdomain that defined by make_noiman_boundary_domains method.
+        pt.solve(a == L, uh, bc)
+        return pt.assemble(pt.inner(f, uh) * ds(1))
+    # methods that start with &quot;constraint_&quot; is inequality constraint (x&lt;=0).
+    def constraint_volume(self, design_variables):
+        unitary = pt.project(pt.Constant(1), X)
+        return pt.assemble(self.rho*pt.dx)/pt.assemble(unitary*pt.dx) - TARGET_DENSITY
+</code></pre>
+<h3 id="optimizer">Optimizer</h3>
+<p><code>NloptOptimizer</code> will construct NLopt <code>opt</code> class with <code>DesignVariables</code> and <code>ProblemStatement</code>. </p>
+<pre><code class="language-python">opt = pt.NloptOptimizer(design_variables, Problem(), &quot;LD_MMA&quot;)
+# LD_MMA means Method of moving asymptotes.
+</code></pre>
+<p>Then you set parameter of optimizer by nlopt optimizer class methods.
+Please refer avaiable method in <a href="https://nlopt.readthedocs.io/en/latest/NLopt_Python_Reference/">NLopt</a>.
+For example, here we set to maximum iteration number is 300, and relative tolerance is 1e-4:</p>
+<pre><code class="language-python">opt.set_maxeval(300)
+opt.set_ftol_rel(1e-4)
+</code></pre>
+<p>Then optimization will start by calling <code>run</code> method.</p>
+<pre><code class="language-python">opt.run(path_for_data_logging)
+</code></pre>
+<h2 id="tips">Tips</h2>
+<h3 id="mpi-parallelization">MPI parallelization</h3>
+<p>This software is designed as parallelization-ready. Problem is automatically divided into partial problems and computed in each cpus. We provide useful detaclass for MPI, <code>MPI_Communicator</code>. You can construct a mpi group use this class,</p>
+<pre><code class="language-python">import pytop as pt
+comm_group = pt.MPI_Communicator.comm_world
+</code></pre>
+<p>Single problem must be in the same group. Then,<code>mpirun</code> executes the solving with cpus you mentioned:</p>
+<pre><code class="language-bash">mpirun -n 36 python your_problem.py
+</code></pre>
+<p>In the container, you need to give option to allow run as a root user:</p>
+<pre><code class="language-bash">mpirun -n 36 --allow-run-as-root python your_problem.py
+</code></pre>
+<p>Above example use 36 cpus. </p>
+<h3 id="recording-functions">Recording functions</h3>
+<h3 id="filters-for-topology-optimization">Filters for topology optimization</h3>
+<h3 id="built-in-physics">Built-in physics</h3>
+<h3 id="dehomogenization">Dehomogenization</h3>
+</section>
+<section>
+<h2 class="section-title" id="header-submodules">Sub-modules</h2>
+<dl>
+<dt><code class="name"><a title="pytop.designvariable" href="designvariable.html">pytop.designvariable</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt><code class="name"><a title="pytop.filters" href="filters.html">pytop.filters</a></code></dt>
+<dd>
+<div class="desc"><p>Filters.</p></div>
+</dd>
+<dt><code class="name"><a title="pytop.nlopt_optimizer" href="nlopt_optimizer.html">pytop.nlopt_optimizer</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt><code class="name"><a title="pytop.optimizer" href="optimizer.html">pytop.optimizer</a></code></dt>
+<dd>
+<div class="desc"><p>Built-in solver for topology optimization problems. #TODO!!</p></div>
+</dd>
+<dt><code class="name"><a title="pytop.physics" href="physics/index.html">pytop.physics</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt><code class="name"><a title="pytop.statement" href="statement.html">pytop.statement</a></code></dt>
+<dd>
+<div class="desc"><p>Problem statement class.</p></div>
+</dd>
+<dt><code class="name"><a title="pytop.toolkit" href="toolkit/index.html">pytop.toolkit</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt><code class="name"><a title="pytop.utils" href="utils.html">pytop.utils</a></code></dt>
+<dd>
+<div class="desc"><p>Utilites for pytop, including: bridging between fenics variables to numpy array, or vice versa.</p></div>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<div class="toc">
+<ul>
+<li><a href="#significance">Significance</a></li>
+<li><a href="#documentation-under-construction">Documentation 🚧🚧Under construction🚧🚧</a></li>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#hands-on">Hands-on</a></li>
+<li><a href="#usage">Usage</a><ul>
+<li><a href="#import-pytop">Import pytop</a></li>
+<li><a href="#mesh">Mesh</a></li>
+<li><a href="#function-space-and-function">Function space and Function</a></li>
+<li><a href="#boundary-condition">Boundary Condition</a></li>
+<li><a href="#design-variable">Design variable</a></li>
+<li><a href="#problem-definition">Problem definition</a></li>
+<li><a href="#optimizer">Optimizer</a></li>
+</ul>
+</li>
+<li><a href="#tips">Tips</a><ul>
+<li><a href="#mpi-parallelization">MPI parallelization</a></li>
+<li><a href="#recording-functions">Recording functions</a></li>
+<li><a href="#filters-for-topology-optimization">Filters for topology optimization</a></li>
+<li><a href="#built-in-physics">Built-in physics</a></li>
+<li><a href="#dehomogenization">Dehomogenization</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<ul id="index">
+<li><h3><a href="#header-submodules">Sub-modules</a></h3>
+<ul>
+<li><code><a title="pytop.designvariable" href="designvariable.html">pytop.designvariable</a></code></li>
+<li><code><a title="pytop.filters" href="filters.html">pytop.filters</a></code></li>
+<li><code><a title="pytop.nlopt_optimizer" href="nlopt_optimizer.html">pytop.nlopt_optimizer</a></code></li>
+<li><code><a title="pytop.optimizer" href="optimizer.html">pytop.optimizer</a></code></li>
+<li><code><a title="pytop.physics" href="physics/index.html">pytop.physics</a></code></li>
+<li><code><a title="pytop.statement" href="statement.html">pytop.statement</a></code></li>
+<li><code><a title="pytop.toolkit" href="toolkit/index.html">pytop.toolkit</a></code></li>
+<li><code><a title="pytop.utils" href="utils.html">pytop.utils</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.11.1</a>.</p>
+</footer>
+</body>
+</html>

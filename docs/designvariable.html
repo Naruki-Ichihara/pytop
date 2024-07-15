@@ -1,0 +1,503 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+<meta name="generator" content="pdoc3 0.11.1">
+<title>pytop.designvariable API documentation</title>
+<meta name="description" content="">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:1.5em;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:2em 0 .50em 0}h3{font-size:1.4em;margin:1.6em 0 .7em 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .2s ease-in-out}a:visited{color:#503}a:hover{color:#b62}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900;font-weight:bold}pre code{font-size:.8em;line-height:1.4em;padding:1em;display:block}code{background:#f3f3f3;font-family:"DejaVu Sans Mono",monospace;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em 1em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul ul{padding-left:1em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ==" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => {
+hljs.configure({languages: ['bash', 'css', 'diff', 'graphql', 'ini', 'javascript', 'json', 'plaintext', 'python', 'python-repl', 'rust', 'shell', 'sql', 'typescript', 'xml', 'yaml']});
+hljs.highlightAll();
+})</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>pytop.designvariable</code></h1>
+</header>
+<section id="section-intro">
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="pytop.designvariable.DesignVariables"><code class="flex name class">
+<span>class <span class="ident">DesignVariables</span></span>
+</code></dt>
+<dd>
+<div class="desc"><p>The <code>DesignVariables</code> is a core class that manages the design variables.
+In the optimization problem in finite element analysis, followings are essential components:</p>
+<ul>
+<li>The function space for the design variables.</li>
+<li>The initial value of the design variables.</li>
+<li>The range of the design variables.</li>
+</ul>
+<p>The <code>register</code> method can be used to define above components.
+The assigned functions can be accessed by standard dictionary-like syntax.</p>
+<pre><code class="language-python">design_variables = DesignVariables()
+design_variables.register(function_space, &quot;your_function_name&quot;, [initial], range)
+density = design_variables[&quot;your_function_name&quot;]
+</code></pre>
+<p>But we can not add some functions by the above syntax. Do not:</p>
+<pre><code class="language-python">design_variables[&quot;new_function&quot;] = new_function
+</code></pre>
+<p>This code will be raise the read-only error. The <code>register</code> method should be used to add new functions.</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>keys</code></strong> :&ensp;<code>Iterable[str]</code></dt>
+<dd>The names of the function.</dd>
+<dt><strong><code>vector</code></strong> :&ensp;<code>np.ndarray</code></dt>
+<dd>The flatten design vector.</dd>
+<dt><strong><code>min_vector</code></strong> :&ensp;<code>np.ndarray</code></dt>
+<dd>minimum range of the design vector.</dd>
+<dt><strong><code>max_vector</code></strong> :&ensp;<code>np.ndarray</code></dt>
+<dd>maximum range of the design vector.</dd>
+<dt><strong><code>dict_of_original_functions</code></strong> :&ensp;<code>OrderedDict</code></dt>
+<dd>The original functions.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class DesignVariables():
+    &#34;&#34;&#34;The ```DesignVariables``` is a core class that manages the design variables.
+    In the optimization problem in finite element analysis, followings are essential components:
+
+    - The function space for the design variables.
+    - The initial value of the design variables.
+    - The range of the design variables.
+
+    The ```register``` method can be used to define above components.
+    The assigned functions can be accessed by standard dictionary-like syntax.
+
+    ```python
+    design_variables = DesignVariables()
+    design_variables.register(function_space, &#34;your_function_name&#34;, [initial], range)
+    density = design_variables[&#34;your_function_name&#34;]
+    ```
+
+    But we can not add some functions by the above syntax. Do not:
+
+    ```python
+    design_variables[&#34;new_function&#34;] = new_function
+    ```
+
+    This code will be raise the read-only error. The ```register``` method should be used to add new functions.
+
+    Attributes:
+        keys (Iterable[str]): The names of the function.
+        vector (np.ndarray): The flatten design vector.
+        min_vector (np.ndarray): minimum range of the design vector.
+        max_vector (np.ndarray): maximum range of the design vector.
+        dict_of_original_functions (OrderedDict): The original functions.
+
+    &#34;&#34;&#34;
+    def __init__(self) -&gt; None:
+        self.__functions_dict = OrderedDict()
+        self.__vectors_dict = OrderedDict()
+        self.__min_vector_dict = OrderedDict()
+        self.__max_vector_dict = OrderedDict()
+        self.__pre_process = OrderedDict()
+        self.__post_process = OrderedDict()
+        self.__recording_interval_dict = OrderedDict()
+        self.__recording_dict = OrderedDict()
+        self.__recording_dict_result = OrderedDict()
+        self.__recording_dict_xml = OrderedDict()
+        self.__counter = 0
+        return
+    
+    def __len__(self) -&gt; int:
+        return len(self.vector)
+    
+    def __str__(self) -&gt; str:
+        return &#34;=================================================================\n&#34; \
+            f&#34;Conut of fields: {len(self.__functions_dict)}\n&#34; \
+                 f&#34;Total number of design variables: {len(self.vector)}\n&#34; \
+                 f&#34;object ID: {id(self)}\n&#34; \
+                 f&#34;Keys of all design variables:\n{self.__functions_dict.keys()}\n&#34; \
+            &#34;=================================================================&#34;
+
+    def __getitem__(self, key: str) -&gt; Function:
+        return self.__pre_process[key](self.__functions_dict[key])
+    
+    def __contains__(self, key: str) -&gt; bool:
+        return key in self.__functions_dict
+    
+    def __iter__(self) -&gt; Iterable[str]:
+        return iter(self.__functions_dict)
+    
+    def keys(self) -&gt; Iterable[str]:
+        &#34;&#34;&#34;Return the names of the functions.&#34;&#34;&#34;
+        return self.__functions_dict.keys()
+    
+    @property
+    def current_iteration_number(self) -&gt; int:
+        &#34;&#34;&#34;Return the current iteration number.&#34;&#34;&#34;
+        return self.__counter
+    
+    @current_iteration_number.setter
+    def current_iteration_number(self, value: int) -&gt; None:
+        raise ValueError(&#39;This property is read-only.&#39;)
+    
+    def update_counter(self) -&gt; None:
+        &#34;&#34;&#34;Update the counter.&#34;&#34;&#34;
+        self.__counter += 1
+        return
+    
+    @property
+    def dict_of_original_functions(self) -&gt; OrderedDict:
+        &#34;&#34;&#34;Return the original functions that not applied any pre-process functions.&#34;&#34;&#34;
+        return self.__functions_dict
+    
+    @dict_of_original_functions.setter
+    def dict_of_original_functions(self, key: str) -&gt; None:
+        raise ValueError(&#39;This property is read-only.&#39;)
+    
+    @property
+    def vector(self) -&gt; np.ndarray:
+        &#34;&#34;&#34;Return the flatten design vector.&#34;&#34;&#34;
+        flatten_vector = np.concatenate([vector for vector in self.__vectors_dict.values()], axis=0)
+        return flatten_vector
+    
+    @vector.setter
+    def vector(self, value: np.ndarray) -&gt; None:
+        if not value.size == self.vector.size:
+            raise ValueError(f&#39;Size mismatch. Expected size: {self.vector.size}, but got: {value.size}&#39;)
+        split_index = []
+        index = 0
+        for function in self.__functions_dict.values():
+            index += function.vector().size()
+            split_index.append(index)
+        
+        # split the vector and assign to each function
+        splited_vector = np.split(value, split_index)
+        for function, vector in zip(self.__functions_dict.values(), splited_vector):
+            range_begin, range_end = function.vector().local_range()
+            insert_vector = vector[range_begin:range_end]
+            function.vector().set_local(insert_vector)
+            function.vector().apply(&#34;insert&#34;)
+
+        # Record the function
+        for key, function, result, result_xml in zip(self.__recording_dict.keys(), self.__recording_dict.values(), self.__recording_dict_result.values(), self.__recording_dict_xml.values()):
+            if self.__counter%self.__recording_interval_dict[key] == 0:
+                pre_processed_function = self.__post_process[key](self[key])
+                pre_processed_function.rename(key, key)
+                function.write(pre_processed_function, self.__counter)
+                result.write(pre_processed_function)
+                result_xml &lt;&lt; pre_processed_function
+
+        return
+    
+    @property
+    def min_vector(self) -&gt; np.ndarray:
+        &#34;&#34;&#34;Return the minimum value of the design vector.&#34;&#34;&#34;
+        flatten_min_vector = np.concatenate([vector for vector in self.__min_vector_dict.values()], axis=0)
+        return flatten_min_vector
+    
+    @min_vector.setter
+    def min_vector(self, value: np.ndarray) -&gt; None:
+        raise NotImplementedError(&#39;This property is read-only.&#39;)
+    
+    @property
+    def max_vector(self) -&gt; np.ndarray:
+        &#34;&#34;&#34;Return the maximum value of the design vector.&#34;&#34;&#34;
+        flatten_max_vector = np.concatenate([vector for vector in self.__max_vector_dict.values()], axis=0)
+        return flatten_max_vector
+    
+    @max_vector.setter
+    def max_vector(self, value: np.ndarray) -&gt; None:
+        raise NotImplementedError(&#39;This property is read-only.&#39;)
+
+    def register(self,
+                 function_space: FunctionSpace,
+                 function_name: str,
+                 initial_value: list[Callable[[Iterable], float]],
+                 ranges: list[tuple[float, float]]
+                      | list[tuple[Function, Function]],
+                 pre_process: Optional[Callable[[Function], Function]] = None,
+                 post_process: Optional[Callable[[Function], Function]] = None,
+                 recording_path: Optional[str] = None,
+                 recording_interval: int = 0,
+                 mpi_comm: Optional[any] = None) -&gt; None:
+        &#34;&#34;&#34;Register a function to the design variables.
+        You should provide the followings:
+
+        - The function space for the design variavle.
+        - The name of the design variable. The name should be unique. 
+          If the name is already registered, it will raise an error.
+        - The initial value of the function.
+        - The range of the function.
+        - Some pre-process function. This function will be applied to the function in the optimization.
+        - If you want to record the function, specify the file path.
+          The function will be recorded in the ```{{path you provide}}/{{function name}}.xdmf```.
+
+        The initial and range values can be a pyfunc as a following example:
+            
+        ```python
+        initial_field = lambda x: pt.sin(x[0])+pt.cos(x[1])
+        ```
+
+        Note that the ```x``` is a list of spatial coordinates that contain the degree of freedom of the function space.
+        All methods in the pyfunc should be implemented by the UFL functions.
+        If the float value is provided, the function will be initialized by the constant value.
+
+        The pre-process function can be used to apply some operations to the function.
+        for example, the function can be filtered by the Helmholtz filter as follows:
+        
+        ```python
+        filter = lambda x: pt.helmholtz_filter(x, R=0.05)
+        ```
+        
+        Args:
+            function_space (FunctionSpace): The function space for the design variable.
+            function_name (str): The name of the function.
+            initial_value (list[Callable[[Iterable], float]]): The initial value of the function.
+            ranges (list[tuple[float, float]] | list[tuple[Function, Function]]): The range of the function.
+            pre_process (Optional[Callable[[Function], Function]]): The pre-process function.
+            post_process (Optional[Callable[[Function], Function]]): The post-process function. This function will be applied to the function in the recording. This does not affect the optimization.
+            recording_path (Optional[str]): The path for the recording.
+            recording_interval (int): The interval for the recording.
+            mpi_comm (Optional[any]): The MPI communicator.
+            
+        Raises:
+            ValueError: If the function name is already registered.
+            
+        &#34;&#34;&#34;
+
+        if pre_process is not None:
+            self.__pre_process[function_name] = pre_process
+        else:
+            self.__pre_process[function_name] = lambda x: x
+        
+        if post_process is not None:
+            self.__post_process[function_name] = post_process
+        else:
+            self.__post_process[function_name] = lambda x: x
+
+        fenics_function = create_initialized_fenics_function(initial_value, function_space)
+        fenics_function.rename(function_name, function_name)
+        numpy_function = fenics_function_to_np_array(fenics_function)
+
+        # register the function to dict
+        if function_name in self.__functions_dict:
+            raise ValueError(
+                f&#39;Function name &#34;{function_name}&#34; is already registered.&#39;)
+        self.__functions_dict[function_name] = fenics_function
+
+        self.__vectors_dict[function_name] = numpy_function
+        range_mins = [range[0] for range in ranges]
+        range_maxs = [range[1] for range in ranges]
+        self.__min_vector_dict[function_name] = fenics_function_to_np_array(
+            create_initialized_fenics_function(range_mins, function_space))
+        self.__max_vector_dict[function_name] = fenics_function_to_np_array(
+            create_initialized_fenics_function(range_maxs, function_space))
+
+        
+        if not np.all(self.min_vector &lt;= self.vector):
+            raise ValueError(&#39;Initial value is out of range.&#39;)
+        if not np.all(self.max_vector &gt;= self.vector):
+            raise ValueError(&#39;Initial value is out of range.&#39;)
+        
+        if recording_path is not None:
+            if mpi_comm is not None:
+                self.__recording_dict[function_name] = XDMFFile(mpi_comm, recording_path +&#34;/&#34;+ f&#39;{function_name}_history.xdmf&#39;)
+                self.__recording_dict_result[function_name] = XDMFFile(mpi_comm, recording_path +&#34;/&#34;+ f&#39;{function_name}_result.xdmf&#39;)
+            else:
+                self.__recording_dict[function_name] = XDMFFile(recording_path +&#34;/&#34;+ f&#39;{function_name}_history.xdmf&#39;)
+                self.__recording_dict_result[function_name] = XDMFFile(recording_path +&#34;/&#34;+ f&#39;{function_name}_result.xdmf&#39;)
+                self.__recording_dict_xml[function_name] = File(recording_path +&#34;/&#34;+ f&#39;{function_name}.xml&#39;)
+            self.__recording_interval_dict[function_name] = recording_interval
+        return</code></pre>
+</details>
+<h3>Instance variables</h3>
+<dl>
+<dt id="pytop.designvariable.DesignVariables.current_iteration_number"><code class="name">prop <span class="ident">current_iteration_number</span> : int</code></dt>
+<dd>
+<div class="desc"><p>Return the current iteration number.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def current_iteration_number(self) -&gt; int:
+    &#34;&#34;&#34;Return the current iteration number.&#34;&#34;&#34;
+    return self.__counter</code></pre>
+</details>
+</dd>
+<dt id="pytop.designvariable.DesignVariables.dict_of_original_functions"><code class="name">prop <span class="ident">dict_of_original_functions</span> : collections.OrderedDict</code></dt>
+<dd>
+<div class="desc"><p>Return the original functions that not applied any pre-process functions.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def dict_of_original_functions(self) -&gt; OrderedDict:
+    &#34;&#34;&#34;Return the original functions that not applied any pre-process functions.&#34;&#34;&#34;
+    return self.__functions_dict</code></pre>
+</details>
+</dd>
+<dt id="pytop.designvariable.DesignVariables.max_vector"><code class="name">prop <span class="ident">max_vector</span> : numpy.ndarray</code></dt>
+<dd>
+<div class="desc"><p>Return the maximum value of the design vector.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def max_vector(self) -&gt; np.ndarray:
+    &#34;&#34;&#34;Return the maximum value of the design vector.&#34;&#34;&#34;
+    flatten_max_vector = np.concatenate([vector for vector in self.__max_vector_dict.values()], axis=0)
+    return flatten_max_vector</code></pre>
+</details>
+</dd>
+<dt id="pytop.designvariable.DesignVariables.min_vector"><code class="name">prop <span class="ident">min_vector</span> : numpy.ndarray</code></dt>
+<dd>
+<div class="desc"><p>Return the minimum value of the design vector.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def min_vector(self) -&gt; np.ndarray:
+    &#34;&#34;&#34;Return the minimum value of the design vector.&#34;&#34;&#34;
+    flatten_min_vector = np.concatenate([vector for vector in self.__min_vector_dict.values()], axis=0)
+    return flatten_min_vector</code></pre>
+</details>
+</dd>
+<dt id="pytop.designvariable.DesignVariables.vector"><code class="name">prop <span class="ident">vector</span> : numpy.ndarray</code></dt>
+<dd>
+<div class="desc"><p>Return the flatten design vector.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def vector(self) -&gt; np.ndarray:
+    &#34;&#34;&#34;Return the flatten design vector.&#34;&#34;&#34;
+    flatten_vector = np.concatenate([vector for vector in self.__vectors_dict.values()], axis=0)
+    return flatten_vector</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="pytop.designvariable.DesignVariables.keys"><code class="name flex">
+<span>def <span class="ident">keys</span></span>(<span>self) ‑> Iterable[str]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Return the names of the functions.</p></div>
+</dd>
+<dt id="pytop.designvariable.DesignVariables.register"><code class="name flex">
+<span>def <span class="ident">register</span></span>(<span>self, function_space: dolfin.function.functionspace.FunctionSpace, function_name: str, initial_value: list[typing.Callable[[typing.Iterable], float]], ranges: list[tuple[float, float]] | list[tuple[fenics_adjoint.types.function.Function, fenics_adjoint.types.function.Function]], pre_process: Optional[Callable[[fenics_adjoint.types.function.Function], fenics_adjoint.types.function.Function]] = None, post_process: Optional[Callable[[fenics_adjoint.types.function.Function], fenics_adjoint.types.function.Function]] = None, recording_path: Optional[str] = None, recording_interval: int = 0, mpi_comm: Optional[<built-in function any>] = None) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Register a function to the design variables.
+You should provide the followings:</p>
+<ul>
+<li>The function space for the design variavle.</li>
+<li>The name of the design variable. The name should be unique.
+If the name is already registered, it will raise an error.</li>
+<li>The initial value of the function.</li>
+<li>The range of the function.</li>
+<li>Some pre-process function. This function will be applied to the function in the optimization.</li>
+<li>If you want to record the function, specify the file path.
+The function will be recorded in the <code>{{path you provide}}/{{function name}}.xdmf</code>.</li>
+</ul>
+<p>The initial and range values can be a pyfunc as a following example:</p>
+<pre><code class="language-python">initial_field = lambda x: pt.sin(x[0])+pt.cos(x[1])
+</code></pre>
+<p>Note that the <code>x</code> is a list of spatial coordinates that contain the degree of freedom of the function space.
+All methods in the pyfunc should be implemented by the UFL functions.
+If the float value is provided, the function will be initialized by the constant value.</p>
+<p>The pre-process function can be used to apply some operations to the function.
+for example, the function can be filtered by the Helmholtz filter as follows:</p>
+<pre><code class="language-python">filter = lambda x: pt.helmholtz_filter(x, R=0.05)
+</code></pre>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>function_space</code></strong> :&ensp;<code>FunctionSpace</code></dt>
+<dd>The function space for the design variable.</dd>
+<dt><strong><code>function_name</code></strong> :&ensp;<code>str</code></dt>
+<dd>The name of the function.</dd>
+<dt><strong><code>initial_value</code></strong> :&ensp;<code>list[Callable[[Iterable], float]]</code></dt>
+<dd>The initial value of the function.</dd>
+<dt><strong><code>ranges</code></strong> :&ensp;<code>list[tuple[float, float]] | list[tuple[Function, Function]]</code></dt>
+<dd>The range of the function.</dd>
+<dt><strong><code>pre_process</code></strong> :&ensp;<code>Optional[Callable[[Function], Function]]</code></dt>
+<dd>The pre-process function.</dd>
+<dt><strong><code>post_process</code></strong> :&ensp;<code>Optional[Callable[[Function], Function]]</code></dt>
+<dd>The post-process function. This function will be applied to the function in the recording. This does not affect the optimization.</dd>
+<dt><strong><code>recording_path</code></strong> :&ensp;<code>Optional[str]</code></dt>
+<dd>The path for the recording.</dd>
+<dt><strong><code>recording_interval</code></strong> :&ensp;<code>int</code></dt>
+<dd>The interval for the recording.</dd>
+<dt><strong><code>mpi_comm</code></strong> :&ensp;<code>Optional[any]</code></dt>
+<dd>The MPI communicator.</dd>
+</dl>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><code>ValueError</code></dt>
+<dd>If the function name is already registered.</dd>
+</dl></div>
+</dd>
+<dt id="pytop.designvariable.DesignVariables.update_counter"><code class="name flex">
+<span>def <span class="ident">update_counter</span></span>(<span>self) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Update the counter.</p></div>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="pytop" href="index.html">pytop</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="pytop.designvariable.DesignVariables" href="#pytop.designvariable.DesignVariables">DesignVariables</a></code></h4>
+<ul class="">
+<li><code><a title="pytop.designvariable.DesignVariables.current_iteration_number" href="#pytop.designvariable.DesignVariables.current_iteration_number">current_iteration_number</a></code></li>
+<li><code><a title="pytop.designvariable.DesignVariables.dict_of_original_functions" href="#pytop.designvariable.DesignVariables.dict_of_original_functions">dict_of_original_functions</a></code></li>
+<li><code><a title="pytop.designvariable.DesignVariables.keys" href="#pytop.designvariable.DesignVariables.keys">keys</a></code></li>
+<li><code><a title="pytop.designvariable.DesignVariables.max_vector" href="#pytop.designvariable.DesignVariables.max_vector">max_vector</a></code></li>
+<li><code><a title="pytop.designvariable.DesignVariables.min_vector" href="#pytop.designvariable.DesignVariables.min_vector">min_vector</a></code></li>
+<li><code><a title="pytop.designvariable.DesignVariables.register" href="#pytop.designvariable.DesignVariables.register">register</a></code></li>
+<li><code><a title="pytop.designvariable.DesignVariables.update_counter" href="#pytop.designvariable.DesignVariables.update_counter">update_counter</a></code></li>
+<li><code><a title="pytop.designvariable.DesignVariables.vector" href="#pytop.designvariable.DesignVariables.vector">vector</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.11.1</a>.</p>
+</footer>
+</body>
+</html>

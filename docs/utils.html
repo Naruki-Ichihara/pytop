@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+<meta name="generator" content="pdoc3 0.11.1">
+<title>pytop.utils API documentation</title>
+<meta name="description" content="Utilites for pytop, including: bridging between fenics variables to numpy array, or vice versa.">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:1.5em;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:2em 0 .50em 0}h3{font-size:1.4em;margin:1.6em 0 .7em 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .2s ease-in-out}a:visited{color:#503}a:hover{color:#b62}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900;font-weight:bold}pre code{font-size:.8em;line-height:1.4em;padding:1em;display:block}code{background:#f3f3f3;font-family:"DejaVu Sans Mono",monospace;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em 1em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul ul{padding-left:1em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ==" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => {
+hljs.configure({languages: ['bash', 'css', 'diff', 'graphql', 'ini', 'javascript', 'json', 'plaintext', 'python', 'python-repl', 'rust', 'shell', 'sql', 'typescript', 'xml', 'yaml']});
+hljs.highlightAll();
+})</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>pytop.utils</code></h1>
+</header>
+<section id="section-intro">
+<p>Utilites for pytop, including: bridging between fenics variables to numpy array, or vice versa.</p>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="pytop.utils.create_initialized_fenics_function"><code class="name flex">
+<span>def <span class="ident">create_initialized_fenics_function</span></span>(<span>fields: list[typing.Callable[[typing.Iterable], float]], function_space: dolfin.function.functionspace.FunctionSpace) ‑> fenics_adjoint.types.function.Function</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Return a fenics function defined on the <code>functionspace</code> with values assigned.
+Elements of <code>fields</code> are assumed to be the following pyfunction:</p>
+<pre><code class="language-python">value1 = lambda x: f(x[0], x[1], ..., x[n]) # n is the dimension of the Function space.
+value2 = lambda x: g(x[0], x[1], ..., x[n]) 
+create_initialized_fenics_function([value1, value2], functionspace) # The rank of the functionspace and length of the values must be the same.
+</code></pre>
+<p>if the element is not a function but a constant value, it is assumed to be a constant value.</p>
+<pre><code class="language-python">create_initialized_fenics_function([1.0, 1.0], functionspace)
+</code></pre>
+<p>Args: (list, Function)
+values: list of values to be assigned.
+functionspace: fenics function space.</p>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><code>TypeError</code></dt>
+<dd>if the input is not a list.</dd>
+</dl>
+<p>Returns: (Function)
+fenics function.</p></div>
+</dd>
+<dt id="pytop.utils.fenics_function_to_np_array"><code class="name flex">
+<span>def <span class="ident">fenics_function_to_np_array</span></span>(<span>fenics_variable: fenics_adjoint.types.constant.Constant | fenics_adjoint.types.function.Function | dolfin.cpp.la.GenericVector) ‑> numpy.ndarray</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Convert fenics variable to numpy array.</p>
+<p>Args: (Constant | Function | GenericVector)
+fenics_variable: fenics values to be converted.</p>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><code>TypeError</code></dt>
+<dd>if the input is not a fenics vector.</dd>
+</dl>
+<p>Returns: (np.ndarray)
+numpy array.</p></div>
+</dd>
+<dt id="pytop.utils.import_external_mesh"><code class="name flex">
+<span>def <span class="ident">import_external_mesh</span></span>(<span>mesh_file: str, mpi_comm: Optional[<a title="pytop.utils.MPI_Communicator" href="#pytop.utils.MPI_Communicator">MPI_Communicator</a>] = None) ‑> fenics_adjoint.types.mesh.Mesh</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Import a mesh from a file. Time series XDMF files are not supported yet.</p>
+<p>Args: (str)
+mesh_file: path to the mesh file.
+mpi_comm (Optional): MPI communicator.</p>
+<p>Returns: (Mesh)
+fenics mesh.</p>
+<p>This function used the meshio library to read the mesh file and then convert it to a fenics mesh.
+Spported file formats are:</p>
+<blockquote>
+<p><a href="http://abaqus.software.polimi.it/v6.14/index.html">Abaqus</a> (<code>.inp</code>),
+<a href="https://www.ansys.com/ja-jp">ANSYS</a> msh (<code>.msh</code>),
+<a href="https://lanl.github.io/LaGriT/pages/docs/read_avs.html">AVS-UCD</a> (<code>.avs</code>),
+<a href="https://cgns.github.io/">CGNS</a> (<code>.cgns</code>),
+<a href="https://manpages.ubuntu.com/manpages/jammy/en/man1/dolfin-convert.1.html">DOLFIN XML</a> (<code>.xml</code>),
+<a href="https://nschloe.github.io/meshio/exodus.pdf">Exodus</a> (<code>.e</code>, <code>.exo</code>),
+<a href="https://www.itascacg.com/software/flac3d">FLAC3D</a> (<code>.f3grid</code>),
+<a href="https://www.mcs.anl.gov/~fathom/moab-docs/h5mmain.html">H5M</a> (<code>.h5m</code>),
+<a href="https://github.com/KratosMultiphysics/Kratos/wiki/Input-data">Kratos/MDPA</a> (<code>.mdpa</code>),
+<a href="https://people.sc.fsu.edu/~jburkardt/data/medit/medit.html">Medit</a> (<code>.mesh</code>, <code>.meshb</code>),
+<a href="https://docs.salome-platform.org/latest/dev/MEDCoupling/developer/med-file.html">MED/Salome</a> (<code>.med</code>),
+<a href="https://help.autodesk.com/view/NSTRN/2019/ENU/?guid=GUID-42B54ACB-FBE3-47CA-B8FE-475E7AD91A00">Nastran</a> (bulk data, <code>.bdf</code>, <code>.fem</code>, <code>.nas</code>),
+<a href="https://github.com/ngsolve/netgen">Netgen</a> (<code>.vol</code>, <code>.vol.gz</code>),
+<a href="https://github.com/google/neuroglancer/tree/master/src/neuroglancer/datasource/precomputed#mesh-representation-of-segmented-object-surfaces">Neuroglancer precomputed format</a>,
+<a href="https://gmsh.info/doc/texinfo/gmsh.html#File-formats">Gmsh</a> (format versions 2.2, 4.0, and 4.1, <code>.msh</code>),
+<a href="https://en.wikipedia.org/wiki/Wavefront_.obj_file">OBJ</a> (<code>.obj</code>),
+<a href="https://segeval.cs.princeton.edu/public/off_format.html">OFF</a> (<code>.off</code>),
+<a href="https://www.intes.de">PERMAS</a> (<code>.post</code>, <code>.post.gz</code>, <code>.dato</code>, <code>.dato.gz</code>),
+<a href="https://en.wikipedia.org/wiki/PLY_(file_format)">PLY</a> (<code>.ply</code>),
+<a href="https://en.wikipedia.org/wiki/STL_(file_format)">STL</a> (<code>.stl</code>),
+<a href="http://paulbourke.net/dataformats/tp/">Tecplot .dat</a>,
+<a href="https://wias-berlin.de/software/tetgen/fformats.html">TetGen .node/.ele</a>,
+<a href="https://www.w3.org/TR/SVG/">SVG</a> (2D output only) (<code>.svg</code>),
+<a href="https://su2code.github.io/docs_v7/Mesh-File/">SU2</a> (<code>.su2</code>),
+<a href="https://www.simcenter.msstate.edu/software/documentation/ug_io/3d_grid_file_type_ugrid.html">UGRID</a> (<code>.ugrid</code>),
+<a href="https://vtk.org/wp-content/uploads/2015/04/file-formats.pdf">VTK</a> (<code>.vtk</code>),
+<a href="https://vtk.org/Wiki/VTK_XML_Formats">VTU</a> (<code>.vtu</code>),
+<a href="https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry">WKT</a> (<a href="https://en.wikipedia.org/wiki/Triangulated_irregular_network">TIN</a>) (<code>.wkt</code>),
+<a href="https://xdmf.org/index.php/XDMF_Model_and_Format">XDMF</a> (<code>.xdmf</code>, <code>.xmf</code>).</p>
+</blockquote></div>
+</dd>
+<dt id="pytop.utils.make_noiman_boundary_domains"><code class="name flex">
+<span>def <span class="ident">make_noiman_boundary_domains</span></span>(<span>mesh: fenics_adjoint.types.mesh.Mesh, subdomains: Iterable[dolfin.cpp.mesh.SubDomain], initialize=False) ‑> ufl.measure.Measure</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Create a Measure object for the boundary domains.</p>
+<p>Args: (Mesh, Iterable[SubDomain], bool)
+mesh: fenics mesh.
+subdomains: list of subdomains.
+initialize: whether to initialize the boundary markers.</p>
+<p>Returns: (Measure)
+Measure object for the boundary domains.</p></div>
+</dd>
+<dt id="pytop.utils.np_array_to_fenics_function"><code class="name flex">
+<span>def <span class="ident">np_array_to_fenics_function</span></span>(<span>np_array: numpy.ndarray, fenics_function: fenics_adjoint.types.function.Function) ‑> fenics_adjoint.types.function.Function</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Convert numpy array to fenics variable.</p>
+<p>Args: (np.ndarray, Function)</p>
+<pre><code>np_array: numpy array to be converted.
+fenics_function: fenics function to be assigned.
+</code></pre>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><code>TypeError</code></dt>
+<dd>if the input is not a numpy array.</dd>
+<dt><code>ValueError</code></dt>
+<dd>if the input numpy array is not of the same size as the fenics vector.</dd>
+</dl>
+<p>Returns: (Function)
+fenics variable.</p></div>
+</dd>
+<dt id="pytop.utils.read_fenics_function_from_file"><code class="name flex">
+<span>def <span class="ident">read_fenics_function_from_file</span></span>(<span>file_name: str, fenics_function_space: dolfin.function.functionspace.FunctionSpace, fenics_function_name: Optional[str] = None) ‑> fenics_adjoint.types.function.Function</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pytop.utils.save_fenics_function_to_file"><code class="name flex">
+<span>def <span class="ident">save_fenics_function_to_file</span></span>(<span>mpi, fenics_variable: fenics_adjoint.types.function.Function, file_name: str, fenics_function_name: Optional[str] = None, with_xml: Optional[bool] = False, with_vtu: Optional[bool] = False) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Save a fenics variable to a xdmf file.</p>
+<p>Args: (Function, str)
+fenics_variable: fenics variable to be saved.
+file_name: path to the file.
+fenics_function_name (Optional): name of the fenics function.
+with_xml (Optional): whether to save the xml file.</p></div>
+</dd>
+<dt id="pytop.utils.set_fields_to_fenics_function"><code class="name flex">
+<span>def <span class="ident">set_fields_to_fenics_function</span></span>(<span>fields: list[typing.Callable[[typing.Iterable], float]], function: fenics_adjoint.types.function.Function) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Set values for a fenics function.
+Elements of <code>fields</code> are assumed to be the followig pyfunction:</p>
+<pre><code class="language-python">value1 = lambda x: f(x[0], x[1], ..., x[n]) # n is the dimension of the Function space.
+value2 = lambda x: g(x[0], x[1], ..., x[n]) 
+set_fields_to_fenics_function([value1, value2], function_space) # The rank of the function_space and length of the values must be the same.
+</code></pre>
+<p>if the element is not a function but a constant value, it is assumed to be a constant value.</p>
+<pre><code class="language-python">set_fields_to_fenics_function([1.0, 1.0], function_space)
+</code></pre>
+<p>Args: (list, Function)
+values: list of values to be assigned.
+function: fenics function to be assigned.</p>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><code>TypeError</code></dt>
+<dd>if the input is not a list.</dd>
+</dl></div>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="pytop.utils.MPI_Communicator"><code class="flex name class">
+<span>class <span class="ident">MPI_Communicator</span></span>
+</code></dt>
+<dd>
+<div class="desc"><p>MPI communicator for parallel computing.</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>comm_world</code></strong> :&ensp;<code>MPI_Comm</code></dt>
+<dd>MPI communicator.</dd>
+<dt><strong><code>rank</code></strong> :&ensp;<code>int</code></dt>
+<dd>Rank of the process.</dd>
+<dt><strong><code>size</code></strong> :&ensp;<code>int</code></dt>
+<dd>Number of processes.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class MPI_Communicator:
+    &#39;&#39;&#39;MPI communicator for parallel computing.
+    
+    Attributes:
+        comm_world (MPI_Comm): MPI communicator.
+        rank (int): Rank of the process.
+        size (int): Number of processes.
+    &#39;&#39;&#39;
+    comm_world = MPI.comm_world
+    rank = MPI.comm_world.rank
+    size = MPI.comm_world.size</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="pytop.utils.MPI_Communicator.comm_world"><code class="name">var <span class="ident">comm_world</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pytop.utils.MPI_Communicator.rank"><code class="name">var <span class="ident">rank</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pytop.utils.MPI_Communicator.size"><code class="name">var <span class="ident">size</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="pytop" href="index.html">pytop</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="pytop.utils.create_initialized_fenics_function" href="#pytop.utils.create_initialized_fenics_function">create_initialized_fenics_function</a></code></li>
+<li><code><a title="pytop.utils.fenics_function_to_np_array" href="#pytop.utils.fenics_function_to_np_array">fenics_function_to_np_array</a></code></li>
+<li><code><a title="pytop.utils.import_external_mesh" href="#pytop.utils.import_external_mesh">import_external_mesh</a></code></li>
+<li><code><a title="pytop.utils.make_noiman_boundary_domains" href="#pytop.utils.make_noiman_boundary_domains">make_noiman_boundary_domains</a></code></li>
+<li><code><a title="pytop.utils.np_array_to_fenics_function" href="#pytop.utils.np_array_to_fenics_function">np_array_to_fenics_function</a></code></li>
+<li><code><a title="pytop.utils.read_fenics_function_from_file" href="#pytop.utils.read_fenics_function_from_file">read_fenics_function_from_file</a></code></li>
+<li><code><a title="pytop.utils.save_fenics_function_to_file" href="#pytop.utils.save_fenics_function_to_file">save_fenics_function_to_file</a></code></li>
+<li><code><a title="pytop.utils.set_fields_to_fenics_function" href="#pytop.utils.set_fields_to_fenics_function">set_fields_to_fenics_function</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="pytop.utils.MPI_Communicator" href="#pytop.utils.MPI_Communicator">MPI_Communicator</a></code></h4>
+<ul class="">
+<li><code><a title="pytop.utils.MPI_Communicator.comm_world" href="#pytop.utils.MPI_Communicator.comm_world">comm_world</a></code></li>
+<li><code><a title="pytop.utils.MPI_Communicator.rank" href="#pytop.utils.MPI_Communicator.rank">rank</a></code></li>
+<li><code><a title="pytop.utils.MPI_Communicator.size" href="#pytop.utils.MPI_Communicator.size">size</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.11.1</a>.</p>
+</footer>
+</body>
+</html>
