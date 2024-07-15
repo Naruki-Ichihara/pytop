@@ -162,3 +162,12 @@ Above example use 36 cpus.
 ### Filters for topology optimization
 ### Built-in physics
 ### Dehomogenization
+
+## Development
+### Generate API documentation
+
+```bash
+bash generate_doc.sh
+```
+
+Above command generates API document using [pdoc3](https://pdoc3.github.io/pdoc/).
