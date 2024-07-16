@@ -26,16 +26,21 @@ class MPI_Communicator:
     rank = MPI.comm_world.rank
     size = MPI.comm_world.size
 
-def from_pygmsh(mesh) -> Mesh:
+def from_pygmsh(mesh: meshio._mesh.Mesh, planation: bool=False) -> Mesh:
     '''Convert a pygmesh mesh to a fenics mesh.
 
     Args: (pygmesh.Mesh)
         mesh: pygmesh mesh.
+        planation (Optional): whether to planate the mesh.
 
     Returns: (Mesh)
         fenics mesh.
 
     '''
+    if planation:
+        points = mesh.points[:, :2]
+        cells = {"triangle": mesh.cells_dict["triangle"]}
+        mesh = meshio.Mesh(points, cells)
     meshio.write("temp.xml", mesh, file_format="dolfin-xml")
     mesh = Mesh("temp.xml")
     # Remove temporary file

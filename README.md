@@ -160,6 +160,7 @@ Above example use 36 cpus.
 
 ### Working with pygmsh
 You can use ```pygmsh``` as mesh generator.
+Documentation of ```pygmsh``` is available [here](https://pygmsh.readthedocs.io/en/latest/).
 ```python
 import pytop as pt
 import pygmsh
@@ -184,6 +185,11 @@ with pygmsh.geo.Geometry() as geom:
     mesh = geom.generate_mesh()
 
 mesh = pt.from_pygmsh(mesh)
+```
+
+Use ```planation``` option is used, all ```z``` coordinates will be neglected.
+```python
+mesh = pt.from_pygmsh(mesh, planation=True)
 ```
 
 ## Developer
