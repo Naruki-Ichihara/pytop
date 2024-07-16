@@ -11,6 +11,7 @@ try:
 except ImportError:
     raise ImportError("meshio is not installed. Please install it by running: pip install meshio[all]")
 import os
+import pygmsh
 
 @dataclass
 class MPI_Communicator:
@@ -24,6 +25,22 @@ class MPI_Communicator:
     comm_world = MPI.comm_world
     rank = MPI.comm_world.rank
     size = MPI.comm_world.size
+
+def from_pygmsh(mesh) -> Mesh:
+    '''Convert a pygmesh mesh to a fenics mesh.
+
+    Args: (pygmesh.Mesh)
+        mesh: pygmesh mesh.
+
+    Returns: (Mesh)
+        fenics mesh.
+
+    '''
+    meshio.write("temp.xml", mesh, file_format="dolfin-xml")
+    mesh = Mesh("temp.xml")
+    # Remove temporary file
+    os.remove("temp.xml")
+    return mesh
 
 def read_fenics_function_from_file(file_name: str, fenics_function_space: FunctionSpace, fenics_function_name: Optional[str]=None) -> Function:
     fenics_variable = Function(fenics_function_space, file_name + ".xml")

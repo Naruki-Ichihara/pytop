@@ -36,9 +36,10 @@ This software uses the <a href="https://fenicsproject.org/">FEniCS</a> as a fini
 <p>This software is based on Lagacy FEniCS (FEniCS2019.1.0). The new version, FEniCSx, is not supported.</p>
 <p>Only cpu based computation is supported. Now I consider developing the gpu based framework, please refer <a href="https://github.com/Naruki-Ichihara/gpytop">gpytop</a>.</p>
 </blockquote>
-<h2 id="documentation-under-construction">Documentation 🚧🚧Under construction🚧🚧</h2>
+<h2 id="documentation">Documentation</h2>
 <p>Documentation with many physics is available here:
 <a href="https://naruki-ichihara.github.io/pytop_docs/"><strong>Documentation</strong></a></p>
+<p>API Reference: <a href="https://naruki-ichihara.github.io/pytop/"><strong>API reference</strong></a></p>
 <h2 id="introduction">Introduction</h2>
 <p>Topology optimization is a common method for designing physic-objective-oriented structures. <em>pytop</em> enables straightforward Pythonic coding for high-performance
 topology optimization. This software works with any general objective, physics, and (inequality) constraints, with automatic derivative.</p>
@@ -155,6 +156,11 @@ comm_group = pt.MPI_Communicator.comm_world
 <h3 id="filters-for-topology-optimization">Filters for topology optimization</h3>
 <h3 id="built-in-physics">Built-in physics</h3>
 <h3 id="dehomogenization">Dehomogenization</h3>
+<h2 id="developer">Developer</h2>
+<h3 id="generate-api-documentation">Generate API documentation</h3>
+<pre><code class="language-bash">bash generate_doc.sh
+</code></pre>
+<p>Above command generates API document using <a href="https://pdoc3.github.io/pdoc/">pdoc3</a>.</p>
 </section>
 <section>
 <h2 class="section-title" id="header-submodules">Sub-modules</h2>
@@ -204,7 +210,7 @@ comm_group = pt.MPI_Communicator.comm_world
 <div class="toc">
 <ul>
 <li><a href="#significance">Significance</a></li>
-<li><a href="#documentation-under-construction">Documentation 🚧🚧Under construction🚧🚧</a></li>
+<li><a href="#documentation">Documentation</a></li>
 <li><a href="#introduction">Introduction</a></li>
 <li><a href="#hands-on">Hands-on</a></li>
 <li><a href="#usage">Usage</a><ul>
@@ -223,6 +229,10 @@ comm_group = pt.MPI_Communicator.comm_world
 <li><a href="#filters-for-topology-optimization">Filters for topology optimization</a></li>
 <li><a href="#built-in-physics">Built-in physics</a></li>
 <li><a href="#dehomogenization">Dehomogenization</a></li>
+</ul>
+</li>
+<li><a href="#developer">Developer</a><ul>
+<li><a href="#generate-api-documentation">Generate API documentation</a></li>
 </ul>
 </li>
 </ul>
