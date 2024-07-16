@@ -165,8 +165,6 @@ Documentation of ```pygmsh``` is available [here](https://pygmsh.readthedocs.io/
 import pytop as pt
 import pygmsh
 
-import pygmsh
-
 with pygmsh.geo.Geometry() as geom:
     lcar = 0.1
     p1 = geom.add_point([0.0, 0.0], lcar)
