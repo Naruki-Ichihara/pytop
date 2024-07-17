@@ -74,7 +74,7 @@ hljs.highlightAll();
 </dl></div>
 </dd>
 <dt id="pytop.physics.utils.isoparametric_2D_box_to_triangle"><code class="name flex">
-<span>def <span class="ident">isoparametric_2D_box_to_triangle</span></span>(<span>z: fenics_adjoint.types.function.Function, e: fenics_adjoint.types.function.Function, tolerance: 1e-06) ‑> fenics_adjoint.types.function.Function</span>
+<span>def <span class="ident">isoparametric_2D_box_to_triangle</span></span>(<span>z: fenics_adjoint.types.function.Function, e: fenics_adjoint.types.function.Function, tolerance=1e-06) ‑> fenics_adjoint.types.function.Function</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Apply 2D isoparametric projection onto orientation vector.</p>
@@ -105,8 +105,8 @@ eps: penalization parameter.</p>
 <p>Returns: (float)
 penalized weight.</p></div>
 </dd>
-<dt id="pytop.physics.utils.sign"><code class="name flex">
-<span>def <span class="ident">sign</span></span>(<span>x, a=1)</span>
+<dt id="pytop.physics.utils.sgn"><code class="name flex">
+<span>def <span class="ident">sgn</span></span>(<span>x, k=10)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -132,7 +132,7 @@ penalized weight.</p></div>
 <li><code><a title="pytop.physics.utils.isoparametric_2D_box_to_circle" href="#pytop.physics.utils.isoparametric_2D_box_to_circle">isoparametric_2D_box_to_circle</a></code></li>
 <li><code><a title="pytop.physics.utils.isoparametric_2D_box_to_triangle" href="#pytop.physics.utils.isoparametric_2D_box_to_triangle">isoparametric_2D_box_to_triangle</a></code></li>
 <li><code><a title="pytop.physics.utils.penalized_weight" href="#pytop.physics.utils.penalized_weight">penalized_weight</a></code></li>
-<li><code><a title="pytop.physics.utils.sign" href="#pytop.physics.utils.sign">sign</a></code></li>
+<li><code><a title="pytop.physics.utils.sgn" href="#pytop.physics.utils.sgn">sgn</a></code></li>
 </ul>
 </li>
 </ul>

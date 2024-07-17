@@ -74,13 +74,14 @@ fenics_variable: fenics values to be converted.</p>
 numpy array.</p></div>
 </dd>
 <dt id="pytop.utils.from_pygmsh"><code class="name flex">
-<span>def <span class="ident">from_pygmsh</span></span>(<span>mesh: meshio._mesh.Mesh, planation: bool = False) ‑> fenics_adjoint.types.mesh.Mesh</span>
+<span>def <span class="ident">from_pygmsh</span></span>(<span>mesh: meshio._mesh.Mesh, planation: bool = False, mpi_comm: Optional[<a title="pytop.utils.MPI_Communicator" href="#pytop.utils.MPI_Communicator">MPI_Communicator</a>] = None) ‑> fenics_adjoint.types.mesh.Mesh</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Convert a pygmesh mesh to a fenics mesh.</p>
 <p>Args: (pygmesh.Mesh)
 mesh: pygmesh mesh.
-planation (Optional): whether to planate the mesh.</p>
+planation (Optional): whether to planate the mesh.
+mpi_comm (Optional): MPI communicator.</p>
 <p>Returns: (Mesh)
 fenics mesh.</p></div>
 </dd>
