@@ -73,6 +73,17 @@ fenics_variable: fenics values to be converted.</p>
 <p>Returns: (np.ndarray)
 numpy array.</p></div>
 </dd>
+<dt id="pytop.utils.from_pygmsh"><code class="name flex">
+<span>def <span class="ident">from_pygmsh</span></span>(<span>mesh: meshio._mesh.Mesh, planation: bool = False) ‑> fenics_adjoint.types.mesh.Mesh</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Convert a pygmesh mesh to a fenics mesh.</p>
+<p>Args: (pygmesh.Mesh)
+mesh: pygmesh mesh.
+planation (Optional): whether to planate the mesh.</p>
+<p>Returns: (Mesh)
+fenics mesh.</p></div>
+</dd>
 <dt id="pytop.utils.import_external_mesh"><code class="name flex">
 <span>def <span class="ident">import_external_mesh</span></span>(<span>mesh_file: str, mpi_comm: Optional[<a title="pytop.utils.MPI_Communicator" href="#pytop.utils.MPI_Communicator">MPI_Communicator</a>] = None) ‑> fenics_adjoint.types.mesh.Mesh</span>
 </code></dt>
@@ -256,6 +267,7 @@ class MPI_Communicator:
 <ul class="">
 <li><code><a title="pytop.utils.create_initialized_fenics_function" href="#pytop.utils.create_initialized_fenics_function">create_initialized_fenics_function</a></code></li>
 <li><code><a title="pytop.utils.fenics_function_to_np_array" href="#pytop.utils.fenics_function_to_np_array">fenics_function_to_np_array</a></code></li>
+<li><code><a title="pytop.utils.from_pygmsh" href="#pytop.utils.from_pygmsh">from_pygmsh</a></code></li>
 <li><code><a title="pytop.utils.import_external_mesh" href="#pytop.utils.import_external_mesh">import_external_mesh</a></code></li>
 <li><code><a title="pytop.utils.make_noiman_boundary_domains" href="#pytop.utils.make_noiman_boundary_domains">make_noiman_boundary_domains</a></code></li>
 <li><code><a title="pytop.utils.np_array_to_fenics_function" href="#pytop.utils.np_array_to_fenics_function">np_array_to_fenics_function</a></code></li>

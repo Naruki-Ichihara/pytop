@@ -152,10 +152,34 @@ comm_group = pt.MPI_Communicator.comm_world
 <pre><code class="language-bash">mpirun -n 36 --allow-run-as-root python your_problem.py
 </code></pre>
 <p>Above example use 36 cpus. </p>
-<h3 id="recording-functions">Recording functions</h3>
-<h3 id="filters-for-topology-optimization">Filters for topology optimization</h3>
-<h3 id="built-in-physics">Built-in physics</h3>
-<h3 id="dehomogenization">Dehomogenization</h3>
+<h3 id="working-with-pygmsh">Working with pygmsh</h3>
+<p>You can use <code>pygmsh</code> as mesh generator.
+Documentation of <code>pygmsh</code> is available <a href="https://pygmsh.readthedocs.io/en/latest/">here</a>.</p>
+<pre><code class="language-python">import pytop as pt
+import pygmsh
+
+with pygmsh.geo.Geometry() as geom:
+    lcar = 0.1
+    p1 = geom.add_point([0.0, 0.0], lcar)
+    p2 = geom.add_point([1.0, 0.0], lcar)
+    p3 = geom.add_point([1.0, 0.5], lcar)
+    p4 = geom.add_point([1.0, 1.0], lcar)
+    s1 = geom.add_bspline([p1, p2, p3, p4])
+
+    p2 = geom.add_point([0.0, 1.0], lcar)
+    p3 = geom.add_point([0.5, 1.0], lcar)
+    s2 = geom.add_spline([p4, p3, p2, p1])
+
+    ll = geom.add_curve_loop([s1, s2])
+    pl = geom.add_plane_surface(ll)
+
+    mesh = geom.generate_mesh()
+
+mesh = pt.from_pygmsh(mesh)
+</code></pre>
+<p>Use <code>planation</code> option is used, all <code>z</code> coordinates will be neglected.</p>
+<pre><code class="language-python">mesh = pt.from_pygmsh(mesh, planation=True)
+</code></pre>
 <h2 id="developer">Developer</h2>
 <h3 id="generate-api-documentation">Generate API documentation</h3>
 <pre><code class="language-bash">bash generate_doc.sh
@@ -225,10 +249,7 @@ comm_group = pt.MPI_Communicator.comm_world
 </li>
 <li><a href="#tips">Tips</a><ul>
 <li><a href="#mpi-parallelization">MPI parallelization</a></li>
-<li><a href="#recording-functions">Recording functions</a></li>
-<li><a href="#filters-for-topology-optimization">Filters for topology optimization</a></li>
-<li><a href="#built-in-physics">Built-in physics</a></li>
-<li><a href="#dehomogenization">Dehomogenization</a></li>
+<li><a href="#working-with-pygmsh">Working with pygmsh</a></li>
 </ul>
 </li>
 <li><a href="#developer">Developer</a><ul>

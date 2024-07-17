@@ -3,6 +3,7 @@ from fenics_adjoint import *
 import numpy as np
 from typing import Callable, Iterable, Optional
 from dataclasses import dataclass
+from ufl import tanh
 
 def penalized_weight(rho, p=3, eps=1e-3):
     '''Penalized weight function.
@@ -17,8 +18,8 @@ def penalized_weight(rho, p=3, eps=1e-3):
     '''
     return eps + (1 - eps) * rho ** p
 
-def sign(x, a=1):
-    return ((1/(1+exp(-a*x)))-1/2)*2
+def sgn(x, k=10):
+    return tanh(k*x)
 
 def isoparametric_2D(z: Function, e: Function, u: Function, v: Function) -> Function:
     ''' Apply 2D isoparametric projection onto orientation vector.
@@ -59,7 +60,7 @@ def isoparametric_2D_box_to_circle(z: Function, e: Function) -> Function:
     v = as_vector([-1/np.sqrt(2), -1, -1/np.sqrt(2), 0, 1/np.sqrt(2), 1, 1/np.sqrt(2), 0])
     return isoparametric_2D(z, e, u, v)
 
-def isoparametric_2D_box_to_triangle(z: Function, e: Function, tolerance: 1e-6) -> Function:
+def isoparametric_2D_box_to_triangle(z: Function, e: Function, tolerance=1e-6) -> Function:
     ''' Apply 2D isoparametric projection onto orientation vector.
 
     Args:

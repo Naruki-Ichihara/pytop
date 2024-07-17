@@ -26,12 +26,13 @@ class MPI_Communicator:
     rank = MPI.comm_world.rank
     size = MPI.comm_world.size
 
-def from_pygmsh(mesh: meshio._mesh.Mesh, planation: bool=False) -> Mesh:
+def from_pygmsh(mesh: meshio._mesh.Mesh, planation: bool=False, mpi_comm: Optional[MPI_Communicator]=None) -> Mesh:
     '''Convert a pygmesh mesh to a fenics mesh.
 
     Args: (pygmesh.Mesh)
         mesh: pygmesh mesh.
         planation (Optional): whether to planate the mesh.
+        mpi_comm (Optional): MPI communicator.
 
     Returns: (Mesh)
         fenics mesh.
@@ -42,7 +43,10 @@ def from_pygmsh(mesh: meshio._mesh.Mesh, planation: bool=False) -> Mesh:
         cells = {"triangle": mesh.cells_dict["triangle"]}
         mesh = meshio.Mesh(points, cells)
     meshio.write("temp.xml", mesh, file_format="dolfin-xml")
-    mesh = Mesh("temp.xml")
+    if mpi_comm is not None:
+        mesh = Mesh(mpi_comm.comm_world, "temp.xml")
+    else:
+        mesh = Mesh("temp.xml")
     # Remove temporary file
     os.remove("temp.xml")
     return mesh
@@ -131,7 +135,11 @@ def import_external_mesh(mesh_file: str, mpi_comm: Optional[MPI_Communicator]=No
 
     mesh_original = meshio.read(mesh_file)
     mesh_original.write("temp.xml")
-    mesh = Mesh("temp.xml")
+    mesh = Mesh("temp.xml", mpi_comm.comm_world)
+    if mpi_comm is not None:
+        mesh = Mesh(mpi_comm.comm_world, "temp.xml")
+    else:
+        mesh = Mesh("temp.xml")
     # Remove temporary file
     os.remove("temp.xml")
     return mesh
