@@ -48,7 +48,13 @@ def from_pygmsh(mesh: meshio._mesh.Mesh, planation: bool=False, mpi_comm: Option
     else:
         mesh = Mesh("temp.xml")
     # Remove temporary file
-    os.remove("temp.xml")
+    rank = mpi_comm.rank
+    if rank == 0:
+        try:
+            os.remove("temp.xml")
+        except FileNotFoundError:
+            print(f'Process {rank} could not find the file to remove.')
+    mpi_comm.comm_world.Barrier()
     return mesh
 
 def read_fenics_function_from_file(file_name: str, fenics_function_space: FunctionSpace, fenics_function_name: Optional[str]=None) -> Function:
@@ -141,7 +147,13 @@ def import_external_mesh(mesh_file: str, mpi_comm: Optional[MPI_Communicator]=No
     else:
         mesh = Mesh("temp.xml")
     # Remove temporary file
-    os.remove("temp.xml")
+    rank = mpi_comm.rank
+    if rank == 0:
+        try:
+            os.remove("temp.xml")
+        except FileNotFoundError:
+            print(f'Process {rank} could not find the file to remove.')
+    mpi_comm.comm_world.Barrier()
     return mesh
 
 def make_noiman_boundary_domains(mesh: Mesh, subdomains: Iterable[SubDomain], initialize=False) -> Measure:
