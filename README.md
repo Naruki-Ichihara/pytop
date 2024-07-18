@@ -45,7 +45,7 @@ U = pt.FunctionSoace(mesh, "CG", 1)
 u = pt.Function(U)
 ...
 ```
-Please referto the [FEniCS document](https://fenicsproject.org/) to use fundamental functions in FEniCS.
+Please refer to the [FEniCS document](https://fenicsproject.org/) to use fundamental functions in FEniCS.
 ### Mesh
 Second, you need to generate (or import) mesh. This software provides easy method to import external mesh, `import_external_mesh`. This method use `meshio` in the backgroud, so any mesh type that supported by [meshio](https://github.com/nschloe/meshio) is supported.
 ```python
@@ -56,6 +56,14 @@ Of course, you can generate mesh by built-in mesh generator in FEniCS like as:
 NUMBER_OF_NODES = (100, 100)
 POSITION = (100, 100)
 mesh = pt.RectangleMesh(pt Point(0, 0), pt.Point(*POSITION), *NUMBER_OF_NODES)
+```
+Moreover, we provide simple interface of [pygmsh](https://github.com/nschloe/pygmsh). pygmsh can generate more flexible geometry, whether 2D or 3D.
+```python
+import pytop as pt
+import pygmsh
+
+...
+mesh = pt.from_pygmsh(pyg_mesh)
 ```
 
 ### Function space and Function
