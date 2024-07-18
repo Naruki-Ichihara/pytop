@@ -6,14 +6,12 @@ Try out in codespace:
 
 ## Significance
 
-*pytop* is a library for general-purpose optimization in finite element space, including topology optimization. We provide straightforward coding for complex optimization problems.
+*pytop* is an **extended FEniCS** for general-purpose optimization in finite element space, including topology optimization. This software provides straightforward coding for complex optimization problems.
 This software uses the [FEniCS](https://fenicsproject.org/) as a finite element solver and [NLopt](https://github.com/stevengj/nlopt) as an optimization solver.
 
 > This software is the independent module of fenics and nlopt project.
 
 > This software is based on Lagacy FEniCS (FEniCS2019.1.0). The new version, FEniCSx, is not supported.
-
-> Only cpu based computation is supported. Now I consider developing the gpu based framework, please refer [gpytop](https://github.com/Naruki-Ichihara/gpytop).
 
 ## Documentation
 Documentation with many physics is available here:
