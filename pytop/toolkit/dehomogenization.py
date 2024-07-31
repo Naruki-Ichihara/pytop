@@ -7,8 +7,8 @@ comm = MPI.COMM_WORLD
     
 class GaussianRandomField_2D(UserExpression):
     def eval(self, val, x):
-        val[0] = 1*np.random.randn()
-        val[1] = 1*np.random.randn()
+        val[0] = 10*np.random.randn()
+        val[1] = 10*np.random.randn()
     def value_shape(self):
         return (2,)
 
