@@ -15,7 +15,7 @@ This software uses the [FEniCS](https://fenicsproject.org/) as a finite element 
 
 ## Documentation
 Documentation with many physics is available here:
-<a href="https://naruki-ichihara.github.io/pytop_docs/"><strong>Documentation</strong></a>
+<a href="[https://naruki-ichihara.github.io/pytop_docs/](https://naruki-ichihara.github.io/pytop_docs/)"><strong>Documentation</strong></a>
 
 API Reference: <a href="https://naruki-ichihara.github.io/pytop/"><strong>API reference</strong></a>
 
