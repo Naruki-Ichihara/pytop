@@ -11,6 +11,14 @@ from pytop.utils import fenics_function_to_np_array
 from pytop.designvariable import DesignVariables
 from typing import Optional
 
+def save(func):
+    def wrapper(self, *args, **kwargs):
+        print("Objective called")
+        result = func(self, *args, **kwargs)
+        print(type(result))
+        return result
+    return wrapper
+
 class ProblemStatement(metaclass=ABCMeta):
     '''The ```ProblemStatement``` class is an abstract class for defining the optimization physics.
     The ```objective``` method must be implemented in the derived class. ```objective``` gives
@@ -32,12 +40,12 @@ class ProblemStatement(metaclass=ABCMeta):
     '''
 
     @abstractmethod
-    def objective(self, design_variables: DesignVariables, iter_num: int, **kwargs) -> AdjFloat:
+    def objective(self, design_variables: DesignVariables, iter_num: int | None, **kwargs) -> AdjFloat:
         '''The objective function. You must implement this method.
 
         Args:
             design_variables (DesignVariables): The design variables.
-            iter_num (int): The iteration number.
+            iter_num (int): The iteration number. Iter_num has None when the optimizer calls the objective in backward mode.
             **kwargs: Optional arguments.
 
         Returns:
@@ -55,16 +63,25 @@ class ProblemStatement(metaclass=ABCMeta):
         if not hasattr(self, target):
             raise AttributeError(f'The "{target}" is not defined.')
         try :
-            compute_gradient(getattr(self, target)(design_variables), control)
+            compute_gradient(getattr(self, target)(design_variables, None), control)
         except AttributeError:
             # warnings.warn(f'The "{target}" is independent of the variable "{variable_key}".')
             return np.zeros(design_variables[variable_key].vector().size())
-        sensitivity = fenics_function_to_np_array(compute_gradient(getattr(self, target)(design_variables),
+        sensitivity = fenics_function_to_np_array(compute_gradient(getattr(self, target)(design_variables, None),
                                        control))
         return sensitivity
     
-    @classmethod
-    def recording(cls, func):
-        def wrapper(self, *args, **kwargs):
-            return func(self, *args)
-        return wrapper
+    def recorder(self, xdmf_file: XDMFFile, variable: Form | Function, function_space: FunctionSpace, name: str, iter_num: int | None):
+        '''Record the variable to the xdmf file.
+
+        Args:
+            xdmf_file (XDMFFile): The xdmf file.
+            variable (Form | Function): The variable to record.
+            name (str): The name of the variable.
+            iter_num (int): The iteration number.
+        '''
+        variable = project(variable, function_space)
+        variable.rename(name, name)
+        if iter_num is not None:
+            xdmf_file.write(variable, iter_num)
+        pass

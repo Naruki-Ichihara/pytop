@@ -43,7 +43,8 @@ class NloptOptimizer(nlp.opt):
         self.__logging_dict["objective"] = list()
         def eval(x, grad):
             self.design_vector.vector = x
-            cost = self.problem.objective(self.design_vector)
+            iter_num = self.design_vector.current_iteration_number
+            cost = self.problem.objective(self.design_vector, iter_num)
             self.__logging_dict["objective"].append(cost)
             grads = [self.problem.compute_sensitivities(self.design_vector, "objective", key)
                      for key in self.design_vector.keys()]
@@ -54,7 +55,8 @@ class NloptOptimizer(nlp.opt):
         def generate_cost_function(attribute, problem):
             def cost_function(x, grad):
                 self.design_vector.vector = x
-                cost = getattr(problem, attribute)(self.design_vector)
+                iter_num = self.design_vector.current_iteration_number
+                cost = getattr(problem, attribute)(self.design_vector, iter_num)
                 self.__logging_dict[attribute] = cost
                 grads = [problem.compute_sensitivities(self.design_vector, attribute, key)
                          for key in self.design_vector.keys()]

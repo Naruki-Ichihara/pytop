@@ -65,8 +65,8 @@ def read_fenics_function_from_file(file_name: str, fenics_function_space: Functi
         fenics_variable.rename(fenics_function_name, fenics_function_name)
     return fenics_variable
 
-def save_fenics_function_to_file(mpi, fenics_variable: Function, file_name: str, fenics_function_name: Optional[str]=None,
-                                 with_xml: Optional[bool]=False, with_vtu: Optional[bool]=False) -> None:
+def save_fenics_function_to_file(fenics_variable: Function, file_name: str, fenics_function_name: Optional[str]=None,
+                                 with_xml: Optional[bool]=False, with_vtu: Optional[bool]=False, mpi_comm: Optional[MPI_Communicator]=None) -> None:
     '''Save a fenics variable to a xdmf file.
 
     Args: (Function, str)
@@ -74,20 +74,22 @@ def save_fenics_function_to_file(mpi, fenics_variable: Function, file_name: str,
         file_name: path to the file.
         fenics_function_name (Optional): name of the fenics function.
         with_xml (Optional): whether to save the xml file.
+        with_vtu (Optional): whether to save the vtu file.
+        mpi_comm (Optional): MPI communicator.
 
     '''
     if fenics_function_name is not None:
         fenics_variable.rename(fenics_function_name, fenics_function_name)
 
-    with XDMFFile(mpi, file_name + ".xdmf") as file:
+    with XDMFFile(mpi_comm.comm_world, file_name + ".xdmf") as file:
         file.write(fenics_variable)
 
     if with_xml:
-        file = File(mpi, file_name + ".xml")
+        file = File(mpi_comm.comm_world, file_name + ".xml")
         file << fenics_variable
 
     if with_vtu:
-        file = File(mpi, file_name + ".pvds")
+        file = File(mpi_comm.comm_world, file_name + ".pvds")
         file << fenics_variable
     pass
 
