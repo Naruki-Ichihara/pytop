@@ -81,16 +81,30 @@ def save_fenics_function_to_file(fenics_variable: Function, file_name: str, feni
     if fenics_function_name is not None:
         fenics_variable.rename(fenics_function_name, fenics_function_name)
 
-    with XDMFFile(mpi_comm.comm_world, file_name + ".xdmf") as file:
-        file.write(fenics_variable)
+    
+    if mpi_comm is not None:
+        with XDMFFile(mpi_comm.comm_world, file_name + ".xdmf") as file:
+            file.write(fenics_variable)
 
-    if with_xml:
-        file = File(mpi_comm.comm_world, file_name + ".xml")
-        file << fenics_variable
+        if with_xml:
+            file = File(mpi_comm.comm_world, file_name + ".xml")
+            file << fenics_variable
 
-    if with_vtu:
-        file = File(mpi_comm.comm_world, file_name + ".pvds")
-        file << fenics_variable
+        if with_vtu:
+            file = File(mpi_comm.comm_world, file_name + ".pvd")
+            file << fenics_variable
+
+    else:
+        with XDMFFile(file_name + ".xdmf") as file:
+            file.write(fenics_variable)
+
+        if with_xml:
+            file = File(file_name + ".xml")
+            file << fenics_variable
+
+        if with_vtu:
+            file = File(file_name + ".pvd")
+            file << fenics_variable
     pass
 
 def import_external_mesh(mesh_file: str, mpi_comm: Optional[MPI_Communicator]=None) -> Mesh:

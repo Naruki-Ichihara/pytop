@@ -22,7 +22,7 @@ class Problem(NonlinearProblem):
     def J(self, A, x):
         assemble(self.a, tensor=A)
 
-def sh_stripe(mesh: Mesh, source_vector: Function, source_density: Function, band_width: float, alpha=0.9, eps_0=1.0, g_0=0.0, times_of_mesh_refinement=1,
+def sh_stripe(mesh: Mesh, source_vector: Function, source_density: Function, band_width: float, alpha=0.9, eps_0=1.0, g_0=0.0,
               absolute_tol=1e-2, max_iter=1000) -> Function:
     """Solve the steady state Swift-Hohenberg equation with stripe pattern.
     see: 
@@ -37,7 +37,6 @@ def sh_stripe(mesh: Mesh, source_vector: Function, source_density: Function, ban
         alpha: the coefficient of the source term
         eps_0: the coefficient of the linear term
         g_0: the coefficient of the cubic term
-        times_of_mesh_refinement: the times of mesh refinement
         absolute_tol: the absolute tolerance
         max_iter: the maximum iterations
 
@@ -46,13 +45,9 @@ def sh_stripe(mesh: Mesh, source_vector: Function, source_density: Function, ban
     """
     width = band_width/source_density
 
-    mesh_fine = mesh
-    for i in range(times_of_mesh_refinement):
-        mesh_fine = refine(mesh_fine)
-
     V = FiniteElement('CG', mesh.ufl_cell(), 2)
     M = FunctionSpace(mesh, V*V)
-    X = FunctionSpace(mesh_fine, 'CG', 1)
+    X = FunctionSpace(mesh, 'CG', 1)
 
     theta = source_vector
 
@@ -93,7 +88,7 @@ def sh_stripe(mesh: Mesh, source_vector: Function, source_density: Function, ban
     stripe = project(Uh.split()[0], X)
     return stripe
 
-def sh_stripe_tensor(mesh: Mesh, source_tensor: Function, source_density: Function, band_width: float, perpendicular=True, alpha=0.9, eps_0=1.0, g_0=0.0, times_of_mesh_refinement=1,
+def sh_stripe_tensor(mesh: Mesh, source_tensor: Function, source_density: Function, band_width: float, perpendicular=True, alpha=0.9, eps_0=1.0, g_0=0.0,
               absolute_tol=1e-2, max_iter=1000) -> Function:
     """Solve the steady state Swift-Hohenberg equation with stripe pattern.
     see: 
@@ -109,7 +104,6 @@ def sh_stripe_tensor(mesh: Mesh, source_tensor: Function, source_density: Functi
         alpha: the coefficient of the source term
         eps_0: the coefficient of the linear term
         g_0: the coefficient of the cubic term
-        times_of_mesh_refinement: the times of mesh refinement
         absolute_tol: the absolute tolerance
         max_iter: the maximum iterations
 
@@ -118,13 +112,9 @@ def sh_stripe_tensor(mesh: Mesh, source_tensor: Function, source_density: Functi
     """
     width = band_width/source_density
 
-    mesh_fine = mesh
-    for i in range(times_of_mesh_refinement):
-        mesh_fine = refine(mesh_fine)
-
     V = FiniteElement('CG', mesh.ufl_cell(), 2)
     M = FunctionSpace(mesh, V*V)
-    X = FunctionSpace(mesh_fine, 'CG', 1)
+    X = FunctionSpace(mesh, 'CG', 1)
 
     if perpendicular:
         D = as_tensor([[source_tensor[1], -source_tensor[2]], [-source_tensor[2], source_tensor[0]]])
