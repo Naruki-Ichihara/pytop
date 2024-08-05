@@ -26,12 +26,13 @@ class MPI_Communicator:
     rank = MPI.comm_world.rank
     size = MPI.comm_world.size
 
-def from_pygmsh(mesh: meshio._mesh.Mesh, planation: bool=False, mpi_comm: Optional[MPI_Communicator]=None) -> Mesh:
+def from_pygmsh(mesh: meshio._mesh.Mesh, planation: bool=False, save_for: Optional[str]=None, mpi_comm: Optional[MPI_Communicator]=None) -> Mesh:
     '''Convert a pygmesh mesh to a fenics mesh.
 
     Args: (pygmesh.Mesh)
         mesh: pygmesh mesh.
         planation (Optional): whether to planate the mesh.
+        save_for (Optional): path to save the mesh.
         mpi_comm (Optional): MPI communicator.
 
     Returns: (Mesh)
@@ -42,6 +43,8 @@ def from_pygmsh(mesh: meshio._mesh.Mesh, planation: bool=False, mpi_comm: Option
         points = mesh.points[:, :2]
         cells = {"triangle": mesh.cells_dict["triangle"]}
         mesh = meshio.Mesh(points, cells)
+    if save_for is not None:
+        meshio.write(save_for, mesh, file_format="dolfin-xml")
     meshio.write("temp.xml", mesh, file_format="dolfin-xml")
     if mpi_comm is not None:
         mesh = Mesh(mpi_comm.comm_world, "temp.xml")
@@ -107,11 +110,12 @@ def save_fenics_function_to_file(fenics_variable: Function, file_name: str, feni
             file << fenics_variable
     pass
 
-def import_external_mesh(mesh_file: str, mpi_comm: Optional[MPI_Communicator]=None) -> Mesh:
+def import_external_mesh(mesh_file: str, planation=False, mpi_comm: Optional[MPI_Communicator]=None) -> Mesh:
     '''Import a mesh from a file. Time series XDMF files are not supported yet.
 
     Args: (str)
         mesh_file: path to the mesh file.
+        planation (Optional): whether to planate the mesh.
         mpi_comm (Optional): MPI communicator.
 
     Returns: (Mesh)
@@ -126,7 +130,11 @@ def import_external_mesh(mesh_file: str, mpi_comm: Optional[MPI_Communicator]=No
         return mesh
 
     mesh_original = meshio.read(mesh_file)
-    mesh_original.write("temp.xml")
+    if planation:
+        points = mesh_original.points[:, :2]
+        cells = {"triangle": mesh_original.cells_dict["triangle"]}
+        mesh_original = meshio.Mesh(points, cells)
+    meshio.write("temp.xml", mesh_original, file_format="dolfin-xml")
     if mpi_comm is not None:
         mesh = Mesh(mpi_comm.comm_world, "temp.xml")
     # Remove temporary file
@@ -139,7 +147,7 @@ def import_external_mesh(mesh_file: str, mpi_comm: Optional[MPI_Communicator]=No
         mpi_comm.comm_world.Barrier()
     else:
         mesh = Mesh("temp.xml")
-        os.remove("temp.xml")
+        #os.remove("temp.xml")
     return mesh
 
 def make_noiman_boundary_domains(mesh: Mesh, subdomains: Iterable[SubDomain], initialize=False) -> Measure:

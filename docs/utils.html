@@ -74,60 +74,30 @@ fenics_variable: fenics values to be converted.</p>
 numpy array.</p></div>
 </dd>
 <dt id="pytop.utils.from_pygmsh"><code class="name flex">
-<span>def <span class="ident">from_pygmsh</span></span>(<span>mesh: meshio._mesh.Mesh, planation: bool = False, mpi_comm: Optional[<a title="pytop.utils.MPI_Communicator" href="#pytop.utils.MPI_Communicator">MPI_Communicator</a>] = None) ‑> fenics_adjoint.types.mesh.Mesh</span>
+<span>def <span class="ident">from_pygmsh</span></span>(<span>mesh: meshio._mesh.Mesh, planation: bool = False, save_for: Optional[str] = None, mpi_comm: Optional[<a title="pytop.utils.MPI_Communicator" href="#pytop.utils.MPI_Communicator">MPI_Communicator</a>] = None) ‑> fenics_adjoint.types.mesh.Mesh</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Convert a pygmesh mesh to a fenics mesh.</p>
 <p>Args: (pygmesh.Mesh)
 mesh: pygmesh mesh.
 planation (Optional): whether to planate the mesh.
+save_for (Optional): path to save the mesh.
 mpi_comm (Optional): MPI communicator.</p>
 <p>Returns: (Mesh)
 fenics mesh.</p></div>
 </dd>
 <dt id="pytop.utils.import_external_mesh"><code class="name flex">
-<span>def <span class="ident">import_external_mesh</span></span>(<span>mesh_file: str, mpi_comm: Optional[<a title="pytop.utils.MPI_Communicator" href="#pytop.utils.MPI_Communicator">MPI_Communicator</a>] = None) ‑> fenics_adjoint.types.mesh.Mesh</span>
+<span>def <span class="ident">import_external_mesh</span></span>(<span>mesh_file: str, planation=False, mpi_comm: Optional[<a title="pytop.utils.MPI_Communicator" href="#pytop.utils.MPI_Communicator">MPI_Communicator</a>] = None) ‑> fenics_adjoint.types.mesh.Mesh</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Import a mesh from a file. Time series XDMF files are not supported yet.</p>
 <p>Args: (str)
 mesh_file: path to the mesh file.
+planation (Optional): whether to planate the mesh.
 mpi_comm (Optional): MPI communicator.</p>
 <p>Returns: (Mesh)
 fenics mesh.</p>
-<p>This function used the meshio library to read the mesh file and then convert it to a fenics mesh.
-Spported file formats are:</p>
-<blockquote>
-<p><a href="http://abaqus.software.polimi.it/v6.14/index.html">Abaqus</a> (<code>.inp</code>),
-<a href="https://www.ansys.com/ja-jp">ANSYS</a> msh (<code>.msh</code>),
-<a href="https://lanl.github.io/LaGriT/pages/docs/read_avs.html">AVS-UCD</a> (<code>.avs</code>),
-<a href="https://cgns.github.io/">CGNS</a> (<code>.cgns</code>),
-<a href="https://manpages.ubuntu.com/manpages/jammy/en/man1/dolfin-convert.1.html">DOLFIN XML</a> (<code>.xml</code>),
-<a href="https://nschloe.github.io/meshio/exodus.pdf">Exodus</a> (<code>.e</code>, <code>.exo</code>),
-<a href="https://www.itascacg.com/software/flac3d">FLAC3D</a> (<code>.f3grid</code>),
-<a href="https://www.mcs.anl.gov/~fathom/moab-docs/h5mmain.html">H5M</a> (<code>.h5m</code>),
-<a href="https://github.com/KratosMultiphysics/Kratos/wiki/Input-data">Kratos/MDPA</a> (<code>.mdpa</code>),
-<a href="https://people.sc.fsu.edu/~jburkardt/data/medit/medit.html">Medit</a> (<code>.mesh</code>, <code>.meshb</code>),
-<a href="https://docs.salome-platform.org/latest/dev/MEDCoupling/developer/med-file.html">MED/Salome</a> (<code>.med</code>),
-<a href="https://help.autodesk.com/view/NSTRN/2019/ENU/?guid=GUID-42B54ACB-FBE3-47CA-B8FE-475E7AD91A00">Nastran</a> (bulk data, <code>.bdf</code>, <code>.fem</code>, <code>.nas</code>),
-<a href="https://github.com/ngsolve/netgen">Netgen</a> (<code>.vol</code>, <code>.vol.gz</code>),
-<a href="https://github.com/google/neuroglancer/tree/master/src/neuroglancer/datasource/precomputed#mesh-representation-of-segmented-object-surfaces">Neuroglancer precomputed format</a>,
-<a href="https://gmsh.info/doc/texinfo/gmsh.html#File-formats">Gmsh</a> (format versions 2.2, 4.0, and 4.1, <code>.msh</code>),
-<a href="https://en.wikipedia.org/wiki/Wavefront_.obj_file">OBJ</a> (<code>.obj</code>),
-<a href="https://segeval.cs.princeton.edu/public/off_format.html">OFF</a> (<code>.off</code>),
-<a href="https://www.intes.de">PERMAS</a> (<code>.post</code>, <code>.post.gz</code>, <code>.dato</code>, <code>.dato.gz</code>),
-<a href="https://en.wikipedia.org/wiki/PLY_(file_format)">PLY</a> (<code>.ply</code>),
-<a href="https://en.wikipedia.org/wiki/STL_(file_format)">STL</a> (<code>.stl</code>),
-<a href="http://paulbourke.net/dataformats/tp/">Tecplot .dat</a>,
-<a href="https://wias-berlin.de/software/tetgen/fformats.html">TetGen .node/.ele</a>,
-<a href="https://www.w3.org/TR/SVG/">SVG</a> (2D output only) (<code>.svg</code>),
-<a href="https://su2code.github.io/docs_v7/Mesh-File/">SU2</a> (<code>.su2</code>),
-<a href="https://www.simcenter.msstate.edu/software/documentation/ug_io/3d_grid_file_type_ugrid.html">UGRID</a> (<code>.ugrid</code>),
-<a href="https://vtk.org/wp-content/uploads/2015/04/file-formats.pdf">VTK</a> (<code>.vtk</code>),
-<a href="https://vtk.org/Wiki/VTK_XML_Formats">VTU</a> (<code>.vtu</code>),
-<a href="https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry">WKT</a> (<a href="https://en.wikipedia.org/wiki/Triangulated_irregular_network">TIN</a>) (<code>.wkt</code>),
-<a href="https://xdmf.org/index.php/XDMF_Model_and_Format">XDMF</a> (<code>.xdmf</code>, <code>.xmf</code>).</p>
-</blockquote></div>
+<p>This function used the meshio library to read the mesh file and then convert it to a fenics mesh.</p></div>
 </dd>
 <dt id="pytop.utils.make_noiman_boundary_domains"><code class="name flex">
 <span>def <span class="ident">make_noiman_boundary_domains</span></span>(<span>mesh: fenics_adjoint.types.mesh.Mesh, subdomains: Iterable[dolfin.cpp.mesh.SubDomain], initialize=False) ‑> ufl.measure.Measure</span>
@@ -167,7 +137,7 @@ fenics variable.</p></div>
 <div class="desc"></div>
 </dd>
 <dt id="pytop.utils.save_fenics_function_to_file"><code class="name flex">
-<span>def <span class="ident">save_fenics_function_to_file</span></span>(<span>mpi, fenics_variable: fenics_adjoint.types.function.Function, file_name: str, fenics_function_name: Optional[str] = None, with_xml: Optional[bool] = False, with_vtu: Optional[bool] = False) ‑> None</span>
+<span>def <span class="ident">save_fenics_function_to_file</span></span>(<span>fenics_variable: fenics_adjoint.types.function.Function, file_name: str, fenics_function_name: Optional[str] = None, with_xml: Optional[bool] = False, with_vtu: Optional[bool] = False, mpi_comm: Optional[<a title="pytop.utils.MPI_Communicator" href="#pytop.utils.MPI_Communicator">MPI_Communicator</a>] = None) ‑> None</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Save a fenics variable to a xdmf file.</p>
@@ -175,7 +145,9 @@ fenics variable.</p></div>
 fenics_variable: fenics variable to be saved.
 file_name: path to the file.
 fenics_function_name (Optional): name of the fenics function.
-with_xml (Optional): whether to save the xml file.</p></div>
+with_xml (Optional): whether to save the xml file.
+with_vtu (Optional): whether to save the vtu file.
+mpi_comm (Optional): MPI communicator.</p></div>
 </dd>
 <dt id="pytop.utils.set_fields_to_fenics_function"><code class="name flex">
 <span>def <span class="ident">set_fields_to_fenics_function</span></span>(<span>fields: list[typing.Callable[[typing.Iterable], float]], function: fenics_adjoint.types.function.Function) ‑> None</span>

@@ -34,7 +34,7 @@ hljs.highlightAll();
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="pytop.toolkit.dehomogenization.sh_stripe"><code class="name flex">
-<span>def <span class="ident">sh_stripe</span></span>(<span>mesh: fenics_adjoint.types.mesh.Mesh, source_vector: fenics_adjoint.types.function.Function, source_density: fenics_adjoint.types.function.Function, band_width: float, alpha=0.9, eps_0=1.0, g_0=0.0, times_of_mesh_refinement=1, absolute_tol=0.01, max_iter=1000) ‑> fenics_adjoint.types.function.Function</span>
+<span>def <span class="ident">sh_stripe</span></span>(<span>mesh: fenics_adjoint.types.mesh.Mesh, source_vector: fenics_adjoint.types.function.Function, source_density: fenics_adjoint.types.function.Function, band_width: float, alpha=0.9, eps_0=1.0, g_0=0.0, absolute_tol=0.01, max_iter=1000) ‑> fenics_adjoint.types.function.Function</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Solve the steady state Swift-Hohenberg equation with stripe pattern.
@@ -57,8 +57,43 @@ see:
 <dd>the coefficient of the linear term</dd>
 <dt><strong><code>g_0</code></strong></dt>
 <dd>the coefficient of the cubic term</dd>
-<dt><strong><code>times_of_mesh_refinement</code></strong></dt>
-<dd>the times of mesh refinement</dd>
+<dt><strong><code>absolute_tol</code></strong></dt>
+<dd>the absolute tolerance</dd>
+<dt><strong><code>max_iter</code></strong></dt>
+<dd>the maximum iterations</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>stripe</code></dt>
+<dd>the stripe pattern</dd>
+</dl></div>
+</dd>
+<dt id="pytop.toolkit.dehomogenization.sh_stripe_tensor"><code class="name flex">
+<span>def <span class="ident">sh_stripe_tensor</span></span>(<span>mesh: fenics_adjoint.types.mesh.Mesh, source_tensor: fenics_adjoint.types.function.Function, source_density: fenics_adjoint.types.function.Function, band_width: float, perpendicular=True, alpha=0.9, eps_0=1.0, g_0=0.0, absolute_tol=0.01, max_iter=1000) ‑> fenics_adjoint.types.function.Function</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Solve the steady state Swift-Hohenberg equation with stripe pattern.
+see:
+<a href="https://doi.org/10.1038/s41598-023-41316-w">https://doi.org/10.1038/s41598-023-41316-w</a>
+<a href="https://doi.org/10.1016/j.compositesb.2022.109626">https://doi.org/10.1016/j.compositesb.2022.109626</a></p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>mesh</code></strong></dt>
+<dd>the mesh</dd>
+<dt><strong><code>source_tensor</code></strong></dt>
+<dd>the source tensor (Assuming 3-dim vector function. 1. a11, 2. a22, and 3. a12)</dd>
+<dt><strong><code>source_density</code></strong></dt>
+<dd>the source density</dd>
+<dt><strong><code>band_width</code></strong></dt>
+<dd>the width of the stripe</dd>
+<dt><strong><code>perpendicular</code></strong></dt>
+<dd>If True, the stripe is perpendicular to the source vector. Otherwise, the stripe is parallel to the source vector.</dd>
+<dt><strong><code>alpha</code></strong></dt>
+<dd>the coefficient of the source term</dd>
+<dt><strong><code>eps_0</code></strong></dt>
+<dd>the coefficient of the linear term</dd>
+<dt><strong><code>g_0</code></strong></dt>
+<dd>the coefficient of the cubic term</dd>
 <dt><strong><code>absolute_tol</code></strong></dt>
 <dd>the absolute tolerance</dd>
 <dt><strong><code>max_iter</code></strong></dt>
@@ -90,8 +125,8 @@ operations such as <strong>mul</strong>, <strong>add</strong>, where they are ne
 </summary>
 <pre><code class="python">class GaussianRandomField_2D(UserExpression):
     def eval(self, val, x):
-        val[0] = 1*np.random.randn()
-        val[1] = 1*np.random.randn()
+        val[0] = 10*np.random.randn()
+        val[1] = 10*np.random.randn()
     def value_shape(self):
         return (2,)</code></pre>
 </details>
@@ -181,6 +216,7 @@ operations such as <strong>mul</strong>, <strong>add</strong>, where they are ne
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
 <li><code><a title="pytop.toolkit.dehomogenization.sh_stripe" href="#pytop.toolkit.dehomogenization.sh_stripe">sh_stripe</a></code></li>
+<li><code><a title="pytop.toolkit.dehomogenization.sh_stripe_tensor" href="#pytop.toolkit.dehomogenization.sh_stripe_tensor">sh_stripe_tensor</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>

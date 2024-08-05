@@ -29,12 +29,11 @@ hljs.highlightAll();
 <p>Try out in codespace:</p>
 <p><a href='https://codespaces.new/Naruki-Ichihara/pytop'><img src='https://github.com/codespaces/badge.svg' alt='Open in GitHub Codespaces' style='max-width: 100%;'></a></p>
 <h2 id="significance">Significance</h2>
-<p><em>pytop</em> is a library for general-purpose optimization in finite element space, including topology optimization. We provide straightforward coding for complex optimization problems.
+<p><em>pytop</em> is an <strong>extended FEniCS</strong> for general-purpose optimization in finite element space, including topology optimization. This software provides straightforward coding for complex optimization problems.
 This software uses the <a href="https://fenicsproject.org/">FEniCS</a> as a finite element solver and <a href="https://github.com/stevengj/nlopt">NLopt</a> as an optimization solver.</p>
 <blockquote>
 <p>This software is the independent module of fenics and nlopt project.</p>
 <p>This software is based on Lagacy FEniCS (FEniCS2019.1.0). The new version, FEniCSx, is not supported.</p>
-<p>Only cpu based computation is supported. Now I consider developing the gpu based framework, please refer <a href="https://github.com/Naruki-Ichihara/gpytop">gpytop</a>.</p>
 </blockquote>
 <h2 id="documentation">Documentation</h2>
 <p>Documentation with many physics is available here:
@@ -59,7 +58,7 @@ U = pt.FunctionSoace(mesh, &quot;CG&quot;, 1)
 u = pt.Function(U)
 ...
 </code></pre>
-<p>Please referto the <a href="https://fenicsproject.org/">FEniCS document</a> to use fundamental functions in FEniCS.</p>
+<p>Please refer to the <a href="https://fenicsproject.org/">FEniCS document</a> to use fundamental functions in FEniCS.</p>
 <h3 id="mesh">Mesh</h3>
 <p>Second, you need to generate (or import) mesh. This software provides easy method to import external mesh, <code>import_external_mesh</code>. This method use <code>meshio</code> in the backgroud, so any mesh type that supported by <a href="https://github.com/nschloe/meshio">meshio</a> is supported.</p>
 <pre><code class="language-python">mesh = pt.import_external_mesh(path_to_the_meshfile)
@@ -68,6 +67,13 @@ u = pt.Function(U)
 <pre><code class="language-python">NUMBER_OF_NODES = (100, 100)
 POSITION = (100, 100)
 mesh = pt.RectangleMesh(pt Point(0, 0), pt.Point(*POSITION), *NUMBER_OF_NODES)
+</code></pre>
+<p>Moreover, we provide simple interface of <a href="https://github.com/nschloe/pygmsh">pygmsh</a>. pygmsh can generate more flexible geometry, whether 2D or 3D.</p>
+<pre><code class="language-python">import pytop as pt
+import pygmsh
+
+...
+mesh = pt.from_pygmsh(pyg_mesh)
 </code></pre>
 <h3 id="function-space-and-function">Function space and Function</h3>
 <p>This is standard procedure in the FEniCS. You first need to define <code>FunctionSpace</code> and then <code>Function</code> (If need, <code>TrialFunction</code> and <code>TestFunction</code>).</p>
@@ -201,10 +207,6 @@ mesh = pt.from_pygmsh(mesh)
 <dd>
 <div class="desc"></div>
 </dd>
-<dt><code class="name"><a title="pytop.optimizer" href="optimizer.html">pytop.optimizer</a></code></dt>
-<dd>
-<div class="desc"><p>Built-in solver for topology optimization problems. #TODO!!</p></div>
-</dd>
 <dt><code class="name"><a title="pytop.physics" href="physics/index.html">pytop.physics</a></code></dt>
 <dd>
 <div class="desc"></div>
@@ -264,7 +266,6 @@ mesh = pt.from_pygmsh(mesh)
 <li><code><a title="pytop.designvariable" href="designvariable.html">pytop.designvariable</a></code></li>
 <li><code><a title="pytop.filters" href="filters.html">pytop.filters</a></code></li>
 <li><code><a title="pytop.nlopt_optimizer" href="nlopt_optimizer.html">pytop.nlopt_optimizer</a></code></li>
-<li><code><a title="pytop.optimizer" href="optimizer.html">pytop.optimizer</a></code></li>
 <li><code><a title="pytop.physics" href="physics/index.html">pytop.physics</a></code></li>
 <li><code><a title="pytop.statement" href="statement.html">pytop.statement</a></code></li>
 <li><code><a title="pytop.toolkit" href="toolkit/index.html">pytop.toolkit</a></code></li>
