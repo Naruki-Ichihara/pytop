@@ -74,4 +74,23 @@ def isoparametric_2D_box_to_triangle(z: Function, e: Function, tolerance=1e-6) -
     zero_like = tolerance
     u = as_vector([zero_like, 0.5, 1, 0.75, 0.5, 0.25, zero_like, zero_like])
     v = as_vector([zero_like, zero_like, zero_like, 0.25, 0.5, 0.75, 1, 0.5])
-    return isoparametric_2D(z, e, u, v) 
+    return isoparametric_2D(z, e, u, v)
+
+class Custom_nonlinear_problem(NonlinearProblem):
+    """Custom nonlinear problem class for FEniCS.
+    """
+    def __init__(self, J, F, bcs):
+        self.bilinear_form = J
+        self.linear_form = F
+        self.bcs = bcs
+        NonlinearProblem.__init__(self)
+
+    def F(self, b, x):
+        assemble(self.linear_form, tensor=b)
+        for bc in self.bcs:
+            bc.apply(b, x)
+
+    def J(self, A, x):
+        assemble(self.bilinear_form, tensor=A)
+        for bc in self.bcs:
+            bc.apply(A)

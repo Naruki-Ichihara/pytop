@@ -2,7 +2,7 @@
 .. include:: ../README.md
 """
 
-__version__ = "0.0.3.alpha"
+__version__ = "0.0.4.alpha"
 
 from fenics import *
 from fenics_adjoint import *
