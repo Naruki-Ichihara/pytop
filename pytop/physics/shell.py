@@ -55,8 +55,8 @@ def AD_matrix_neo_hooken(mu: float, nu: float, list_of_thickness: list, index: l
         list_of_thickness: list of thickness of each layer.
         index: index of active layer.
     Returns:
-        A: a symmetric 3x3 ufl matrix giving the membrane stiffness in Voigt notation.
-        D: a symmetric 3x3 ufl matrix giving the bending stiffness in Voigt notation.
+        A: 
+        D: 
     """
 
     z = z_coordinates(list_of_thickness)
@@ -74,50 +74,29 @@ def AD_matrix_neo_hooken(mu: float, nu: float, list_of_thickness: list, index: l
 
     return (A, D)
 
-def shear_stiffness_neo_hooken(mu: float, list_of_thickness: list, index: list) -> Form:
-    r"""Return the shear stiffness matrix of a Reissner-Midlin model of a
-    laminate obtained by stacking n isotropic lamina.
-    It assumes a plane-stress state.
-    Args:
-        G13: The transverse shear modulus between the material directions 1-3.
-        G23: The transverse shear modulus between the material directions 2-3.
-        hs: a list with length n with the thicknesses of the layers (from top to bottom).
-        theta: a list with the n orientations (in radians) of the layers (from top to bottom).
-    Returns:
-        F: a symmetric 2x2 ufl matrix giving the shear stiffness in Voigt notation.
-    """
-
-    z = z_coordinates(list_of_thickness)
-    F = 0.
-
-    for i in range(len(list_of_thickness)):
-        if i in index:
-            F += mu*(z[i+1]-z[i])
-
-    return F
-
-def AD_matrix_dielectric(relative_permittivity: float, V: float, list_of_thickness: list, index: int, eps0=8.85*1e-12):
+def dielectric_general_stiffness(relative_permittivity: float, list_of_thickness: list, index: int, eps0=8.85*1e-12):
     r"""Return the general stiffness matrix of an isotropic dielectric mechanics.
         epsr: Relative permittivity.
-        V: Reference potential.
         list_of_thickness: a list with length n with the thicknesses of the layers (from top to bottom).
         h: total thickness.
         index: index of active layer.
         eps0: permittivity.
     Returns:
-        A: a symmetric 3x3 ufl matrix giving the membrane stiffness in Voigt notation.
-        D: a symmetric 3x3 ufl matrix giving the bending stiffness in Voigt notation.
+        A: general stiffness of membrane.
+        D: general stiffness of bending.
     """
     z = z_coordinates(list_of_thickness)
     A = 0.
     D = 0.
+    total_thickness = sum(list_of_thickness)
     for i in range(len(list_of_thickness)):
         if i in index:
-            A += eps0*relative_permittivity*V/list_of_thickness[i]**2*(z[i+1]-z[i])
-            D += eps0*relative_permittivity*V/list_of_thickness[i]**2*(z[i+1]**2-z[i]**2)
+            A += 4*eps0*relative_permittivity/total_thickness**2*(z[i+1]-z[i])
+            D += 2*eps0*relative_permittivity/total_thickness**2*(z[i+1]**2-z[i]**2)
         else:
             A += 0.
             D += 0.
+    D = D/A
     return (A, D)
 
 def ABD(E1, E2, G12, nu12, hs_grobal, thetas_grobal, index):
