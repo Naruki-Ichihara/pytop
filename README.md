@@ -1,3 +1,6 @@
+<div align="center">
+<img src="https://github.com/user-attachments/assets/e97f54c3-b0a2-41dd-9297-6e919d0c5fe2" alt="logo" width="20%"></img>
+</div>
 <h1 align="center"><b>pytop</b></h1>
 
 Try out in codespace:
