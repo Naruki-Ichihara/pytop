@@ -184,8 +184,33 @@ def rotated_lamina_expansion_inplane(alpha11, alpha22, theta):
 
     return alpha_theta
 
+def rotated_lamina_stiffness_shear(G13, G23, theta, kappa=5./6.):
+    r"""Return the shear stiffness matrix of an orhtropic layer
+    in a reference rotated by an angle theta wrt to the material one.
+    It assumes Voigt notation and plane stress state
+    (see Reddy 1997, eqn 3.4.18).
 
-def NM_T(E1, E2, G12, nu12, hs, thetas, DeltaT_0, DeltaT_1=0., alpha1=1., alpha2=1.):
+    Args:
+        G12: The transverse shear modulus between the material directions 1-2.
+        G13: The transverse shear modulus between the material directions 1-3.
+        kappa: The shear correction factor.
+
+    Returns:
+        Q_shear_theta: a 3x3 symmetric ufl matrix giving the stiffness matrix.
+    """
+    # The rotation matrix to rotate the shear stiffness matrix
+    # in Voigt notation of an angle theta from the material directions
+    # (See Reddy 1997 pg 91, eqn 2.3.7)
+    c = cos(theta)
+    s = sin(theta)
+    T_shear = as_matrix([[c, s], [-s, c]])
+    Q_shear = kappa*as_matrix([[G23, 0.], [0., G13]])
+    Q_shear_theta = T_shear*Q_shear*transpose(T_shear)
+
+    return Q_shear_theta
+
+
+def NM_T(E1, E2, G12, nu12, hs, thetas, index, DeltaT_0, DeltaT_1=0., alpha1=1., alpha2=1.):
     r"""Return the thermal stress and moment resultant of a Kirchhoff-Love model
     of a laminate obtained by stacking n orthotropic laminae with possibly
     different thinknesses and orientations.
@@ -230,8 +255,11 @@ def NM_T(E1, E2, G12, nu12, hs, thetas, DeltaT_0, DeltaT_1=0., alpha1=1., alpha2
         integral_DeltaT = hs[i]*(T0 + T1 * z0i)
         # integral of DeltaT(z)*z in (z[i+1], z[i])
         integral_DeltaT_z = T1*(hs[i]*3/12 + z0i**2*hs[i]) + hs[i]*z0i*T0
-        N_T += Q_theta*alpha_theta*integral_DeltaT
-        M_T += Q_theta*alpha_theta*integral_DeltaT_z
+        if i in index:
+            N_T += Q_theta*alpha_theta*integral_DeltaT
+            M_T += Q_theta*alpha_theta*integral_DeltaT_z
+        else:
+            pass
 
     return (N_T, M_T)
 

@@ -33,6 +33,33 @@ hljs.highlightAll();
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
+<dt id="pytop.physics.utils.inner_e"><code class="name flex">
+<span>def <span class="ident">inner_e</span></span>(<span>x, y, restrict_to_one_side=False, quadrature_degree=1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>The inner product of the tangential component of a vector field on all
+of the facets of the mesh (Measure objects dS and ds).
+By default, restrict_to_one_side is False. In this case, the function will
+return an integral that is restricted to both sides ('+') and ('-') of a
+shared facet between elements. You should use this in the case that you
+want to use the 'projected' version of DuranLibermanSpace.
+If restrict_to_one_side is True, then this will return an integral that is
+restricted ('+') to one side of a shared facet between elements. You should
+use this in the case that you want to use the <code>multipliers</code> version of
+DuranLibermanSpace.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>x</code></strong></dt>
+<dd>DOLFIN or UFL Function of rank (2,) (vector).</dd>
+<dt><strong><code>y</code></strong></dt>
+<dd>DOLFIN or UFL Function of rank (2,) (vector).</dd>
+<dt>restrict_to_one_side (Optional[bool]: Default is False.</dt>
+<dt><strong><code>quadrature_degree</code></strong> :&ensp;<code>Optional[int]</code></dt>
+<dd>Default is 1.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>UFL Form.</p></div>
+</dd>
 <dt id="pytop.physics.utils.isoparametric_2D"><code class="name flex">
 <span>def <span class="ident">isoparametric_2D</span></span>(<span>z: fenics_adjoint.types.function.Function, e: fenics_adjoint.types.function.Function, u: fenics_adjoint.types.function.Function, v: fenics_adjoint.types.function.Function) ‑> fenics_adjoint.types.function.Function</span>
 </code></dt>
@@ -114,6 +141,60 @@ penalized weight.</p></div>
 </dl>
 </section>
 <section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="pytop.physics.utils.Custom_nonlinear_problem"><code class="flex name class">
+<span>class <span class="ident">Custom_nonlinear_problem</span></span>
+<span>(</span><span>J, F, bcs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Custom nonlinear problem class for FEniCS.</p>
+<p><strong>init</strong>(self: dolfin.cpp.nls.NonlinearProblem) -&gt; None</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Custom_nonlinear_problem(NonlinearProblem):
+    &#34;&#34;&#34;Custom nonlinear problem class for FEniCS.
+    &#34;&#34;&#34;
+    def __init__(self, J, F, bcs):
+        self.bilinear_form = J
+        self.linear_form = F
+        self.bcs = bcs
+        NonlinearProblem.__init__(self)
+
+    def F(self, b, x):
+        assemble(self.linear_form, tensor=b)
+        for bc in self.bcs:
+            bc.apply(b, x)
+
+    def J(self, A, x):
+        assemble(self.bilinear_form, tensor=A)
+        for bc in self.bcs:
+            bc.apply(A)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>dolfin.cpp.nls.NonlinearProblem</li>
+<li>pybind11_builtins.pybind11_object</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="pytop.physics.utils.Custom_nonlinear_problem.F"><code class="name flex">
+<span>def <span class="ident">F</span></span>(<span>self, b, x)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>F(self: dolfin.cpp.nls.NonlinearProblem, arg0: dolfin.cpp.la.GenericVector, arg1: dolfin.cpp.la.GenericVector) -&gt; None</p></div>
+</dd>
+<dt id="pytop.physics.utils.Custom_nonlinear_problem.J"><code class="name flex">
+<span>def <span class="ident">J</span></span>(<span>self, A, x)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>J(self: dolfin.cpp.nls.NonlinearProblem, arg0: dolfin.cpp.la.GenericMatrix, arg1: dolfin.cpp.la.GenericVector) -&gt; None</p></div>
+</dd>
+</dl>
+</dd>
+</dl>
 </section>
 </article>
 <nav id="sidebar">
@@ -128,11 +209,23 @@ penalized weight.</p></div>
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
+<li><code><a title="pytop.physics.utils.inner_e" href="#pytop.physics.utils.inner_e">inner_e</a></code></li>
 <li><code><a title="pytop.physics.utils.isoparametric_2D" href="#pytop.physics.utils.isoparametric_2D">isoparametric_2D</a></code></li>
 <li><code><a title="pytop.physics.utils.isoparametric_2D_box_to_circle" href="#pytop.physics.utils.isoparametric_2D_box_to_circle">isoparametric_2D_box_to_circle</a></code></li>
 <li><code><a title="pytop.physics.utils.isoparametric_2D_box_to_triangle" href="#pytop.physics.utils.isoparametric_2D_box_to_triangle">isoparametric_2D_box_to_triangle</a></code></li>
 <li><code><a title="pytop.physics.utils.penalized_weight" href="#pytop.physics.utils.penalized_weight">penalized_weight</a></code></li>
 <li><code><a title="pytop.physics.utils.sgn" href="#pytop.physics.utils.sgn">sgn</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="pytop.physics.utils.Custom_nonlinear_problem" href="#pytop.physics.utils.Custom_nonlinear_problem">Custom_nonlinear_problem</a></code></h4>
+<ul class="">
+<li><code><a title="pytop.physics.utils.Custom_nonlinear_problem.F" href="#pytop.physics.utils.Custom_nonlinear_problem.F">F</a></code></li>
+<li><code><a title="pytop.physics.utils.Custom_nonlinear_problem.J" href="#pytop.physics.utils.Custom_nonlinear_problem.J">J</a></code></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>

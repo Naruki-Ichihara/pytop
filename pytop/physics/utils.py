@@ -45,7 +45,7 @@ def isoparametric_2D(z: Function, e: Function, u: Function, v: Function) -> Func
     N = as_vector([N1, N2, N3, N4, N5, N6, N7, N8])
     Nx = inner(u, N)
     Ny = inner(v, N)
-    return as_vector((Nx, Ny))
+    return Nx, Ny#as_vector((Nx, Ny)) 
 
 def isoparametric_2D_box_to_circle(z: Function, e: Function) -> Function:
     ''' Apply 2D isoparametric projection onto orientation vector.
