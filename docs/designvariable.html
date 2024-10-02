@@ -49,7 +49,7 @@ In the optimization problem in finite element analysis, followings are essential
 <p>The <code>register</code> method can be used to define above components.
 The assigned functions can be accessed by standard dictionary-like syntax.</p>
 <pre><code class="language-python">design_variables = DesignVariables()
-design_variables.register(function_space, &quot;your_function_name&quot;, [initial], range)
+design_variables.register(function_space, &quot;your_function_name&quot;, [initials], [ranges])
 density = design_variables[&quot;your_function_name&quot;]
 </code></pre>
 <p>But we can not add some functions by the above syntax. Do not:</p>
@@ -58,16 +58,16 @@ density = design_variables[&quot;your_function_name&quot;]
 <p>This code will be raise the read-only error. The <code>register</code> method should be used to add new functions.</p>
 <h2 id="attributes">Attributes</h2>
 <dl>
-<dt><strong><code>keys</code></strong> :&ensp;<code>Iterable[str]</code></dt>
-<dd>The names of the function.</dd>
+<dt><strong><code>current_iteration_number</code></strong> :&ensp;<code>int</code></dt>
+<dd>The current iteration number.</dd>
+<dt><strong><code>dict_of_original_functions</code></strong> :&ensp;<code>OrderedDict</code></dt>
+<dd>The original functions that not applied any pre-process functions.</dd>
 <dt><strong><code>vector</code></strong> :&ensp;<code>np.ndarray</code></dt>
 <dd>The flatten design vector.</dd>
 <dt><strong><code>min_vector</code></strong> :&ensp;<code>np.ndarray</code></dt>
-<dd>minimum range of the design vector.</dd>
+<dd>The minimum value of the design vector.</dd>
 <dt><strong><code>max_vector</code></strong> :&ensp;<code>np.ndarray</code></dt>
-<dd>maximum range of the design vector.</dd>
-<dt><strong><code>dict_of_original_functions</code></strong> :&ensp;<code>OrderedDict</code></dt>
-<dd>The original functions.</dd>
+<dd>The maximum value of the design vector.</dd>
 </dl></div>
 <details class="source">
 <summary>
@@ -86,7 +86,7 @@ density = design_variables[&quot;your_function_name&quot;]
 
     ```python
     design_variables = DesignVariables()
-    design_variables.register(function_space, &#34;your_function_name&#34;, [initial], range)
+    design_variables.register(function_space, &#34;your_function_name&#34;, [initials], [ranges])
     density = design_variables[&#34;your_function_name&#34;]
     ```
 
@@ -99,11 +99,11 @@ density = design_variables[&quot;your_function_name&quot;]
     This code will be raise the read-only error. The ```register``` method should be used to add new functions.
 
     Attributes:
-        keys (Iterable[str]): The names of the function.
+        current_iteration_number (int): The current iteration number.
+        dict_of_original_functions (OrderedDict): The original functions that not applied any pre-process functions.
         vector (np.ndarray): The flatten design vector.
-        min_vector (np.ndarray): minimum range of the design vector.
-        max_vector (np.ndarray): maximum range of the design vector.
-        dict_of_original_functions (OrderedDict): The original functions.
+        min_vector (np.ndarray): The minimum value of the design vector.
+        max_vector (np.ndarray): The maximum value of the design vector.
 
     &#34;&#34;&#34;
     def __init__(self) -&gt; None:
@@ -125,7 +125,7 @@ density = design_variables[&quot;your_function_name&quot;]
     
     def __str__(self) -&gt; str:
         return &#34;=================================================================\n&#34; \
-            f&#34;Conut of fields: {len(self.__functions_dict)}\n&#34; \
+            f&#34;Count of fields: {len(self.__functions_dict)}\n&#34; \
                  f&#34;Total number of design variables: {len(self.vector)}\n&#34; \
                  f&#34;object ID: {id(self)}\n&#34; \
                  f&#34;Keys of all design variables:\n{self.__functions_dict.keys()}\n&#34; \

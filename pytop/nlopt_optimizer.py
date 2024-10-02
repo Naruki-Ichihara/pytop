@@ -73,6 +73,7 @@ class NloptOptimizer(nlp.opt):
         self.set_lower_bounds(self.design_vector.min_vector)
         self.set_upper_bounds(self.design_vector.max_vector)
         self.set_param("verbosity", 1)
+        print(self.design_vector)
         result = self.optimize(self.design_vector.vector)
 
         if logging_path is not None:

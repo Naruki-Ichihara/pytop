@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
 <meta name="generator" content="pdoc3 0.11.1">
 <title>pytop.statement API documentation</title>
-<meta name="description" content="Problem statement class.">
+<meta name="description" content="">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" crossorigin>
@@ -25,22 +25,12 @@ hljs.highlightAll();
 <h1 class="title">Module <code>pytop.statement</code></h1>
 </header>
 <section id="section-intro">
-<p>Problem statement class.</p>
 </section>
 <section>
 </section>
 <section>
 </section>
 <section>
-<h2 class="section-title" id="header-functions">Functions</h2>
-<dl>
-<dt id="pytop.statement.save"><code class="name flex">
-<span>def <span class="ident">save</span></span>(<span>func)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-</dl>
 </section>
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
@@ -164,7 +154,7 @@ the objective function value.</p>
 </dl></div>
 </dd>
 <dt id="pytop.statement.ProblemStatement.recorder"><code class="name flex">
-<span>def <span class="ident">recorder</span></span>(<span>self, xdmf_file: dolfin.cpp.io.XDMFFile, variable: dolfin.fem.form.Form | fenics_adjoint.types.function.Function, function_space: dolfin.function.functionspace.FunctionSpace, name: str, iter_num: int | None)</span>
+<span>def <span class="ident">recorder</span></span>(<span>self, xdmf_file: dolfin.cpp.io.XDMFFile, variable: fenics_adjoint.types.function.Function | dolfin.fem.form.Form, function_space: dolfin.function.functionspace.FunctionSpace, name: str, iter_num: int | None)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Record the variable to the xdmf file.</p>
@@ -193,11 +183,6 @@ the objective function value.</p>
 <li><h3>Super-module</h3>
 <ul>
 <li><code><a title="pytop" href="index.html">pytop</a></code></li>
-</ul>
-</li>
-<li><h3><a href="#header-functions">Functions</a></h3>
-<ul class="">
-<li><code><a title="pytop.statement.save" href="#pytop.statement.save">save</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>

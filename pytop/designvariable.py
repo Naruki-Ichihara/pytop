@@ -19,7 +19,7 @@ class DesignVariables():
 
     ```python
     design_variables = DesignVariables()
-    design_variables.register(function_space, "your_function_name", [initial], range)
+    design_variables.register(function_space, "your_function_name", [initials], [ranges])
     density = design_variables["your_function_name"]
     ```
 
@@ -32,11 +32,11 @@ class DesignVariables():
     This code will be raise the read-only error. The ```register``` method should be used to add new functions.
 
     Attributes:
-        keys (Iterable[str]): The names of the function.
+        current_iteration_number (int): The current iteration number.
+        dict_of_original_functions (OrderedDict): The original functions that not applied any pre-process functions.
         vector (np.ndarray): The flatten design vector.
-        min_vector (np.ndarray): minimum range of the design vector.
-        max_vector (np.ndarray): maximum range of the design vector.
-        dict_of_original_functions (OrderedDict): The original functions.
+        min_vector (np.ndarray): The minimum value of the design vector.
+        max_vector (np.ndarray): The maximum value of the design vector.
 
     """
     def __init__(self) -> None:
@@ -58,7 +58,7 @@ class DesignVariables():
     
     def __str__(self) -> str:
         return "=================================================================\n" \
-            f"Conut of fields: {len(self.__functions_dict)}\n" \
+            f"Count of fields: {len(self.__functions_dict)}\n" \
                  f"Total number of design variables: {len(self.vector)}\n" \
                  f"object ID: {id(self)}\n" \
                  f"Keys of all design variables:\n{self.__functions_dict.keys()}\n" \

@@ -1,8 +1,3 @@
-# -*- coding: utf-8 -*-
-''' Problem statement class.
-
-'''
-
 from abc import ABCMeta, abstractmethod
 from fenics import *
 from fenics_adjoint import *
@@ -10,14 +5,6 @@ import numpy as np
 from pytop.utils import fenics_function_to_np_array
 from pytop.designvariable import DesignVariables
 from typing import Optional
-
-def save(func):
-    def wrapper(self, *args, **kwargs):
-        print("Objective called")
-        result = func(self, *args, **kwargs)
-        print(type(result))
-        return result
-    return wrapper
 
 class ProblemStatement(metaclass=ABCMeta):
     '''The ```ProblemStatement``` class is an abstract class for defining the optimization physics.

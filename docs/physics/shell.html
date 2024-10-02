@@ -34,7 +34,7 @@ hljs.highlightAll();
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="pytop.physics.shell.ABD"><code class="name flex">
-<span>def <span class="ident">ABD</span></span>(<span>E1, E2, G12, nu12, hs_grobal, thetas_grobal, index)</span>
+<span>def <span class="ident">ABD</span></span>(<span>E1: float | fenics_adjoint.types.function.Function, E2: float | fenics_adjoint.types.function.Function, G12: float | fenics_adjoint.types.function.Function, nu12: float | fenics_adjoint.types.function.Function, list_of_thickness: list[float | fenics_adjoint.types.function.Function], orientations: list[float | fenics_adjoint.types.function.Function], index: list[int]) ‑> Tuple[dolfin.fem.form.Form, dolfin.fem.form.Form, dolfin.fem.form.Form]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Return the stiffness matrix of a kirchhoff-love model of a laminate
@@ -48,10 +48,44 @@ It assumes a plane-stress state.</p>
 <dt>G12 : The in-plane shear modulus.</dt>
 <dt><strong><code>nu12</code></strong></dt>
 <dd>The in-plane Poisson ratio.</dd>
-<dt><strong><code>hs</code></strong></dt>
+<dt><strong><code>list_of_thickness</code></strong></dt>
 <dd>a list with length n with the thicknesses of the layers (from top to bottom).</dd>
-<dt><strong><code>theta</code></strong></dt>
+<dt><strong><code>orientations</code></strong></dt>
 <dd>a list with the n orientations (in radians) of the layers (from top to bottom).</dd>
+<dt><strong><code>index</code></strong></dt>
+<dd>index of active layer.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>A</code></dt>
+<dd>a symmetric 3x3 ufl matrix giving the membrane stiffness in Voigt notation.</dd>
+<dt><code>B</code></dt>
+<dd>a symmetric 3x3 ufl matrix giving the membrane/bending coupling stiffness in Voigt notation.</dd>
+<dt><code>D</code></dt>
+<dd>a symmetric 3x3 ufl matrix giving the bending stiffness in Voigt notation.</dd>
+</dl></div>
+</dd>
+<dt id="pytop.physics.shell.ABD_tensor"><code class="name flex">
+<span>def <span class="ident">ABD_tensor</span></span>(<span>E1: float | fenics_adjoint.types.function.Function, E2: float | fenics_adjoint.types.function.Function, G12: float | fenics_adjoint.types.function.Function, nu12: float | fenics_adjoint.types.function.Function, list_of_thickness: list[float | fenics_adjoint.types.function.Function], orientation_tensors: list[fenics_adjoint.types.function.Function | dolfin.fem.form.Form], index: list[int]) ‑> Tuple[dolfin.fem.form.Form, dolfin.fem.form.Form, dolfin.fem.form.Form]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Return the stiffness matrix of a kirchhoff-love model of a laminate
+obtained by stacking n orthotropic laminae with possibly different
+thinknesses and orientations (see Reddy 1997, eqn 1.3.71).
+It assumes a plane-stress state.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt>E1 : The Young modulus in the material direction 1.</dt>
+<dt>E2 : The Young modulus in the material direction 2.</dt>
+<dt>G12 : The in-plane shear modulus.</dt>
+<dt><strong><code>nu12</code></strong></dt>
+<dd>The in-plane Poisson ratio.</dd>
+<dt><strong><code>list_of_thickness</code></strong></dt>
+<dd>a list with length n with the thicknesses of the layers (from top to bottom).</dd>
+<dt><strong><code>orientation_tensors</code></strong></dt>
+<dd>a list with the n orientations (in radians) of the layers (from top to bottom).</dd>
+<dt><strong><code>index</code></strong></dt>
+<dd>index of active layer.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
 <dl>
@@ -82,12 +116,13 @@ It assumes a plane-stress state.</p>
 <h2 id="returns">Returns</h2>
 <dl>
 <dt><code>A</code></dt>
-<dd>&nbsp;</dd>
-</dl>
-<p>D:</p></div>
+<dd>Stiffness matrix of membrane.</dd>
+<dt><code>D</code></dt>
+<dd>Stiffness matrix of bending.</dd>
+</dl></div>
 </dd>
 <dt id="pytop.physics.shell.Fs"><code class="name flex">
-<span>def <span class="ident">Fs</span></span>(<span>G13, G23, hs_grobal, thetas_grobal, index)</span>
+<span>def <span class="ident">Fs</span></span>(<span>G13: float | fenics_adjoint.types.function.Function, G23: float | fenics_adjoint.types.function.Function, list_of_thickness: list[float | fenics_adjoint.types.function.Function], orientations: list[float | fenics_adjoint.types.function.Function], index: list[int]) ‑> dolfin.fem.form.Form</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Return the shear stiffness matrix of a Reissner-Midlin model of a
@@ -101,9 +136,37 @@ It assumes a plane-stress state.</p>
 <dd>The transverse shear modulus between the material directions 1-3.</dd>
 <dt><strong><code>G23</code></strong></dt>
 <dd>The transverse shear modulus between the material directions 2-3.</dd>
-<dt><strong><code>hs</code></strong></dt>
+<dt><strong><code>list_of_thickness</code></strong></dt>
 <dd>a list with length n with the thicknesses of the layers (from top to bottom).</dd>
-<dt><strong><code>theta</code></strong></dt>
+<dt><strong><code>orientations</code></strong></dt>
+<dd>a list with the n orientations (in radians) of the layers (from top to bottom).</dd>
+<dt><strong><code>index</code></strong></dt>
+<dd>index of active layer.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>F</code></dt>
+<dd>a symmetric 2x2 ufl matrix giving the shear stiffness in Voigt notation.</dd>
+</dl></div>
+</dd>
+<dt id="pytop.physics.shell.Fs_tensor"><code class="name flex">
+<span>def <span class="ident">Fs_tensor</span></span>(<span>G13: float | fenics_adjoint.types.function.Function, G23: float | fenics_adjoint.types.function.Function, list_of_thickness: float | fenics_adjoint.types.function.Function, orientation_tensors: list[fenics_adjoint.types.function.Function | dolfin.fem.form.Form], index: list[int]) ‑> dolfin.fem.form.Form</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Return the shear stiffness matrix of a Reissner-Midlin model of a
+laminate obtained by stacking n orthotropic laminae with possibly different
+thinknesses and orientations.
+(See Reddy 1997, eqn 3.4.18)
+It assumes a plane-stress state.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>G13</code></strong></dt>
+<dd>The transverse shear modulus between the material directions 1-3.</dd>
+<dt><strong><code>G23</code></strong></dt>
+<dd>The transverse shear modulus between the material directions 2-3.</dd>
+<dt><strong><code>list_of_thickness</code></strong></dt>
+<dd>a list with length n with the thicknesses of the layers (from top to bottom).</dd>
+<dt><strong><code>orientation_tensors</code></strong></dt>
 <dd>a list with the n orientations (in radians) of the layers (from top to bottom).</dd>
 </dl>
 <h2 id="returns">Returns</h2>
@@ -113,7 +176,7 @@ It assumes a plane-stress state.</p>
 </dl></div>
 </dd>
 <dt id="pytop.physics.shell.NM_T"><code class="name flex">
-<span>def <span class="ident">NM_T</span></span>(<span>E1, E2, G12, nu12, hs, thetas, index, DeltaT_0, DeltaT_1=0.0, alpha1=1.0, alpha2=1.0)</span>
+<span>def <span class="ident">NM_T</span></span>(<span>E1: float, E2: float, G12: float, nu12: float, list_of_thickness: list[float], orientations: list[float], index: list[int], DeltaT_0: float, DeltaT_1: float, alpha1: float, alpha2: float) ‑> Tuple[dolfin.fem.form.Form, dolfin.fem.form.Form]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Return the thermal stress and moment resultant of a Kirchhoff-Love model
@@ -131,9 +194,9 @@ Delta(z) = DeltaT_0 + z * DeltaT_1</p>
 <dd>The in-plane shear modulus.</dd>
 <dt><strong><code>nu12</code></strong></dt>
 <dd>The in-plane Poisson ratio.</dd>
-<dt><strong><code>hs</code></strong></dt>
+<dt><strong><code>list_of_thickness</code></strong></dt>
 <dd>a list with length n with the thicknesses of the layers (from top to bottom).</dd>
-<dt><strong><code>theta</code></strong></dt>
+<dt><strong><code>orientations</code></strong></dt>
 <dd>a list with the n orientations (in radians) of the layers (from top to bottom).</dd>
 <dt><strong><code>alpha1</code></strong></dt>
 <dd>Expansion coefficient in the material direction 1.</dd>
@@ -151,6 +214,12 @@ Delta(z) = DeltaT_0 + z * DeltaT_1</p>
 <dt><code>M_T</code></dt>
 <dd>a 3x1 ufl vector giving the bending inelastic stress.</dd>
 </dl></div>
+</dd>
+<dt id="pytop.physics.shell.NM_T_tensor"><code class="name flex">
+<span>def <span class="ident">NM_T_tensor</span></span>(<span>E1, E2, G12, nu12, hs, orientation_tensors, index, DeltaT_0, DeltaT_1=0.0, alpha1=1.0, alpha2=1.0)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
 </dd>
 <dt id="pytop.physics.shell.dielectric_general_stiffness"><code class="name flex">
 <span>def <span class="ident">dielectric_general_stiffness</span></span>(<span>relative_permittivity: float, list_of_thickness: list, index: int, eps0=8.849999999999999e-12)</span>
@@ -195,12 +264,17 @@ Args:</p>
 <dd>Reference director.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
-<p>e(F): Membrane strain measure.
-k(F, d): Bending strain measure.
-gamma(F, d): Shear strain measure.</p></div>
+<dl>
+<dt><code>e</code></dt>
+<dd>Membrane strain measure.</dd>
+<dt><code>k</code></dt>
+<dd>Bending strain measure.</dd>
+<dt><code>gamma</code></dt>
+<dd>Shear strain measure.</dd>
+</dl></div>
 </dd>
 <dt id="pytop.physics.shell.rotated_lamina_expansion_inplane"><code class="name flex">
-<span>def <span class="ident">rotated_lamina_expansion_inplane</span></span>(<span>alpha11, alpha22, theta)</span>
+<span>def <span class="ident">rotated_lamina_expansion_inplane</span></span>(<span>alpha11: float, alpha22: float, theta: float) ‑> dolfin.fem.form.Form</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Return the in-plane expansion matrix of an orhtropic layer
@@ -222,8 +296,31 @@ It assumes Voigt notation and plane stress state.
 <dd>a 3x1 ufl vector giving the expansion matrix in voigt notation.</dd>
 </dl></div>
 </dd>
+<dt id="pytop.physics.shell.rotated_lamina_expansion_inplane_tensor"><code class="name flex">
+<span>def <span class="ident">rotated_lamina_expansion_inplane_tensor</span></span>(<span>alpha11: float, alpha22: float, orientation_tensors: fenics_adjoint.types.function.Function | dolfin.fem.form.Form) ‑> dolfin.fem.form.Form</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Return the in-plane expansion matrix of an orhtropic layer
+in a reference rotated by an angle theta wrt to the material one.
+It assumes Voigt notation and plane stress state.
+(See Reddy 1997, eqn 1.3.71)</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>alpha11</code></strong></dt>
+<dd>Expansion coefficient in the material direction 1.</dd>
+<dt><strong><code>alpha22</code></strong></dt>
+<dd>Expansion coefficient in the material direction 2.</dd>
+<dt><strong><code>orientation_tensors</code></strong></dt>
+<dd>a 2x2 ufl matrix giving the orientation matrix.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>alpha_theta</code></dt>
+<dd>a 3x1 ufl vector giving the expansion matrix in voigt notation.</dd>
+</dl></div>
+</dd>
 <dt id="pytop.physics.shell.rotated_lamina_stiffness_inplane"><code class="name flex">
-<span>def <span class="ident">rotated_lamina_stiffness_inplane</span></span>(<span>E1, E2, G12, nu12, theta)</span>
+<span>def <span class="ident">rotated_lamina_stiffness_inplane</span></span>(<span>E1: float, E2: float, G12: float, nu12: float, theta: float) ‑> dolfin.fem.form.Form</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Return the in-plane stiffness matrix of an orhtropic layer
@@ -249,8 +346,58 @@ It assumes Voigt notation and plane stress state.
 <dd>a 3x3 symmetric ufl matrix giving the stiffness matrix</dd>
 </dl></div>
 </dd>
+<dt id="pytop.physics.shell.rotated_lamina_stiffness_inplane_tensor"><code class="name flex">
+<span>def <span class="ident">rotated_lamina_stiffness_inplane_tensor</span></span>(<span>E1: float | fenics_adjoint.types.function.Function, E2: float | fenics_adjoint.types.function.Function, G12: float | fenics_adjoint.types.function.Function, nu12: float | fenics_adjoint.types.function.Function, orientation_tensors: fenics_adjoint.types.function.Function | dolfin.fem.form.Form) ‑> dolfin.fem.form.Form</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Return the in-plane stiffness matrix of an orhtotropic layer
+in a reference rotated by an angle theta wrt to the material one.
+It assumes Voigt notation and plane stress state.
+(See Reddy 1997, eqn 1.3.71)</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>E1</code></strong></dt>
+<dd>The Young modulus in the material direction 1.</dd>
+<dt><strong><code>E2</code></strong></dt>
+<dd>The Young modulus in the material direction 2.</dd>
+<dt><strong><code>G23</code></strong></dt>
+<dd>The in-plane shear modulus</dd>
+<dt><strong><code>nu12</code></strong></dt>
+<dd>The in-plane Poisson ratio</dd>
+<dt><strong><code>orientation_tensors</code></strong></dt>
+<dd>a 2x2 ufl matrix giving the orientation matrix.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>Q_voigt</code></dt>
+<dd>a 3x3 symmetric ufl matrix giving the stiffness matrix</dd>
+</dl></div>
+</dd>
 <dt id="pytop.physics.shell.rotated_lamina_stiffness_shear"><code class="name flex">
-<span>def <span class="ident">rotated_lamina_stiffness_shear</span></span>(<span>G13, G23, theta, kappa=0.8333333333333334)</span>
+<span>def <span class="ident">rotated_lamina_stiffness_shear</span></span>(<span>G13: float, G23: float, theta: float, kappa=0.8333333333333334) ‑> dolfin.fem.form.Form</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Return the shear stiffness matrix of an orhtropic layer
+in a reference rotated by an angle theta wrt to the material one.
+It assumes Voigt notation and plane stress state
+(see Reddy 1997, eqn 3.4.18).</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>G12</code></strong></dt>
+<dd>The transverse shear modulus between the material directions 1-2.</dd>
+<dt><strong><code>G13</code></strong></dt>
+<dd>The transverse shear modulus between the material directions 1-3.</dd>
+<dt><strong><code>kappa</code></strong></dt>
+<dd>The shear correction factor.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>Q_shear_theta</code></dt>
+<dd>a 3x3 symmetric ufl matrix giving the stiffness matrix.</dd>
+</dl></div>
+</dd>
+<dt id="pytop.physics.shell.rotated_lamina_stiffness_shear_tensor"><code class="name flex">
+<span>def <span class="ident">rotated_lamina_stiffness_shear_tensor</span></span>(<span>G13: float, G23: float, tensor: fenics_adjoint.types.function.Function | dolfin.fem.form.Form, kappa=0.8333333333333334) ‑> dolfin.fem.form.Form</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Return the shear stiffness matrix of an orhtropic layer
@@ -280,7 +427,7 @@ It assumes Voigt notation and plane stress state
 taking the midplane as z = 0.</p>
 <h2 id="args">Args</h2>
 <dl>
-<dt><strong><code>hs</code></strong></dt>
+<dt><strong><code>list_of_thickness</code></strong></dt>
 <dd>a list giving the thinckesses of each layer
 ordered from bottom (layer - 0) to top (layer n-1).</dd>
 </dl>
@@ -309,15 +456,21 @@ ordered from bottom (layer - 0) to top (layer n-1)</dd>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
 <li><code><a title="pytop.physics.shell.ABD" href="#pytop.physics.shell.ABD">ABD</a></code></li>
+<li><code><a title="pytop.physics.shell.ABD_tensor" href="#pytop.physics.shell.ABD_tensor">ABD_tensor</a></code></li>
 <li><code><a title="pytop.physics.shell.AD_matrix_neo_hooken" href="#pytop.physics.shell.AD_matrix_neo_hooken">AD_matrix_neo_hooken</a></code></li>
 <li><code><a title="pytop.physics.shell.Fs" href="#pytop.physics.shell.Fs">Fs</a></code></li>
+<li><code><a title="pytop.physics.shell.Fs_tensor" href="#pytop.physics.shell.Fs_tensor">Fs_tensor</a></code></li>
 <li><code><a title="pytop.physics.shell.NM_T" href="#pytop.physics.shell.NM_T">NM_T</a></code></li>
+<li><code><a title="pytop.physics.shell.NM_T_tensor" href="#pytop.physics.shell.NM_T_tensor">NM_T_tensor</a></code></li>
 <li><code><a title="pytop.physics.shell.dielectric_general_stiffness" href="#pytop.physics.shell.dielectric_general_stiffness">dielectric_general_stiffness</a></code></li>
 <li><code><a title="pytop.physics.shell.nagdi_elements" href="#pytop.physics.shell.nagdi_elements">nagdi_elements</a></code></li>
 <li><code><a title="pytop.physics.shell.nagdi_strains" href="#pytop.physics.shell.nagdi_strains">nagdi_strains</a></code></li>
 <li><code><a title="pytop.physics.shell.rotated_lamina_expansion_inplane" href="#pytop.physics.shell.rotated_lamina_expansion_inplane">rotated_lamina_expansion_inplane</a></code></li>
+<li><code><a title="pytop.physics.shell.rotated_lamina_expansion_inplane_tensor" href="#pytop.physics.shell.rotated_lamina_expansion_inplane_tensor">rotated_lamina_expansion_inplane_tensor</a></code></li>
 <li><code><a title="pytop.physics.shell.rotated_lamina_stiffness_inplane" href="#pytop.physics.shell.rotated_lamina_stiffness_inplane">rotated_lamina_stiffness_inplane</a></code></li>
+<li><code><a title="pytop.physics.shell.rotated_lamina_stiffness_inplane_tensor" href="#pytop.physics.shell.rotated_lamina_stiffness_inplane_tensor">rotated_lamina_stiffness_inplane_tensor</a></code></li>
 <li><code><a title="pytop.physics.shell.rotated_lamina_stiffness_shear" href="#pytop.physics.shell.rotated_lamina_stiffness_shear">rotated_lamina_stiffness_shear</a></code></li>
+<li><code><a title="pytop.physics.shell.rotated_lamina_stiffness_shear_tensor" href="#pytop.physics.shell.rotated_lamina_stiffness_shear_tensor">rotated_lamina_stiffness_shear_tensor</a></code></li>
 <li><code><a title="pytop.physics.shell.z_coordinates" href="#pytop.physics.shell.z_coordinates">z_coordinates</a></code></li>
 </ul>
 </li>

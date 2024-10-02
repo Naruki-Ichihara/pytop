@@ -8,7 +8,7 @@ def z_coordinates(list_of_thickness: list) -> list:
     """Return a list with the thickness coordinate of the top surface of each layer
     taking the midplane as z = 0.
     Args:
-        hs: a list giving the thinckesses of each layer
+        list_of_thickness: a list giving the thinckesses of each layer
             ordered from bottom (layer - 0) to top (layer n-1).
     Returns:
         z: a list of coordinate of the top surface of each layer
@@ -36,9 +36,9 @@ def nagdi_strains(phi0: Function, d0: Function) -> Tuple[Callable, Callable, Cal
         phi0: Reference configuration.
         d0: Reference director.
     Returns:
-        e(F): Membrane strain measure.
-        k(F, d): Bending strain measure.
-        gamma(F, d): Shear strain measure.
+        e: Membrane strain measure.
+        k: Bending strain measure.
+        gamma: Shear strain measure.
     """
     a0 = grad(phi0).T*grad(phi0)
     b0 = -0.5*(grad(phi0).T*grad(d0) + grad(d0).T*grad(phi0))
@@ -55,8 +55,8 @@ def AD_matrix_neo_hooken(mu: float, nu: float, list_of_thickness: list, index: l
         list_of_thickness: list of thickness of each layer.
         index: index of active layer.
     Returns:
-        A: 
-        D: 
+        A: Stiffness matrix of membrane.
+        D: Stiffness matrix of bending.
     """
 
     z = z_coordinates(list_of_thickness)
@@ -99,7 +99,13 @@ def dielectric_general_stiffness(relative_permittivity: float, list_of_thickness
     D = D/A
     return (A, D)
 
-def ABD(E1, E2, G12, nu12, hs_grobal, thetas_grobal, index):
+def ABD(E1: float | Function,
+        E2: float | Function,
+        G12: float | Function,
+        nu12: float | Function,
+        list_of_thickness: list[float | Function],
+        orientations: list[float | Function],
+        index : list[int]) -> Tuple[Form, Form, Form]:
     r"""Return the stiffness matrix of a kirchhoff-love model of a laminate
     obtained by stacking n orthotropic laminae with possibly different
     thinknesses and orientations (see Reddy 1997, eqn 1.3.71).
@@ -109,23 +115,24 @@ def ABD(E1, E2, G12, nu12, hs_grobal, thetas_grobal, index):
         E2 : The Young modulus in the material direction 2.
         G12 : The in-plane shear modulus.
         nu12: The in-plane Poisson ratio.
-        hs: a list with length n with the thicknesses of the layers (from top to bottom).
-        theta: a list with the n orientations (in radians) of the layers (from top to bottom).
+        list_of_thickness: a list with length n with the thicknesses of the layers (from top to bottom).
+        orientations: a list with the n orientations (in radians) of the layers (from top to bottom).
+        index: index of active layer.
     Returns:
         A: a symmetric 3x3 ufl matrix giving the membrane stiffness in Voigt notation.
         B: a symmetric 3x3 ufl matrix giving the membrane/bending coupling stiffness in Voigt notation.
         D: a symmetric 3x3 ufl matrix giving the bending stiffness in Voigt notation.
     """
-    assert (len(hs_grobal) == len(thetas_grobal)), "hs and thetas should have the same length !"
+    assert (len(list_of_thickness) == len(orientations)), "hs and thetas should have the same length !"
 
-    z = z_coordinates(hs_grobal)
+    z = z_coordinates(list_of_thickness)
     A = 0.*Identity(3)
     B = 0.*Identity(3)
     D = 0.*Identity(3)
 
-    for i in range(len(hs_grobal)):
+    for i in range(len(list_of_thickness)):
         if i in index:
-            Qbar = rotated_lamina_stiffness_inplane(E1, E2, G12, nu12, thetas_grobal[i])
+            Qbar = rotated_lamina_stiffness_inplane(E1, E2, G12, nu12, orientations[i])
             A += Qbar*(z[i+1]-z[i])
             B += .5*Qbar*(z[i+1]**2-z[i]**2)
             D += 1./3.*Qbar*(z[i+1]**3-z[i]**3)
@@ -133,16 +140,39 @@ def ABD(E1, E2, G12, nu12, hs_grobal, thetas_grobal, index):
             pass
     return (A, B, D)
 
-def ABD_tensor(E1, E2, G12, nu12, hs_grobal, orientation_tensors, index):
+def ABD_tensor(E1: float | Function,
+               E2: float | Function,
+               G12: float | Function,
+               nu12: float | Function,
+               list_of_thickness: list[float | Function],
+               orientation_tensors: list[Function | Form],
+               index : list[int]) -> Tuple[Form, Form, Form]:
+    r"""Return the stiffness matrix of a kirchhoff-love model of a laminate
+    obtained by stacking n orthotropic laminae with possibly different
+    thinknesses and orientations (see Reddy 1997, eqn 1.3.71).
+    It assumes a plane-stress state.
+    Args:
+        E1 : The Young modulus in the material direction 1.
+        E2 : The Young modulus in the material direction 2.
+        G12 : The in-plane shear modulus.
+        nu12: The in-plane Poisson ratio.
+        list_of_thickness: a list with length n with the thicknesses of the layers (from top to bottom).
+        orientation_tensors: a list with the n orientations (in radians) of the layers (from top to bottom).
+        index: index of active layer.
+    Returns:
+        A: a symmetric 3x3 ufl matrix giving the membrane stiffness in Voigt notation.
+        B: a symmetric 3x3 ufl matrix giving the membrane/bending coupling stiffness in Voigt notation.
+        D: a symmetric 3x3 ufl matrix giving the bending stiffness in Voigt notation.
+    """
 
-    assert (len(hs_grobal) == len(orientation_tensors)), "hs and thetas should have the same length !"
+    assert (len(list_of_thickness) == len(orientation_tensors)), "hs and thetas should have the same length !"
 
-    z = z_coordinates(hs_grobal)
+    z = z_coordinates(list_of_thickness)
     A = 0.*Identity(3)
     B = 0.*Identity(3)
     D = 0.*Identity(3)
 
-    for i in range(len(hs_grobal)):
+    for i in range(len(list_of_thickness)):
         if i in index:
             Qbar = rotated_lamina_stiffness_inplane_tensor(E1, E2, G12, nu12, orientation_tensors[i])
             A += Qbar*(z[i+1]-z[i])
@@ -153,7 +183,11 @@ def ABD_tensor(E1, E2, G12, nu12, hs_grobal, orientation_tensors, index):
     return (A, B, D)
 
 
-def Fs(G13, G23, hs_grobal, thetas_grobal, index):
+def Fs(G13: float | Function,
+       G23: float | Function,
+       list_of_thickness: list[float | Function],
+       orientations: list[float | Function],
+       index: list[int]) -> Form:
     r"""Return the shear stiffness matrix of a Reissner-Midlin model of a
     laminate obtained by stacking n orthotropic laminae with possibly different
     thinknesses and orientations.  (See Reddy 1997, eqn 3.4.18)
@@ -161,26 +195,31 @@ def Fs(G13, G23, hs_grobal, thetas_grobal, index):
     Args:
         G13: The transverse shear modulus between the material directions 1-3.
         G23: The transverse shear modulus between the material directions 2-3.
-        hs: a list with length n with the thicknesses of the layers (from top to bottom).
-        theta: a list with the n orientations (in radians) of the layers (from top to bottom).
+        list_of_thickness: a list with length n with the thicknesses of the layers (from top to bottom).
+        orientations: a list with the n orientations (in radians) of the layers (from top to bottom).
+        index: index of active layer.
     Returns:
         F: a symmetric 2x2 ufl matrix giving the shear stiffness in Voigt notation.
     """
-    assert (len(hs_grobal) == len(thetas_grobal)), "hs and thetas should have the same length !"
+    assert (len(list_of_thickness) == len(orientations)), "hs and thetas should have the same length !"
 
-    z = z_coordinates(hs_grobal)
+    z = z_coordinates(list_of_thickness)
     F = 0.*Identity(2)
 
-    for i in range(len(hs_grobal)):
+    for i in range(len(list_of_thickness)):
         if i in index:
-            Q_shear_theta = rotated_lamina_stiffness_shear(G13, G23, thetas_grobal[i])
+            Q_shear_theta = rotated_lamina_stiffness_shear(G13, G23, orientations[i])
             F += Q_shear_theta*(z[i+1]-z[i])
         else:
             pass
 
     return F
 
-def Fs_tensor(G13, G23, hs_grobal, orientation_tensors, index):
+def Fs_tensor(G13: float | Function,
+              G23: float | Function,
+              list_of_thickness: float | Function,
+              orientation_tensors: list[Function | Form],
+              index: list[int]) -> Form:
     r"""Return the shear stiffness matrix of a Reissner-Midlin model of a
     laminate obtained by stacking n orthotropic laminae with possibly different
     thinknesses and orientations.  (See Reddy 1997, eqn 3.4.18)
@@ -188,17 +227,17 @@ def Fs_tensor(G13, G23, hs_grobal, orientation_tensors, index):
     Args:
         G13: The transverse shear modulus between the material directions 1-3.
         G23: The transverse shear modulus between the material directions 2-3.
-        hs: a list with length n with the thicknesses of the layers (from top to bottom).
+        list_of_thickness: a list with length n with the thicknesses of the layers (from top to bottom).
         orientation_tensors: a list with the n orientations (in radians) of the layers (from top to bottom).
     Returns:
         F: a symmetric 2x2 ufl matrix giving the shear stiffness in Voigt notation.
     """
-    assert (len(hs_grobal) == len(orientation_tensors)), "hs and thetas should have the same length !"
+    assert (len(list_of_thickness) == len(orientation_tensors)), "hs and thetas should have the same length !"
 
-    z = z_coordinates(hs_grobal)
+    z = z_coordinates(list_of_thickness)
     F = 0.*Identity(2)
 
-    for i in range(len(hs_grobal)):
+    for i in range(len(list_of_thickness)):
         if i in index:
             Q_shear_theta = rotated_lamina_stiffness_shear_tensor(G13, G23, orientation_tensors[i])
             F += Q_shear_theta*(z[i+1]-z[i])
@@ -207,7 +246,7 @@ def Fs_tensor(G13, G23, hs_grobal, orientation_tensors, index):
 
     return F
 
-def rotated_lamina_expansion_inplane(alpha11, alpha22, theta):
+def rotated_lamina_expansion_inplane(alpha11: float, alpha22: float, theta: float) -> Form:
     r"""Return the in-plane expansion matrix of an orhtropic layer
     in a reference rotated by an angle theta wrt to the material one.
     It assumes Voigt notation and plane stress state.
@@ -219,7 +258,6 @@ def rotated_lamina_expansion_inplane(alpha11, alpha22, theta):
     Returns:
         alpha_theta: a 3x1 ufl vector giving the expansion matrix in voigt notation.
     """
-    # Rotated matrix, assuming alpha12 = 0
     c = cos(theta)
     s = sin(theta)
     alpha_xx = alpha11*c**2 + alpha22*s**2
@@ -229,7 +267,7 @@ def rotated_lamina_expansion_inplane(alpha11, alpha22, theta):
 
     return alpha_theta
 
-def rotated_lamina_stiffness_shear(G13, G23, theta, kappa=5./6.):
+def rotated_lamina_stiffness_shear(G13: float, G23: float, theta: float, kappa=5./6.) -> Form:
     r"""Return the shear stiffness matrix of an orhtropic layer
     in a reference rotated by an angle theta wrt to the material one.
     It assumes Voigt notation and plane stress state
@@ -254,7 +292,7 @@ def rotated_lamina_stiffness_shear(G13, G23, theta, kappa=5./6.):
 
     return Q_shear_theta
 
-def rotated_lamina_stiffness_shear_tensor(G13, G23, tensor, kappa=5./6.):
+def rotated_lamina_stiffness_shear_tensor(G13: float, G23: float, tensor: Function | Form, kappa=5./6.) -> Form:
     r"""Return the shear stiffness matrix of an orhtropic layer
     in a reference rotated by an angle theta wrt to the material one.
     It assumes Voigt notation and plane stress state
@@ -281,7 +319,7 @@ def rotated_lamina_stiffness_shear_tensor(G13, G23, tensor, kappa=5./6.):
 
     return Q_shear_theta
 
-def rotated_lamina_expansion_inplane_tensor(alpha11, alpha22, orientation_tensors):
+def rotated_lamina_expansion_inplane_tensor(alpha11: float, alpha22: float, orientation_tensors: Function | Form) -> Form:
     r"""Return the in-plane expansion matrix of an orhtropic layer
     in a reference rotated by an angle theta wrt to the material one.
     It assumes Voigt notation and plane stress state.
@@ -289,7 +327,7 @@ def rotated_lamina_expansion_inplane_tensor(alpha11, alpha22, orientation_tensor
     Args:
         alpha11: Expansion coefficient in the material direction 1.
         alpha22: Expansion coefficient in the material direction 2.
-        theta: The rotation angle from the material to the desired reference system.
+        orientation_tensors: a 2x2 ufl matrix giving the orientation matrix.
     Returns:
         alpha_theta: a 3x1 ufl vector giving the expansion matrix in voigt notation.
     """
@@ -303,7 +341,24 @@ def rotated_lamina_expansion_inplane_tensor(alpha11, alpha22, orientation_tensor
 
     return alpha_theta
 
-def rotated_lamina_stiffness_inplane_tensor(E1, E2, G12, nu12, orientation_tensors):
+def rotated_lamina_stiffness_inplane_tensor(E1: float | Function,
+                                            E2: float | Function,
+                                            G12: float | Function,
+                                            nu12: float | Function,
+                                            orientation_tensors: Function | Form) -> Form:
+    r"""Return the in-plane stiffness matrix of an orhtotropic layer
+    in a reference rotated by an angle theta wrt to the material one.
+    It assumes Voigt notation and plane stress state.
+    (See Reddy 1997, eqn 1.3.71)
+    Args:
+        E1: The Young modulus in the material direction 1.
+        E2: The Young modulus in the material direction 2.
+        G23: The in-plane shear modulus
+        nu12: The in-plane Poisson ratio
+        orientation_tensors: a 2x2 ufl matrix giving the orientation matrix.
+    Returns:
+        Q_voigt: a 3x3 symmetric ufl matrix giving the stiffness matrix
+    """
     a_2 = orientation_tensors
     a_4 = outer(orientation_tensors, orientation_tensors)
     i, j, k, l = indices(4)
@@ -318,22 +373,19 @@ def rotated_lamina_stiffness_inplane_tensor(E1, E2, G12, nu12, orientation_tenso
     B1 = C1111 + C2222 -2*C1122 - 4*C1212
     B2 = C1122
     B3 = C1212 - C2222/2
-    B4 = 0
     B5 = C2222/2
 
     delta = Identity(2)
     c1 = B1*a_4[i, j, k, l]
     c2 = B2*(a_2[i, j]*delta[k, l] + a_2[k, l]*delta[i, j])
     c3 = B3*(a_2[i, k]*delta[j, l]+a_2[i, l]*delta[j, k] + a_2[j, k]*delta[i, l]+a_2[j, l]*delta[i, k])
-    c4 = 0
     c5 = B5*(delta[i, k]*delta[j, l] + delta[i, l]*delta[j, k])
 
     Q = as_tensor(c1+c2+c3+c5, (i, j, k, l))
-    Q_voight = as_matrix([[Q[0, 0, 0, 0], Q[0, 0, 1, 1], Q[0, 0, 0, 1]],
+    Q_voigt = as_matrix([[Q[0, 0, 0, 0], Q[0, 0, 1, 1], Q[0, 0, 0, 1]],
                             [Q[1, 1, 0, 0], Q[1, 1, 1, 1], Q[1, 1, 0, 1]],
                             [Q[0, 1, 0, 0], Q[0, 1, 1, 1], Q[0, 1, 0, 1]]])
-    return Q_voight
-
+    return Q_voigt
 
 def NM_T_tensor(E1, E2, G12, nu12, hs, orientation_tensors, index, DeltaT_0, DeltaT_1=0., alpha1=1., alpha2=1.):
     assert (len(hs) == len(orientation_tensors)), "hs and thetas should have the same length !"
@@ -369,7 +421,17 @@ def NM_T_tensor(E1, E2, G12, nu12, hs, orientation_tensors, index, DeltaT_0, Del
     return (N_T, M_T)
 
 
-def NM_T(E1, E2, G12, nu12, hs, thetas, index, DeltaT_0, DeltaT_1=0., alpha1=1., alpha2=1.):
+def NM_T(E1: float,
+         E2: float,
+         G12: float,
+         nu12: float,
+         list_of_thickness: list[float],
+         orientations: list[float],
+         index: list[int],
+         DeltaT_0: float,
+         DeltaT_1: float,
+         alpha1 : float,
+         alpha2 : float) -> Tuple[Form, Form]:
     r"""Return the thermal stress and moment resultant of a Kirchhoff-Love model
     of a laminate obtained by stacking n orthotropic laminae with possibly
     different thinknesses and orientations.
@@ -380,8 +442,8 @@ def NM_T(E1, E2, G12, nu12, hs, thetas, index, DeltaT_0, DeltaT_1=0., alpha1=1.,
         E2: The Young modulus in the material direction 2.
         G12: The in-plane shear modulus.
         nu12: The in-plane Poisson ratio.
-        hs: a list with length n with the thicknesses of the layers (from top to bottom).
-        theta: a list with the n orientations (in radians) of the layers (from top to bottom).
+        list_of_thickness: a list with length n with the thicknesses of the layers (from top to bottom).
+        orientations: a list with the n orientations (in radians) of the layers (from top to bottom).
         alpha1: Expansion coefficient in the material direction 1.
         alpha2: Expansion coefficient in the material direction 2.
         DeltaT_0: Average temperature field.
@@ -390,9 +452,9 @@ def NM_T(E1, E2, G12, nu12, hs, thetas, index, DeltaT_0, DeltaT_1=0., alpha1=1.,
         N_T: a 3x1 ufl vector giving the membrane inelastic stress.
         M_T: a 3x1 ufl vector giving the bending inelastic stress.
     """
-    assert (len(hs) == len(thetas)), "hs and thetas should have the same length !"
+    assert (len(list_of_thickness) == len(orientations)), "hs and thetas should have the same length !"
     # Coordinates of the interfaces
-    z = z_coordinates(hs)
+    z = z_coordinates(list_of_thickness)
 
     # Initialize to zero the voigt (ufl) vectors
     N_T = as_vector((0., 0., 0.))
@@ -402,18 +464,18 @@ def NM_T(E1, E2, G12, nu12, hs, thetas, index, DeltaT_0, DeltaT_1=0., alpha1=1.,
     T1 = DeltaT_1
 
     # loop over the layers to add the different contributions
-    for i in range(len(thetas)):
+    for i in range(len(orientations)):
         # Rotated stiffness
         Q_theta = rotated_lamina_stiffness_inplane(
-            E1, E2, G12, nu12, thetas[i])
+            E1, E2, G12, nu12, orientations[i])
         alpha_theta = rotated_lamina_expansion_inplane(
-            alpha1, alpha2, thetas[i])
+            alpha1, alpha2, orientations[i])
         # numerical integration in the i-th layer
         z0i = (z[i+1] + z[i])/2  # Midplane of the ith layer
         # integral of DeltaT(z) in (z[i+1], z[i])
-        integral_DeltaT = hs[i]*(T0 + T1 * z0i)
+        integral_DeltaT = list_of_thickness[i]*(T0 + T1 * z0i)
         # integral of DeltaT(z)*z in (z[i+1], z[i])
-        integral_DeltaT_z = T1*(hs[i]*3/12 + z0i**2*hs[i]) + hs[i]*z0i*T0
+        integral_DeltaT_z = T1*(list_of_thickness[i]*3/12 + z0i**2*list_of_thickness[i]) + list_of_thickness[i]*z0i*T0
         if i in index:
             N_T += Q_theta*alpha_theta*integral_DeltaT
             M_T += Q_theta*alpha_theta*integral_DeltaT_z
@@ -422,7 +484,11 @@ def NM_T(E1, E2, G12, nu12, hs, thetas, index, DeltaT_0, DeltaT_1=0., alpha1=1.,
 
     return (N_T, M_T)
 
-def rotated_lamina_stiffness_inplane(E1, E2, G12, nu12, theta):
+def rotated_lamina_stiffness_inplane(E1: float,
+                                     E2: float,
+                                     G12: float,
+                                     nu12: float,
+                                     theta: float) -> Form:
     r"""Return the in-plane stiffness matrix of an orhtropic layer
     in a reference rotated by an angle theta wrt to the material one.
     It assumes Voigt notation and plane stress state.
