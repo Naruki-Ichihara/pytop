@@ -51,7 +51,9 @@ class NloptOptimizer(nlp.opt):
             grad[:] = np.concatenate(grads)
             self.design_vector.update_counter()
             return cost
-        
+
+        for key in self.design_vector.keys():
+            self.__logging_dict[key] = list()
         def generate_cost_function(attribute, problem):
             def cost_function(x, grad):
                 self.design_vector.vector = x
