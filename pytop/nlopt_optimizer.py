@@ -57,7 +57,7 @@ class NloptOptimizer(nlp.opt):
                 self.design_vector.vector = x
                 iter_num = self.design_vector.current_iteration_number
                 cost = getattr(problem, attribute)(self.design_vector, iter_num)
-                self.__logging_dict[attribute] = cost
+                self.__logging_dict[attribute].append(cost)
                 grads = [problem.compute_sensitivities(self.design_vector, attribute, key)
                          for key in self.design_vector.keys()]
                 grad[:] = np.concatenate(grads)
