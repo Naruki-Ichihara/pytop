@@ -52,8 +52,6 @@ class NloptOptimizer(nlp.opt):
             self.design_vector.update_counter()
             return cost
 
-        for key in self.design_vector.keys():
-            self.__logging_dict[key] = list()
         def generate_cost_function(attribute, problem):
             def cost_function(x, grad):
                 self.design_vector.vector = x
@@ -68,6 +66,7 @@ class NloptOptimizer(nlp.opt):
         
         for attribute in dir(self.problem):
             if attribute.startswith('constraint_'):
+                self.__logging_dict[attribute] = list()
                 cost_function = generate_cost_function(attribute, self.problem)
                 self.add_inequality_constraint(cost_function, 1e-8)
 
