@@ -19,8 +19,25 @@ def penalized_weight(rho, p=3, eps=1e-3):
     '''
     return eps + (1 - eps) * rho ** p
 
-def sgn(x, k=10):
-    return tanh(k*x)
+def sgn(x, beta=10):
+    '''Smoothed sign function based on Heaviside filter approximation.
+
+    This function provides a smooth transition from -1 to 1, with sharpness
+    controlled by the beta parameter. It is useful for controlling the
+    concentration of orientation distributions in fiber-reinforced composites
+    optimization.
+
+    Args:
+        x: Input value, typically in the range [-1, 1].
+        beta: Smoothing parameter controlling the sharpness of the transition.
+            - Large values (e.g., 100): Sharp transition, concentrated orientation
+            - Small values (e.g., 0.1): Smooth transition, dispersed orientation
+            Default is 10.
+
+    Returns:
+        Smoothed sign value in the range [-1, 1].
+    '''
+    return tanh(beta*x) / tanh(beta)
 
 def isoparametric_2D(z: Function, e: Function, u: Function, v: Function) -> Function:
     ''' Apply 2D isoparametric projection onto orientation vector.

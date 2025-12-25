@@ -50,6 +50,6 @@ class Problem(pt.ProblemStatement):
 
 opt = pt.NloptOptimizer(design_variables, Problem(), "LD_MMA")
 opt.set_maxeval(100)
-opt.set_ftol_rel(1e-5)
+#opt.set_ftol_rel(1e-5)
 opt.set_param("verbosity", 1)
 opt.run(output_path + "/logging.csv")

@@ -29,10 +29,12 @@ def helmholtz_filter(u: Function,
     r = R/(2*np.sqrt(3))
     a = r**2*inner(grad(v), grad(dv))*dx + dot(v, dv)*dx
     L = inner(u, dv)*dx
-    if solver_parameters is None:
-        solve(a == L, uh)
-    else:
-        solve(a == L, uh, solver_parameters=solver_parameters) #TODO
+    # Use LinearVariationalProblem and LinearVariationalSolver for better compatibility with fenics_adjoint
+    problem = LinearVariationalProblem(a, L, uh)
+    solver = LinearVariationalSolver(problem)
+    if solver_parameters is not None:
+        solver.parameters.update(solver_parameters)
+    solver.solve()
     u_projected = project(uh, U)
     return u_projected
 

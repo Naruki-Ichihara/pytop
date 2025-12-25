@@ -40,22 +40,32 @@ class ProblemStatement(metaclass=ABCMeta):
         '''
         raise NotImplementedError()
 
-    def compute_sensitivities(self, 
-                              design_variables: DesignVariables, 
-                              target: str, 
+    def compute_sensitivities(self,
+                              design_variables: DesignVariables,
+                              target: str,
                               variable_key: str) -> np.ndarray:
 
         control = Control(design_variables.dict_of_original_functions[variable_key])
 
         if not hasattr(self, target):
             raise AttributeError(f'The "{target}" is not defined.')
-        try :
+
+        try:
             compute_gradient(getattr(self, target)(design_variables, None), control)
         except AttributeError:
             # warnings.warn(f'The "{target}" is independent of the variable "{variable_key}".')
             return np.zeros(design_variables[variable_key].vector().size())
-        sensitivity = fenics_function_to_np_array(compute_gradient(getattr(self, target)(design_variables, None),
-                                       control))
+
+        gradient_result = compute_gradient(getattr(self, target)(design_variables, None), control)
+
+        # Check if result is a Vector or Function and convert accordingly
+        if hasattr(gradient_result, 'get_local'):
+            # It's a Vector
+            sensitivity = gradient_result.get_local()
+        else:
+            # It's a Function
+            sensitivity = fenics_function_to_np_array(gradient_result)
+
         return sensitivity
     
     def recorder(self, xdmf_file: XDMFFile, variable: Form | Function, function_space: FunctionSpace, name: str, iter_num: int | None):

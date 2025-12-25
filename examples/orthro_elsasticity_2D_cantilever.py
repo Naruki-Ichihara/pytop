@@ -60,14 +60,14 @@ design_variables.register(U,
 
 # Problem statement
 class Problem(pt.ProblemStatement):
-    def objective(self, design_variables):
+    def objective(self, design_variables, iter_num):
         self.rho = design_variables["density"]
         self.orientation = design_variables["orientation"]
         a = el.linear_2D_orthotropic_elasticity_bilinear_form_vector(u, du, E1, E2, G12, nu, self.orientation, penalized_weight(self.rho, eps=1e-4))
         L = pt.inner(f, du) * ds(1)
         pt.solve(a == L, uh, bc)
         return pt.assemble(pt.inner(f, uh) * ds(1))
-    def constraint_volume(self, design_variables):
+    def constraint_volume(self, design_variables, iter_num):
         unitary = pt.project(pt.Constant(1), X)
         return pt.assemble(self.rho*pt.dx)/pt.assemble(unitary*pt.dx) - TARGET_DENSITY
     
