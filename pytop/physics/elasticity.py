@@ -1,6 +1,9 @@
 from fenics import *
 from fenics_adjoint import *
-from ufl import transpose, indices
+try:
+    from ufl_legacy import transpose, indices
+except ImportError:
+    from ufl import transpose, indices
 import numpy as np
 from typing import Callable, Iterable, Optional
 from dataclasses import dataclass

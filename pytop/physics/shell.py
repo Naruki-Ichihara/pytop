@@ -1,7 +1,10 @@
 from fenics import *
 from fenics_adjoint import *
-from ufl import RestrictedElement
-from ufl import transpose, indices
+try:
+    from ufl_legacy import RestrictedElement, transpose, indices
+except ImportError:
+    from ufl import RestrictedElement
+    from ufl import transpose, indices
 from typing import Tuple, Callable
 
 def z_coordinates(list_of_thickness: list) -> list:

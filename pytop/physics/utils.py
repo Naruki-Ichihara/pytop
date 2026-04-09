@@ -3,8 +3,12 @@ from fenics_adjoint import *
 import numpy as np
 from typing import Callable, Iterable, Optional
 from dataclasses import dataclass
-from ufl import tanh
-import ufl
+try:
+    from ufl_legacy import tanh
+    import ufl_legacy as ufl
+except ImportError:
+    from ufl import tanh
+    import ufl
 
 def penalized_weight(rho, p=3, eps=1e-3):
     '''Penalized weight function.

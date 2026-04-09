@@ -6,7 +6,10 @@ from fenics import *
 from fenics_adjoint import *
 import numpy as np
 from typing import Optional
-from ufl import tanh
+try:
+    from ufl_legacy import tanh
+except ImportError:
+    from ufl import tanh
 
 def helmholtz_filter(u: Function,
                      R=0.025,
