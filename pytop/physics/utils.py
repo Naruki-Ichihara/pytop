@@ -6,7 +6,7 @@ from dataclasses import dataclass
 try:
     from ufl_legacy import tanh
     import ufl_legacy as ufl
-except ImportError:
+except (ImportError, ModuleNotFoundError, RuntimeError):
     from ufl import tanh
     import ufl
 

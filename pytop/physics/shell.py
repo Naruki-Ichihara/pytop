@@ -2,7 +2,7 @@ from fenics import *
 from fenics_adjoint import *
 try:
     from ufl_legacy import RestrictedElement, transpose, indices
-except ImportError:
+except (ImportError, ModuleNotFoundError, RuntimeError):
     from ufl import RestrictedElement
     from ufl import transpose, indices
 from typing import Tuple, Callable

@@ -2,7 +2,7 @@ from fenics import *
 from fenics_adjoint import *
 try:
     from ufl_legacy import transpose, indices
-except ImportError:
+except (ImportError, ModuleNotFoundError, RuntimeError):
     from ufl import transpose, indices
 import numpy as np
 from typing import Callable, Iterable, Optional

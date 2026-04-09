@@ -8,7 +8,7 @@ import numpy as np
 from typing import Optional
 try:
     from ufl_legacy import tanh
-except ImportError:
+except (ImportError, ModuleNotFoundError, RuntimeError):
     from ufl import tanh
 
 def helmholtz_filter(u: Function,
